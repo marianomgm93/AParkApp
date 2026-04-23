@@ -55,8 +55,10 @@ com.aparkapp
     -   exception/
     -   utils/
 -   features/
-    -   parking/
+    -   parkingLot/
+    -   parkingSpot/
     -   vehicle/
+    -   driver/
     -   reservation/
     -   ticket/
     -   stay/
