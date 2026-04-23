@@ -1,14 +1,28 @@
-# AParkApp 🚗
+# 🚗 AParkApp - Parking Management SaaS
 
-**Final project for my Programming degree (UTN)**
+AParkApp is a backend SaaS platform designed to manage parking lots, reservations, vehicle access, and billing processes.  
+It simulates a real-world system integrating business logic, clean architecture, and scalable API design.
 
-AParkApp is a SaaS (Software as a Service) platform designed to manage
-parking facilities and help users find available parking spots in real
-time.
+---
 
-------------------------------------------------------------------------
+## 📌 Features
 
-## 🧩 Overview
+- Parking lot management
+- Parking spot availability tracking
+- Vehicle and driver association
+- Reservation system
+- Ticket-based entry/exit system
+- Stay management (hourly, daily, monthly, annual)
+- Dynamic pricing configuration
+- Billing and invoicing system
+- Search and availability endpoints
+
+---
+
+## 🧠 Domain Overview
+
+The system models a real parking business:
+Customer → Vehicle → Ticket → Stay → Bill
 
 AParkApp solves a real-world urban problem: finding and managing parking
 efficiently.
@@ -20,80 +34,172 @@ management
 
 ------------------------------------------------------------------------
 
-## 🏗️ Architecture
+## 🏗 Architecture
+
+- **Backend:** Java + Spring Boot  
+- **Architecture:** Clean Architecture (Layered)  
+- **Database:** Relational (MySQL / SQL Server)  
+- **API:** RESTful  
+- **Documentation:** OpenAPI (Swagger)
+
+---
+
+## 📦 Project Structure
+
 
 com.aparkapp
-
--   auth/
--   config/
--   common/
--   features/
-    -   user/
-    -   parkinglot/
-    -   parkingspot/
-    -   reservation/
-    -   ticket/
-    -   stay/
+│
+├── auth
+├── config
+├── common
+│ ├── exception
+│ └── utils
+│
+├── features
+│ ├── parking
+│ ├── vehicle
+│ ├── reservation
+│ ├── ticket
+│ ├── stay
+│ ├── billing
+│ └── user
+│
+└── Application.java
 
 Layers: - Controller → HTTP - Service → Logic - Repository →
 Persistence - Entity → Model - DTO → Transfer
 
 ------------------------------------------------------------------------
 
-## 📡 API Endpoints
+---
 
-### Auth
+## 🗄 Database Design (DER)
 
-POST /auth/register\
-POST /auth/login
+Main entities:
 
-### Users
+- Owners
+- Employees
+- ParkingLots
+- ParkingSpots
+- Vehicles
+- Drivers (M:N with Vehicles)
+- Reservations
+- Tickets
+- Stays
+- StayTypes
+- VehicleTypes
+- Prices
+- Bills
+- Customers
+- BillingData
 
-GET /users/{id}\
-GET /users
+---
 
-### ParkingLot
+## 🔗 Key Relationships
 
-GET /parking-lots\
-POST /parking-lots\
-PUT /parking-lots/{id}\
-DELETE /parking-lots/{id}
+- One ParkingLot → Many ParkingSpots
+- One Vehicle → Many Tickets
+- One Ticket → One Stay
+- One Stay → One Bill
+- Drivers ↔ Vehicles (Many-to-Many)
+- Prices depend on:
+  - VehicleType
+  - StayType
 
-### ParkingSpot
+---
 
-GET /parking-spots/available\
-POST /parking-spots
+## 🚀 API Endpoints
 
-### Ticket
+### 🔐 Auth
+- `POST /auth/login`
+- `POST /auth/register`
 
-POST /tickets\
-PUT /tickets/{id}/close
+---
 
-### Reservation
+### 🅿️ Parking
+- `GET /parking-lots`
+- `POST /parking-lots`
+- `GET /parking-lots/{id}/spots`
+- `GET /parking-lots/{id}/availability`
 
-POST /reservations\
-PUT /reservations/{id}/cancel
+---
 
-### Search
+### 🚗 Vehicles
+- `POST /vehicles`
+- `GET /vehicles/{id}`
+- `GET /vehicles/{id}/tickets`
 
-GET /search?lat={lat}&lng={lng}&type={vehicleType}
+---
 
-------------------------------------------------------------------------
+### 👤 Drivers
+- `POST /drivers`
+- `GET /drivers/{id}/vehicles`
+- `POST /drivers/{id}/vehicles`
 
-## 🔐 Security
+---
 
--   JWT Authentication\
--   Role-based access
+### 📅 Reservations
+- `POST /reservations`
+- `GET /reservations`
+- `PUT /reservations/{id}/cancel`
 
-------------------------------------------------------------------------
+---
 
-## 🛠️ Tech Stack
+### 🎫 Tickets
+- `POST /tickets`
+- `PUT /tickets/{id}/close`
 
--   Java\
--   Spring Boot\
--   Spring Security\
--   JPA / Hibernate\
--   MySQL
+---
 
-------------------------------------------------------------------------
+### ⏱ Stays
+- `GET /stays/{id}`
+- `GET /stays/{id}/cost`
 
+---
+
+### 💰 Pricing
+- `GET /prices`
+- `POST /prices`
+
+---
+
+### 🧾 Billing
+- `POST /bills`
+- `GET /bills/{id}`
+
+---
+
+### 🔍 Search
+- `GET /search?lat=&lng=&vehicleType=`
+
+---
+
+## 💡 Business Logic Highlights
+
+- Hourly stays are paid at exit
+- Daily/Monthly stays require upfront payment
+- Pricing is dynamic and configurable
+- Tickets represent entry/exit
+- Stays represent billing logic
+
+---
+
+## 🧪 Example Flow
+
+1. Vehicle enters → Ticket created  
+2. Stay is initialized  
+3. Vehicle exits → Ticket closed  
+4. Cost is calculated  
+5. Bill is generated  
+
+---
+
+## 🛠 Future Improvements
+
+- JWT Authentication
+- Payment Gateway Integration
+- Real-time availability (WebSockets)
+- Mobile app integration
+- AI-based parking prediction
+
+---
