@@ -1,0 +1,212 @@
+openapi: 3.0.0
+info:
+  title: AParkApp API
+  version: 1.1.0
+
+servers:
+  - url: http://localhost:8080/api
+
+paths:
+
+  # =====================
+  # OWNERS & EMPLOYEES
+  # =====================
+  /owners:
+    get:
+      summary: Listar dueños
+    post:
+      summary: Crear dueño
+
+  /employees:
+    get:
+      summary: Listar empleados
+    post:
+      summary: Crear empleado
+
+  # =====================
+  # PARKING LOTS
+  # =====================
+  /parking-lots:
+    get:
+      summary: Listar parkings
+    post:
+      summary: Crear parking
+
+  /parking-lots/{id}:
+    get:
+      summary: Obtener parking
+    put:
+      summary: Actualizar parking
+    delete:
+      summary: Eliminar parking
+
+  /parking-lots/{id}/spots:
+    get:
+      summary: Obtener espacios del parking
+
+  # =====================
+  # PARKING SPOTS
+  # =====================
+  /parking-spots:
+    post:
+      summary: Crear espacio
+
+  /parking-spots/{id}:
+    get:
+      summary: Obtener espacio
+    put:
+      summary: Actualizar estado
+
+  # =====================
+  # VEHICLES
+  # =====================
+  /vehicles:
+    get:
+      summary: Listar vehículos
+    post:
+      summary: Crear vehículo
+
+  /vehicles/{id}:
+    get:
+      summary: Obtener vehículo
+    delete:
+      summary: Eliminar vehículo
+
+  /vehicles/{id}/tickets:
+    get:
+      summary: Tickets de un vehículo
+
+  # =====================
+  # DRIVERS
+  # =====================
+  /drivers:
+    get:
+      summary: Listar conductores
+    post:
+      summary: Crear conductor
+
+  /drivers/{id}:
+    get:
+      summary: Obtener conductor
+    put:
+      summary: Actualizar conductor
+
+  # RELACIÓN M:N
+  /drivers/{id}/vehicles:
+    get:
+      summary: Vehículos asociados a conductor
+    post:
+      summary: Asociar vehículo
+
+  /drivers/{driverId}/vehicles/{vehicleId}:
+    delete:
+      summary: Desasociar vehículo
+
+  # =====================
+  # RESERVATIONS
+  # =====================
+  /reservations:
+    get:
+      summary: Listar reservas
+    post:
+      summary: Crear reserva
+
+  /reservations/{id}:
+    get:
+      summary: Obtener reserva
+
+  /reservations/{id}/cancel:
+    put:
+      summary: Cancelar reserva
+
+  # =====================
+  # TICKETS
+  # =====================
+  /tickets:
+    post:
+      summary: Crear ticket (entrada)
+
+  /tickets/{id}:
+    get:
+      summary: Obtener ticket
+
+  /tickets/{id}/close:
+    put:
+      summary: Cerrar ticket
+
+  # =====================
+  # STAYS (LÓGICA REAL)
+  # =====================
+  /stays:
+    get:
+      summary: Listar estadías
+
+  /stays/{id}:
+    get:
+      summary: Obtener estadía
+
+  /stays/{id}/cost:
+    get:
+      summary: Calcular costo
+
+  # =====================
+  # STAY TYPES
+  # =====================
+  /stay-types:
+    get:
+      summary: Tipos de estadía
+
+  # =====================
+  # VEHICLE TYPES
+  # =====================
+  /vehicle-types:
+    get:
+      summary: Tipos de vehículo
+
+  # =====================
+  # PRICING
+  # =====================
+  /prices:
+    get:
+      summary: Obtener precios
+    post:
+      summary: Configurar precios
+
+  # =====================
+  # BILLING
+  # =====================
+  /bills:
+    get:
+      summary: Listar facturas
+    post:
+      summary: Generar factura
+
+  /bills/{id}:
+    get:
+      summary: Obtener factura
+
+  # =====================
+  # BILLING DATA
+  # =====================
+  /billing-data:
+    get:
+      summary: Datos de facturación
+    post:
+      summary: Crear datos de facturación
+
+  # =====================
+  # CUSTOMERS
+  # =====================
+  /customers:
+    get:
+      summary: Listar clientes
+    post:
+      summary: Crear cliente
+
+  /customers/{id}:
+    get:
+      summary: Obtener cliente
+    put:
+      summary: Modificar cliente
+    delete:
+      summary: Eliminar cliente
