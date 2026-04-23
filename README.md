@@ -48,23 +48,21 @@ management
 
 
 com.aparkapp
-│
-├── auth
-├── config
-├── common
-│ ├── exception
-│ └── utils
-│
-├── features
-│ ├── parking
-│ ├── vehicle
-│ ├── reservation
-│ ├── ticket
-│ ├── stay
-│ ├── billing
-│ └── user
-│
-└── Application.java
+
+-   auth/
+-   config/
+-   common/
+    -   exception/
+    -   utils/
+-   features/
+    -   parking/
+    -   vehicle/
+    -   reservation/
+    -   ticket/
+    -   stay/
+    -   billing/
+    -   user/
+
 
 Layers: - Controller → HTTP - Service → Logic - Repository →
 Persistence - Entity → Model - DTO → Transfer
