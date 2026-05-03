@@ -13,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
+
 public class TicketEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +22,12 @@ public class TicketEntity {
     @OneToOne(optional = false)
     @JoinColumn(name = "stay_id", nullable = false, unique = true)
     private StayEntity stay;
+
+    @OneToOne
+    @JoinColumn(name = "vehicle_id")
+    private VehicleEntity vehicle;
+
+    @OneToOne
+    @JoinColumn(name = "parking_spot_id")
+    private ParkingSpotEntity parkingSpot;
 }
