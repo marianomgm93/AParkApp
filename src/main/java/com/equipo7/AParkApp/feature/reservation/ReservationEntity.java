@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @ToString
 @AllArgsConstructor
 @Builder
-
+@Entity
 @Table(name = "reservations")
 public class ReservationEntity {
     @Id

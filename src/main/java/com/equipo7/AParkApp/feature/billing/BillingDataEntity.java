@@ -1,6 +1,6 @@
 package com.equipo7.AParkApp.feature.billing;
 
-import com.equipo7.AParkApp.feature.user.CustomerEntity;
+import com.equipo7.AParkApp.feature.user.customer.CustomerEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

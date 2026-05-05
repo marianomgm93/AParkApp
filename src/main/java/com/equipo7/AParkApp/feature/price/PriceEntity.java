@@ -5,13 +5,15 @@ import com.equipo7.AParkApp.feature.vehicle.VehicleTypeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
 @Builder
-
+@Entity
 @Table(name = "prices")
 public class PriceEntity {
     @Id
@@ -21,11 +23,11 @@ public class PriceEntity {
     @Column(name = "price")
     private double price;
 
-    @OneToMany
-    @JoinColumn(name = "vehicle_tipe_id")
-    private VehicleTypeEntity vehicleType;
+    @ManyToOne
+    @JoinColumn(name = "vehicle_type_id")
+    private VehicleTypeEntity vehicleTypes;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "stay_type_id")
-    private StayTypeEntity stayType;
+    private StayTypeEntity stayTypes;
 }

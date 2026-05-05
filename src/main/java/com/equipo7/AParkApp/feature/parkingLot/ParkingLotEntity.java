@@ -1,17 +1,16 @@
 package com.equipo7.AParkApp.feature.parkingLot;
 
-import com.equipo7.AParkApp.feature.parkingSpot.ParkingSpotEntity;
-import com.equipo7.AParkApp.feature.user.OwnerEntity;
+import com.equipo7.AParkApp.feature.user.owner.OwnerEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor @Builder
+@AllArgsConstructor
+@Builder
+@Entity
 @Table(name = "parking_lots")
 public class ParkingLotEntity {
     @Id
@@ -25,9 +24,6 @@ public class ParkingLotEntity {
 
     @Column(name = "total_capacity")
     private int capacity;
-
-    @OneToMany(mappedBy = "parkinLot")
-    private List<ParkingSpotEntity> ListParkingSpotNumber;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

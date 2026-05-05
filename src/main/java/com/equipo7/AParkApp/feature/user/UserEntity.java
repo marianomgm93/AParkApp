@@ -9,18 +9,13 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-@Builder
-
-public class UserEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public abstract class UserEntity {
     private String name;
 
     @Column(unique = true)
     private String email;
 
 
-
+    public UserEntity() {
+    }
 }

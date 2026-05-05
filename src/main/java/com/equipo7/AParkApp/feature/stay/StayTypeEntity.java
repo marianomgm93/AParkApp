@@ -3,6 +3,8 @@ package com.equipo7.AParkApp.feature.stay;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "stay_types")
 @Getter
