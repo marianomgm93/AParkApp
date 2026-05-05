@@ -21,17 +21,14 @@ public class StayEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //  MUCHAS estadías pueden ser del mismo tipo
     @ManyToOne(optional = false)
     @JoinColumn(name = "stay_type_id", nullable = false)
     private StayTypeEntity type;
 
-    //  MUCHAS estadías pueden ser del mismo vehículo
     @ManyToOne(optional = false)
     @JoinColumn(name = "vehicle_id", nullable = false)
     private VehicleEntity vehicle;
 
-    //  MUCHAS estadías pueden usar el mismo lugar en distintos momentos
     @ManyToOne(optional = false)
     @JoinColumn(name = "parking_spot_id", nullable = false)
     private ParkingSpotEntity parkingSpot;

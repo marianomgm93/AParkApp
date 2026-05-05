@@ -4,13 +4,15 @@ import com.equipo7.AParkApp.feature.driver.DriverEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
 @Builder
-
+@Entity
 @Table(name = "vehicles")
 public class VehicleEntity {
     @Id
@@ -24,8 +26,12 @@ public class VehicleEntity {
     @JoinColumn(name = "vehicle_tipes_id")
     private VehicleTypeEntity vehicleType;
 
-    @ManyToOne
-    @JoinColumn(name = "drivers_id")
-    private DriverEntity driver;
+    @ManyToMany
+    @JoinTable(
+        name = "diver_vehicle",
+        joinColumns = @JoinColumn(name = "vehicle_id"),
+        inverseJoinColumns = @JoinColumn(name = "driver_id")
+    )
+    private List<DriverEntity> drivers;
 
 }

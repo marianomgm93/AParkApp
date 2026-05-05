@@ -11,7 +11,9 @@ import java.util.List;
 @Setter
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor @Builder
+@AllArgsConstructor
+@Builder
+@Entity
 @Table(name = "parking_lots")
 public class ParkingLotEntity {
     @Id
@@ -25,9 +27,6 @@ public class ParkingLotEntity {
 
     @Column(name = "total_capacity")
     private int capacity;
-
-    @OneToMany(mappedBy = "parkinLot")
-    private List<ParkingSpotEntity> ListParkingSpotNumber;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")

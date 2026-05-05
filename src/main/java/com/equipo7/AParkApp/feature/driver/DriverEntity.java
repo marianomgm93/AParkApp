@@ -12,6 +12,7 @@ import java.util.List;
 @EqualsAndHashCode
 @AllArgsConstructor
 @Builder
+@Entity
 @Table(name = "drivers")
 public class DriverEntity {
     @Id
@@ -25,6 +26,4 @@ public class DriverEntity {
 
     private String phone;
 
-    @OneToMany(mappedBy = "vehicles")
-    private List<VehicleEntity> ListVehicles;
 }

@@ -11,8 +11,8 @@ import java.util.List;
 @EqualsAndHashCode
 @AllArgsConstructor
 @Builder
-
-@Table(name = "vehicle_tipes")
+@Entity
+@Table(name = "vehicle_types")
 public class VehicleTypeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +21,6 @@ public class VehicleTypeEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToOne(mappedBy = "vehicle_tipes")
+    @OneToMany(mappedBy = "vehicleType")
     private List<VehicleEntity> vehicles;
 }

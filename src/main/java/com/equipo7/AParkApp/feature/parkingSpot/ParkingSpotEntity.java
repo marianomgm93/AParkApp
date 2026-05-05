@@ -10,7 +10,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor @Builder
-
+@Entity
 @Table(name = "parking_spots")
 public class ParkingSpotEntity {
     @Id
