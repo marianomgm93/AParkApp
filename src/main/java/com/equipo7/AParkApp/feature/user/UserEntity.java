@@ -9,13 +9,11 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
+@MappedSuperclass
 public abstract class UserEntity {
     private String name;
 
     @Column(unique = true)
     private String email;
-
-
-    public UserEntity() {
-    }
 }
