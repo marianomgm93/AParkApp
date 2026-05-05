@@ -14,6 +14,6 @@ import lombok.*;
 public abstract class UserEntity {
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 }
