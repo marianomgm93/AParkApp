@@ -24,7 +24,7 @@ public class PriceEntity {
     private double price;
 
     @ManyToOne
-    @JoinColumn(name = "vehicle_tipe_id")
+    @JoinColumn(name = "vehicle_type_id")
     private VehicleTypeEntity vehicleTypes;
 
     @ManyToOne

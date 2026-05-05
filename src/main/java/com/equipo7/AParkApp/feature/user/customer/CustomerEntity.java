@@ -1,5 +1,6 @@
-package com.equipo7.AParkApp.feature.user;
+package com.equipo7.AParkApp.feature.user.customer;
 
+import com.equipo7.AParkApp.feature.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "customer")
-public class CustomerEntity extends UserEntity{
+public class CustomerEntity extends UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

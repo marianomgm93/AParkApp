@@ -9,7 +9,8 @@ import lombok.*;
 @Setter
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor @Builder
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "parking_spots")
 public class ParkingSpotEntity {

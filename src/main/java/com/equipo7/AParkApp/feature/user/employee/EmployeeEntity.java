@@ -1,11 +1,11 @@
-package com.equipo7.AParkApp.feature.user;
+package com.equipo7.AParkApp.feature.user.employee;
 
 import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
+import com.equipo7.AParkApp.feature.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Getter
 @Setter
@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "employees")
-public class EmployeeEntity extends UserEntity{
+public class EmployeeEntity extends UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,11 +1,8 @@
 package com.equipo7.AParkApp.feature.parkingLot;
 
-import com.equipo7.AParkApp.feature.parkingSpot.ParkingSpotEntity;
-import com.equipo7.AParkApp.feature.user.OwnerEntity;
+import com.equipo7.AParkApp.feature.user.owner.OwnerEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter

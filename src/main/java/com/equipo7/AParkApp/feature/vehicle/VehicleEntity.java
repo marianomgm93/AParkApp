@@ -23,7 +23,7 @@ public class VehicleEntity {
     private String plate;
 
     @ManyToOne
-    @JoinColumn(name = "vehicle_tipes_id")
+    @JoinColumn(name = "vehicle_types_id")
     private VehicleTypeEntity vehicleType;
 
     @ManyToMany
