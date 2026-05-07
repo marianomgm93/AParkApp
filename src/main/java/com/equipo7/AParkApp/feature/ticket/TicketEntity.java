@@ -5,6 +5,10 @@ import com.equipo7.AParkApp.feature.stay.StayEntity;
 import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tickets")
@@ -30,4 +34,13 @@ public class TicketEntity {
     @OneToOne
     @JoinColumn(name = "parking_spot_id")
     private ParkingSpotEntity parkingSpot;
+
+    private BigDecimal amount;
+
+    @CreationTimestamp
+    @Column(name = "creation_date")
+    private LocalDateTime timeStamp;
+
+    private boolean status;
+    private String note;
 }

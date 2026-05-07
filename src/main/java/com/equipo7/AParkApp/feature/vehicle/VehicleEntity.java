@@ -11,6 +11,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "vehicles")
@@ -25,13 +26,9 @@ public class VehicleEntity {
     @ManyToOne
     @JoinColumn(name = "vehicle_types_id")
     private VehicleTypeEntity vehicleType;
-
-    @ManyToMany
-    @JoinTable(
-        name = "diver_vehicle",
-        joinColumns = @JoinColumn(name = "vehicle_id"),
-        inverseJoinColumns = @JoinColumn(name = "driver_id")
-    )
-    private List<DriverEntity> drivers;
+    private String brand;
+    private String model;
+    private String color;
+    private String note;
 
 }

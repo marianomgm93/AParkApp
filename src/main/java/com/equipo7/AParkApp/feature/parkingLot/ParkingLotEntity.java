@@ -1,8 +1,11 @@
 package com.equipo7.AParkApp.feature.parkingLot;
 
-import com.equipo7.AParkApp.feature.user.owner.OwnerEntity;
+import com.equipo7.AParkApp.feature.adress.AdressEntity;
+import com.equipo7.AParkApp.feature.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,13 +22,15 @@ public class ParkingLotEntity {
 
     private String name;
 
-    @Column(unique = true)
-    private String address;
+
+    @OneToOne
+    @JoinColumn(name = "address_id")
+    private AdressEntity address;
 
     @Column(name = "total_capacity")
     private int capacity;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    private OwnerEntity owner;
+    private UserEntity owner;
 }
