@@ -1,6 +1,7 @@
 package com.equipo7.AParkApp.feature.billing;
 
-import com.equipo7.AParkApp.feature.user.customer.CustomerEntity;
+import com.equipo7.AParkApp.feature.adress.AdressEntity;
+import com.equipo7.AParkApp.feature.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,11 +19,13 @@ public class BillingDataEntity {
 
     @OneToOne
     @JoinColumn(name = "customer_id")
-    private CustomerEntity customer;
+    private UserEntity customer;
 
     @Column(nullable = false,unique = true)
     private String cuit;
     @Column(name = "business_name")
     private String businessName;
-    private String address;
+    @OneToOne
+    @JoinColumn(name = "address_id")
+    private AdressEntity address;
 }

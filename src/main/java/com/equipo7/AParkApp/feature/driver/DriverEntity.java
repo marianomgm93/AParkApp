@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.feature.driver;
 
+import com.equipo7.AParkApp.feature.user.UserEntity;
 import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,4 +27,11 @@ public class DriverEntity {
 
     private String phone;
 
+    @ManyToMany
+    @JoinTable(
+            name = "drivers_x_vehicles",
+            joinColumns = @JoinColumn(name = "driver_id"),
+            inverseJoinColumns = @JoinColumn(name = "vehicle_id")
+    )
+    private List<VehicleEntity> vehicles;
 }
