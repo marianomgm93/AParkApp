@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.feature.reservation;
 
+import com.equipo7.AParkApp.feature.offer.OfferEntity;
 import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
 import com.equipo7.AParkApp.feature.ticket.TicketEntity;
 import com.equipo7.AParkApp.feature.user.UserEntity;
@@ -38,10 +39,6 @@ public class ReservationEntity {
     @ManyToOne
     @JoinColumn(name = "offer_id")
     private OfferEntity offer;
-
-    @OneToOne
-    @JoinColumn(name = "tickets")
-    private TicketEntity ticket;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

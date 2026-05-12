@@ -28,7 +28,6 @@ public class TicketEntity {
     @JoinColumn(name = "reservation_id", nullable = false, unique = true)
     private ReservationEntity reservation;
 
-
     @OneToOne
     @JoinColumn(name = "parking_spot_id")
     private ParkingSpotEntity parkingSpot;

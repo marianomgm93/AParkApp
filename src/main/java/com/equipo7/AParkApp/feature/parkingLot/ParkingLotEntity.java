@@ -30,6 +30,7 @@ public class ParkingLotEntity {
     @Column(name = "total_capacity")
     private int capacity;
 
+    ///TODO VALIDAR PARA SOLO USUARIOS CON ROL DE OWNER
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private UserEntity owner;
