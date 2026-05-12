@@ -1,11 +1,12 @@
 package com.equipo7.AParkApp.feature.reservation;
 
 import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
+import com.equipo7.AParkApp.feature.ticket.TicketEntity;
+import com.equipo7.AParkApp.feature.user.UserEntity;
 import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -20,9 +21,9 @@ public class ReservationEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private LocalDate startTime;
+    private LocalDateTime startTime;
 
-    private LocalDate endTime;
+    private LocalDateTime endTime;
 
     private String status;
 
@@ -34,4 +35,15 @@ public class ReservationEntity {
     @JoinColumn(name = "vehicle_id")
     private VehicleEntity vehicle;
 
+    @ManyToOne
+    @JoinColumn(name = "offer_id")
+    private OfferEntity offer;
+
+    @OneToOne
+    @JoinColumn(name = "tickets")
+    private TicketEntity ticket;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 }
