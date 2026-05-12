@@ -1,11 +1,11 @@
 package com.equipo7.AParkApp.feature.price;
 
-import com.equipo7.AParkApp.feature.stay.StayTypeEntity;
 import com.equipo7.AParkApp.feature.vehicle.VehicleTypeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,8 +17,8 @@ import java.util.List;
 @Table(name = "prices")
 public class PriceEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "price")
     private double price;
@@ -27,7 +27,5 @@ public class PriceEntity {
     @JoinColumn(name = "vehicle_type_id")
     private VehicleTypeEntity vehicleTypes;
 
-    @ManyToOne
-    @JoinColumn(name = "stay_type_id")
-    private StayTypeEntity stayTypes;
+
 }

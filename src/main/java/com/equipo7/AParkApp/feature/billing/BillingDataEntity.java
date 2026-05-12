@@ -1,9 +1,11 @@
 package com.equipo7.AParkApp.feature.billing;
 
-import com.equipo7.AParkApp.feature.adress.AdressEntity;
+import com.equipo7.AParkApp.feature.address.AddressEntity;
 import com.equipo7.AParkApp.feature.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "billing_data")
@@ -14,8 +16,8 @@ import lombok.*;
 @NoArgsConstructor
 public class BillingDataEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @OneToOne
     @JoinColumn(name = "customer_id")
@@ -27,5 +29,5 @@ public class BillingDataEntity {
     private String businessName;
     @OneToOne
     @JoinColumn(name = "address_id")
-    private AdressEntity address;
+    private AddressEntity address;
 }
