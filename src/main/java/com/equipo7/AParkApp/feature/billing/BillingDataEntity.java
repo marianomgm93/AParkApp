@@ -18,8 +18,8 @@ public class BillingDataEntity {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "customer_id")
-    private UserEntity customer;
+    @JoinColumn(name = "client_id")
+    private UserEntity client;
 
     @Column(nullable = false,unique = true)
     private String cuit;

@@ -1,6 +1,7 @@
 package com.equipo7.AParkApp.feature.vehicle;
 
 import com.equipo7.AParkApp.feature.driver.DriverEntity;
+import com.equipo7.AParkApp.feature.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,10 @@ public class VehicleEntity {
     @ManyToOne
     @JoinColumn(name = "vehicle_types_id")
     private VehicleTypeEntity vehicleType;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
     private String brand;
     private String model;
     private String color;
