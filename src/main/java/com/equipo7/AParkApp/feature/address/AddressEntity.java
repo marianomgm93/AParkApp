@@ -1,4 +1,4 @@
-package com.equipo7.AParkApp.feature.adress;
+package com.equipo7.AParkApp.feature.address;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @ToString
 @Builder
 @Table(name = "adresses")
-public class AdressEntity {
+public class AddressEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

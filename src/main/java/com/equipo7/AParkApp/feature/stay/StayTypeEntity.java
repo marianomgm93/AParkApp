@@ -3,7 +3,7 @@ package com.equipo7.AParkApp.feature.stay;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "stay_types")
@@ -14,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 public class StayTypeEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String name;

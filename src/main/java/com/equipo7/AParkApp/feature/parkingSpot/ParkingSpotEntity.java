@@ -5,6 +5,8 @@ import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @ToString
@@ -15,8 +17,8 @@ import lombok.*;
 @Table(name = "parking_spots")
 public class ParkingSpotEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String name;
 
