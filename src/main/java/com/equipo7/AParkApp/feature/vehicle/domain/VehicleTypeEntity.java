@@ -1,4 +1,4 @@
-package com.equipo7.AParkApp.feature.vehicle;
+package com.equipo7.AParkApp.feature.vehicle.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

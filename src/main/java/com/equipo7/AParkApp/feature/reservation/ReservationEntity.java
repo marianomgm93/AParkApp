@@ -2,9 +2,8 @@ package com.equipo7.AParkApp.feature.reservation;
 
 import com.equipo7.AParkApp.feature.offer.OfferEntity;
 import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
-import com.equipo7.AParkApp.feature.ticket.TicketEntity;
 import com.equipo7.AParkApp.feature.user.UserEntity;
-import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
+import com.equipo7.AParkApp.feature.vehicle.domain.VehicleEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
