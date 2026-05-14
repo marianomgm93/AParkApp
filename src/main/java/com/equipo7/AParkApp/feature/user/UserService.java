@@ -7,7 +7,6 @@ import com.equipo7.AParkApp.feature.user.domain.mapper.UserResponseMapper;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 public class UserService implements IUserService {
@@ -23,23 +22,23 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponse getUserById(UUID userId) {
+    public UserResponse getUserById(UUID userId) throws  EntityNotFoundException{
         return ur.findById(userId).map(responseMapper::toDTO).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
-    public UserResponse getUserByEmail(String userEmail) {
+    public UserResponse getUserByEmail(String userEmail) throws EntityNotFoundException{
         return ur.findByEmail(userEmail)
                 .map(responseMapper::toDTO)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
-    public UserResponse update(UserRequest userRequest) {
-        return ur.findByEmail(userRequest.email())
-                .map(userEntity -> userEntity.setName(userRequest.getName()))
-                .map(responseMapper::toDTO)
-                .orElseThrow(EntityNotFoundException::new);
+    public UserResponse update(UserRequest userRequest){
+        UserEntity user= responseMapper.toEntity(getUserByEmail(userRequest.email()));
+        user.setName(userRequest.name());
+        UserEntity saved=ur.save(user);
+        return responseMapper.toDTO(saved);
     }
 
     @Override
@@ -51,6 +50,6 @@ public class UserService implements IUserService {
 
     @Override
     public void delete(UUID userId) {
-
+        responseMapper.toEntity(getUserById(userId)).setActive(false);
     }
 }
