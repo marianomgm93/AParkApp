@@ -1,4 +1,4 @@
-package com.equipo7.AParkApp.feature.parkingLot;
+package com.equipo7.AParkApp.feature.parkingLot.Domain;
 
 import com.equipo7.AParkApp.feature.address.AddressEntity;
 import com.equipo7.AParkApp.feature.user.UserEntity;
@@ -21,6 +21,8 @@ public class ParkingLotEntity {
     private UUID id;
 
     private String name;
+
+    private boolean active;
 
 
     @OneToOne

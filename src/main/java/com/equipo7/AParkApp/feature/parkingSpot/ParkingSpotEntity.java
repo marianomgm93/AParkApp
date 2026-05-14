@@ -1,7 +1,7 @@
 package com.equipo7.AParkApp.feature.parkingSpot;
 
 
-import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
+import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
