@@ -1,4 +1,4 @@
-package equipo7.AParkApp;
+package com.equipo7.AParkApp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
