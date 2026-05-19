@@ -2,30 +2,105 @@ package com.equipo7.AParkApp.feature.parkingLot;
 
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotRequest;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotResponse;
+import com.equipo7.AParkApp.feature.parkingLot.Domain.Mappers.ParkingLotRequestMapper;
+import com.equipo7.AParkApp.feature.parkingLot.Domain.Mappers.ParkingLotResponseMapper;
+import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.UUID;
 
 public class ParkingLotService implements IParkingLotService {
 
+    @Autowired
+    private IParkingLotRepository repository;
+
+    @Autowired
+    private ParkingLotRequestMapper requestMapper;
+
+    @Autowired
+    private ParkingLotResponseMapper responseMapper;
+
+
+    @Override
+    public ParkingLotResponse create(ParkingLotRequest request) {
+
+        ParkingLotEntity parkingLotEntity = requestMapper.toEntity(request);
+        parkingLotEntity.setActive(true);
+
+        ParkingLotEntity newParkingLotEntity = repository.save(parkingLotEntity);
+
+
+        return responseMapper.toDTO(newParkingLotEntity);
+    }
 
     @Override
     public List<ParkingLotResponse> getAllParkingLots() {
-        return List.of();
+
+        List <ParkingLotEntity> allParkingLots = repository.findAll();
+
+        return allParkingLots.stream().map(responseMapper::toDTO).toList();
     }
 
     @Override
-    public ParkingLotResponse getParkingLotById(UUID Id) {
-        return null;
+    public ParkingLotResponse getParkingLotById(UUID id) {
+
+        ParkingLotEntity found= repository.findById(id)
+                .orElseThrow( ()-> new EntityNotFoundException("Parking Lot Not Found"));
+
+
+        return responseMapper.toDTO(found);
     }
 
     @Override
-    public ParkingLotResponse save(ParkingLotRequest parkingLotRequest) {
-        return null;
+    public ParkingLotResponse update(UUID id, ParkingLotRequest request) {
+
+        ParkingLotEntity entity =
+                repository.findByIdAndActiveTrue(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Parking Lot Not Found"));
+
+        entity.setName(request.getName());
+        entity.setAddress(request.getAddress());
+        entity.setCapacity(request.getCapacity());
+        entity.setOwner(request.getOwner());
+
+        ParkingLotEntity updatedParkingLotEntity = repository.save(entity);
+
+
+
+        return responseMapper.toDTO(updatedParkingLotEntity);
     }
+
 
     @Override
     public void delete(UUID id) {
 
+        ParkingLotEntity entity= repository.findByIdAndActiveTrue(id)
+                .orElseThrow(() -> new EntityNotFoundException("Parking Lot Not Found"));
+
+        entity.setActive(false);
+
+        repository.save(entity);
+
+    }
+
+    @Override
+    public void restore(UUID id) {
+
+        ParkingLotEntity entity= repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Parking Lot Not Found"));
+
+        entity.setActive(false);
+        repository.save(entity);
+
+    }
+
+    @Override
+    public List<ParkingLotResponse> getAllActiveParkingLots() {
+
+        List <ParkingLotEntity> ActiveParkingLots = repository.findByActiveTrue();
+
+        return ActiveParkingLots.stream().map(responseMapper::toDTO).toList();
     }
 }

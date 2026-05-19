@@ -1,4 +1,4 @@
-package com.equipo7.AParkApp.feature.parkingSpot;
+package com.equipo7.AParkApp.feature.parkingSpot.Domain;
 
 
 import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
@@ -15,6 +15,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "parking_spots")
+@NoArgsConstructor
 public class ParkingSpotEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,11 +23,14 @@ public class ParkingSpotEntity {
 
     private String name;
 
+    private boolean active;
+
     @Column(name = "status")
     private boolean status;
-
+9
     @Column(name = "spot_number", unique = true)
     private int number;
+
 
     @ManyToOne
     @JoinColumn(name = "parking_lot_id")

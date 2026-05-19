@@ -19,15 +19,10 @@ import lombok.Setter;
 @Setter
 public class ParkingLotResponse {
 
-    @NotBlank
     private String name;
-    @NotBlank
     private AddressEntity address;
-    @Positive
     private int capacity;
-    @NotBlank
     private UserEntity owner;
-
     private boolean active;
 
 }

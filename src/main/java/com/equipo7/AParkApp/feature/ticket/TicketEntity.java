@@ -1,8 +1,7 @@
 package com.equipo7.AParkApp.feature.ticket;
 
-import com.equipo7.AParkApp.feature.parkingSpot.ParkingSpotEntity;
+import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
 import com.equipo7.AParkApp.feature.reservation.ReservationEntity;
-import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

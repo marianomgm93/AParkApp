@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,11 +23,11 @@ public class ParkingLotRequest {
 
     @NotBlank
     private String name;
-    @NotBlank
+    @NotNull
     private AddressEntity address;
     @Positive
     private int capacity;
-    @NotBlank
+    @NotNull
     private UserEntity owner;
 
 

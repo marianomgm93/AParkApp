@@ -9,10 +9,11 @@ import java.util.UUID;
 
 public interface IParkingLotService {
 
+    ParkingLotResponse create(ParkingLotRequest request);
     List <ParkingLotResponse> getAllParkingLots();
-    ParkingLotResponse getParkingLotById(UUID Id);
-    ParkingLotResponse save(ParkingLotRequest parkingLotRequest);
-    void delete (UUID id);
-
-
+    ParkingLotResponse getParkingLotById(UUID id);
+    ParkingLotResponse update(UUID id, ParkingLotRequest request);
+    void delete(UUID id);
+    void restore(UUID id);
+    List <ParkingLotResponse> getAllActiveParkingLots();
 }

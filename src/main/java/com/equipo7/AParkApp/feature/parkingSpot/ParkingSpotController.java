@@ -1,0 +1,83 @@
+package com.equipo7.AParkApp.feature.parkingSpot;
+
+import com.equipo7.AParkApp.feature.parkingSpot.Domain.Dto.ParkingSpotRequest;
+import com.equipo7.AParkApp.feature.parkingSpot.Domain.Dto.ParkingSpotResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping ("/parkingspots")
+public class ParkingSpotController {
+
+    @Autowired
+    private IParkingSpotService service;
+
+
+    @PostMapping
+    public ResponseEntity <ParkingSpotResponse> create(@RequestBody ParkingSpotRequest request){
+
+        ParkingSpotResponse response=service.createParkingSpot(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity <List<ParkingSpotResponse>> findAll()
+    {
+
+    return ResponseEntity.ok(service.getAllParkingSpots());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity <ParkingSpotResponse> findById(@PathVariable UUID id)
+    {
+        return ResponseEntity.ok(service.getParkingSpotById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ParkingSpotResponse> update(@PathVariable UUID id, @RequestBody ParkingSpotRequest request)
+        {
+
+       return  ResponseEntity.ok(service.updateParkingSpot(id,request));
+        }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void>delete(@PathVariable UUID id)
+    {
+        service.deleteParkingSpotById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/restore")
+    public ResponseEntity<Void> restore(@PathVariable UUID id)
+    {
+        service.restoreParkingSpot(id);
+        return  ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{id}/occupy")
+    public  ResponseEntity<Void> occupy(@PathVariable UUID id)
+    {
+    service.occupy(id);
+
+        return  ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/{id}/release")
+    public ResponseEntity<Void> release(@PathVariable UUID id)
+    {
+        service.release(id);
+        return  ResponseEntity.ok().build();
+    }
+
+
+
+
+
+}
