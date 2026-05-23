@@ -8,9 +8,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface VehicleRepository extends JpaRepository<VehicleEntity, Long> {
-    boolean existsByExternalId(UUID externalId);
-    void deleteByExternalId(UUID externalId);
-
-    Optional<VehicleEntity> findById(UUID vehicleId);
+public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
 }

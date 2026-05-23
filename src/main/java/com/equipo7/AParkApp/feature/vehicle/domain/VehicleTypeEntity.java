@@ -11,6 +11,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "vehicle_types")
@@ -21,7 +22,4 @@ public class VehicleTypeEntity {
 
     @Column(nullable = false, unique = true)
     private String name;
-
-    @OneToMany(mappedBy = "vehicleType")
-    private List<VehicleEntity> vehicles;
 }
