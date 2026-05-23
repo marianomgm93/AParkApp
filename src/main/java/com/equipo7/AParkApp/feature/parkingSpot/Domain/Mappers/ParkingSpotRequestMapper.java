@@ -2,14 +2,17 @@ package com.equipo7.AParkApp.feature.parkingSpot.Domain.Mappers;
 
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Dto.ParkingSpotRequest;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
-public class ParkingSpotRequestMapper extends IMapper<ParkingSpotEntity,ParkingSpotRequest> {
+@Component
+@RequiredArgsConstructor
+public class ParkingSpotRequestMapper  {
 
-    @Autowired
-    private ModelMapper mapper;
 
-    @Override
+    private final ModelMapper mapper;
+
     public ParkingSpotEntity toEntity(ParkingSpotRequest dto) {
 
 
@@ -17,7 +20,6 @@ public class ParkingSpotRequestMapper extends IMapper<ParkingSpotEntity,ParkingS
     }
 
 
-    @Override
     public ParkingSpotRequest toDto(ParkingSpotEntity entity) {
 
 

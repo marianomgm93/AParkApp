@@ -27,7 +27,7 @@ public class ParkingSpotEntity {
 
     @Column(name = "status")
     private boolean status;
-9
+
     @Column(name = "spot_number", unique = true)
     private int number;
 
