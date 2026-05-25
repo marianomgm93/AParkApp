@@ -1,11 +1,9 @@
-package com.equipo7.AParkApp.feature.vehicle;
+package com.equipo7.AParkApp.feature.vehicle.domain;
 
-import com.equipo7.AParkApp.feature.driver.DriverEntity;
 import com.equipo7.AParkApp.feature.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
