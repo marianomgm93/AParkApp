@@ -20,12 +20,12 @@ public class UserController {
     ResponseEntity<List<UserResponse>> findAll(){
         return ResponseEntity.ok(userService.getAllUsers());
     }
-    @GetMapping("{/id}")
+    @GetMapping("/{id}")
     ResponseEntity<UserResponse> findById(@PathVariable UUID id){
         return ResponseEntity.ok(userService.getUserById(id));
     }
-    @GetMapping("{/email}")
-    ResponseEntity<UserResponse> findById(@PathVariable String email){
+    @GetMapping("/{email}")
+    ResponseEntity<UserResponse> findById(@RequestParam String email){
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
     @PostMapping
@@ -36,7 +36,7 @@ public class UserController {
     ResponseEntity<UserResponse> update(@RequestBody UserRequest user){
         return ResponseEntity.ok(userService.update(user));
     }
-    @DeleteMapping("{/id}")
+    @DeleteMapping("/{id}")
     ResponseEntity<Void> delete(@PathVariable UUID id){
         userService.delete(id);
         return ResponseEntity.noContent().build();

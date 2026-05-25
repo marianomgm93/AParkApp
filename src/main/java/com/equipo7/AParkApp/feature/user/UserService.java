@@ -5,14 +5,18 @@ import com.equipo7.AParkApp.feature.user.domain.dto.UserResponse;
 import com.equipo7.AParkApp.feature.user.domain.mapper.UserRequestMapper;
 import com.equipo7.AParkApp.feature.user.domain.mapper.UserResponseMapper;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
+@RequiredArgsConstructor
 public class UserService implements IUserService {
-    private UserRepository ur;
-    private UserRequestMapper requestMapper;
-    private UserResponseMapper responseMapper;
+    private final UserRepository ur;
+    private final UserRequestMapper requestMapper;
+    private final UserResponseMapper responseMapper;
 
     @Override
     public List<UserResponse> getAllUsers() {
@@ -35,8 +39,8 @@ public class UserService implements IUserService {
 
     @Override
     public UserResponse update(UserRequest userRequest){
-        UserEntity user= responseMapper.toEntity(getUserByEmail(userRequest.email()));
-        user.setName(userRequest.name());
+        UserEntity user= responseMapper.toEntity(getUserByEmail(userRequest.getEmail()));
+        user.setName(userRequest.getName());
         UserEntity saved=ur.save(user);
         return responseMapper.toDTO(saved);
     }

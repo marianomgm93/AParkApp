@@ -4,7 +4,15 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Builder
-public record UserRequest(@NotBlank(message = "username cannot be void") String name,@NotBlank @Email(message = "intro a valid email") String email) {
+public class UserRequest {
+    @NotBlank(message = "username cannot be void")
+    String name;
+    @NotBlank
+    @Email(message = "intro a valid email")
+    String email;
 }
