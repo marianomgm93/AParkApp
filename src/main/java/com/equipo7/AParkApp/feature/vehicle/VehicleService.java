@@ -1,12 +1,12 @@
 package com.equipo7.AParkApp.feature.vehicle;
 
-import com.equipo7.AParkApp.common.model.IMapper;
-import com.equipo7.AParkApp.feature.user.UserEntity;
-import com.equipo7.AParkApp.feature.vehicle.domain.VehicleEntity;
 import com.equipo7.AParkApp.feature.vehicle.domain.dto.NewVehicleDTO;
 import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleDTO;
+import com.equipo7.AParkApp.feature.vehicle.domain.mappers.NewVehicleMapper;
+import com.equipo7.AParkApp.feature.vehicle.domain.mappers.VehicleMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,12 +14,14 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@RequiredArgsConstructor
+
 public class VehicleService implements IVehicleService{
 
     private final VehicleRepository vehicleRepository;
 
-    private final IMapper<VehicleEntity, NewVehicleDTO> newVehicleMapper;
-    private final IMapper<VehicleEntity, VehicleDTO> vehicleMapper;
+    private final NewVehicleMapper newVehicleMapper;
+    private final VehicleMapper vehicleMapper;
 
     @Override
     public VehicleDTO save(NewVehicleDTO newVehicleDTO) {

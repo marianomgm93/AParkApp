@@ -1,11 +1,10 @@
 package com.equipo7.AParkApp.feature.vehicle;
 
-import com.equipo7.AParkApp.feature.vehicle.domain.VehicleEntity;
 import com.equipo7.AParkApp.feature.vehicle.domain.dto.NewVehicleDTO;
 import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleDTO;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,12 +28,12 @@ public class VehicleController {
     }
 
     @PostMapping
-    ResponseEntity<VehicleDTO> create(@RequestBody NewVehicleDTO newVehicleDTO){
+    ResponseEntity<VehicleDTO> create(@Valid @RequestBody NewVehicleDTO newVehicleDTO){
         return new ResponseEntity<>(vehicleService.save(newVehicleDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{vehicleId}")
-    ResponseEntity<VehicleDTO> updade(@PathVariable UUID vehicleId, @RequestBody NewVehicleDTO newVehicleDTO){
+    ResponseEntity<VehicleDTO> updade(@PathVariable UUID vehicleId, @Valid @RequestBody NewVehicleDTO newVehicleDTO){
         return ResponseEntity.ok(vehicleService.update(vehicleId,newVehicleDTO));
     }
 

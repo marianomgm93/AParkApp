@@ -1,7 +1,7 @@
 package com.equipo7.AParkApp.feature.price;
 
 import com.equipo7.AParkApp.feature.stay.StayTypeEntity;
-import com.equipo7.AParkApp.feature.vehicle.domain.VehicleTypeEntity;
+import com.equipo7.AParkApp.feature.vehicle.Type.VehicleTypeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
