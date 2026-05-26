@@ -7,7 +7,10 @@ import com.equipo7.AParkApp.feature.parkingSpot.Domain.Dto.ParkingSpotResponse;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Mappers.ParkingSpotRequestMapper;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Mappers.ParkingSpotResponseMapper;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
+import com.equipo7.AParkApp.feature.parkingSpot.Domain.Status;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -15,19 +18,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Service
 public class ParkingSpotService implements IParkingSpotService {
 
-    @Autowired
-    private IParkingSpotRepository repository;
-
-    @Autowired
-    private IParkingLotRepository parkingLotRepository;
-
-    @Autowired
-    private ParkingSpotRequestMapper requestMapper;
-    @Autowired
-    private ParkingSpotResponseMapper responseMapper;
+    private final IParkingSpotRepository repository;
+    private final IParkingLotRepository parkingLotRepository;
+    private final ParkingSpotRequestMapper requestMapper;
+    private final ParkingSpotResponseMapper responseMapper;
 
 
     @Override
@@ -42,7 +40,8 @@ public class ParkingSpotService implements IParkingSpotService {
         ParkingSpotEntity entity=requestMapper.toEntity(request);
 
         entity.setParkingLot(parkingLot);
-        entity.setStatus(true);
+        entity.setStatus(Status.FREE);
+        entity.setActive(true);
 
         ParkingSpotEntity savedEntity=repository.save(entity);
 
@@ -76,7 +75,6 @@ public class ParkingSpotService implements IParkingSpotService {
                         .orElseThrow(() -> new EntityNotFoundException("Cochera no encontrada"));
 
         entity.setNumber(request.getNumber());
-        entity.setStatus(request.getStatus());
         entity.setParkingLot(parkingLot);
         entity.setName(request.getName());
         ParkingSpotEntity updated = repository.save(entity);
@@ -90,6 +88,7 @@ public class ParkingSpotService implements IParkingSpotService {
                 .orElseThrow(() -> new EntityNotFoundException("Lugar no encontrado"));
 
         entity.setActive(false);
+        entity.setStatus(Status.FREE);
         repository.save(entity);
     }
 
@@ -100,6 +99,8 @@ public class ParkingSpotService implements IParkingSpotService {
                 .orElseThrow(() -> new EntityNotFoundException("Lugar no encontrado"));
 
         entity.setActive(true);
+        entity.setStatus(Status.FREE);
+
         repository.save(entity);
     }
 
@@ -108,7 +109,8 @@ public class ParkingSpotService implements IParkingSpotService {
         ParkingSpotEntity entity=repository.findByIdAndActiveTrue(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lugar no encontrado"));
 
-        entity.setStatus(true);
+        entity.setActive(true);
+        entity.setStatus(Status.OCCUPIED);
         repository.save(entity);
 
     }
@@ -118,7 +120,8 @@ public class ParkingSpotService implements IParkingSpotService {
         ParkingSpotEntity entity=repository.findByIdAndActiveTrue(id).
                 orElseThrow(() -> new EntityNotFoundException("Lugar no encontrado"));
 
-        entity.setStatus(false);
+        entity.setActive(false);
+        entity.setStatus(Status.FREE);
         repository.save(entity);
     }
 

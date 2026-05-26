@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.feature.parkingSpot.Domain.Dto;
 
+import com.equipo7.AParkApp.feature.parkingSpot.Domain.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -23,9 +24,6 @@ public class ParkingSpotRequest {
     private UUID parkingLotId;
 
     @NotNull
-    private Boolean status;
-    @NotNull
-
     private boolean active;
 
     @Positive

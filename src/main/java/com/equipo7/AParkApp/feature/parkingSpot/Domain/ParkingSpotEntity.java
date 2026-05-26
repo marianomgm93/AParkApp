@@ -23,13 +23,15 @@ public class ParkingSpotEntity {
 
     private String name;
 
+
     private boolean active;
 
     @Column(name = "status")
-    private boolean status;
+    private Status status;
 
     @Column(name = "spot_number", unique = true)
     private int number;
+
 
 
     @ManyToOne

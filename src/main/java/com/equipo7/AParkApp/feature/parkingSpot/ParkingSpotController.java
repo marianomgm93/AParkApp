@@ -2,6 +2,8 @@ package com.equipo7.AParkApp.feature.parkingSpot;
 
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Dto.ParkingSpotRequest;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Dto.ParkingSpotResponse;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -13,14 +15,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping ("/parkingspots")
+@RequiredArgsConstructor
 public class ParkingSpotController {
 
-    @Autowired
-    private IParkingSpotService service;
+    private final IParkingSpotService service;
 
 
     @PostMapping
-    public ResponseEntity <ParkingSpotResponse> create(@RequestBody ParkingSpotRequest request){
+    public ResponseEntity <ParkingSpotResponse> create( @Valid @RequestBody ParkingSpotRequest request){
 
         ParkingSpotResponse response=service.createParkingSpot(request);
 
@@ -41,7 +43,7 @@ public class ParkingSpotController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ParkingSpotResponse> update(@PathVariable UUID id, @RequestBody ParkingSpotRequest request)
+    public ResponseEntity<ParkingSpotResponse> update(@PathVariable UUID id,@Valid @RequestBody ParkingSpotRequest request)
         {
 
        return  ResponseEntity.ok(service.updateParkingSpot(id,request));

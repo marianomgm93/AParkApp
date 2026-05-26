@@ -3,6 +3,7 @@ package com.equipo7.AParkApp.feature.parkingLot;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotRequest;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotResponse;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,26 +14,25 @@ import java.util.UUID;
 
 @RestController
 @AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/ParkingLot")
 public class ParkingLotController {
 
-    @Autowired
-   private IParkingLotService parkingLotService;
+    private final IParkingLotService parkingLotService;
 
 
     @PostMapping
-  public ResponseEntity<ParkingLotResponse> create(@RequestBody ParkingLotRequest request) {
+    public ResponseEntity<ParkingLotResponse> create(@RequestBody ParkingLotRequest request) {
 
         ParkingLotResponse parkingLotResponse = parkingLotService.create(request);
 
 
-        return  ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(parkingLotResponse);
     }
 
     @GetMapping
     public ResponseEntity<List<ParkingLotResponse>> getAll() {
-
 
 
         return ResponseEntity.ok(parkingLotService.getAllParkingLots());
@@ -47,7 +47,7 @@ public class ParkingLotController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ParkingLotResponse> update(@PathVariable UUID id,@RequestBody ParkingLotRequest request) {
+    public ResponseEntity<ParkingLotResponse> update(@PathVariable UUID id, @RequestBody ParkingLotRequest request) {
 
 
         return ResponseEntity.ok(parkingLotService.update(id, request));
@@ -57,7 +57,7 @@ public class ParkingLotController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
 
-    parkingLotService.delete(id);
+        parkingLotService.delete(id);
 
         return ResponseEntity.noContent().build();
     }
@@ -66,11 +66,8 @@ public class ParkingLotController {
     public ResponseEntity<Void> restore(@PathVariable UUID id) {
         parkingLotService.restore(id);
 
-        return  ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
-
-
-
 
 
 }

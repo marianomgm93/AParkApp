@@ -6,21 +6,21 @@ import com.equipo7.AParkApp.feature.parkingLot.Domain.Mappers.ParkingLotRequestM
 import com.equipo7.AParkApp.feature.parkingLot.Domain.Mappers.ParkingLotResponseMapper;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
+@RequiredArgsConstructor
 public class ParkingLotService implements IParkingLotService {
 
-    @Autowired
-    private IParkingLotRepository repository;
+    private final IParkingLotRepository repository;
 
-    @Autowired
-    private ParkingLotRequestMapper requestMapper;
+    private final ParkingLotRequestMapper requestMapper;
 
-    @Autowired
-    private ParkingLotResponseMapper responseMapper;
+    private final ParkingLotResponseMapper responseMapper;
 
 
     @Override

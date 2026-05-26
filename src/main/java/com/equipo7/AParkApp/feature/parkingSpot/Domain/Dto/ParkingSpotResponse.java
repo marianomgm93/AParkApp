@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.feature.parkingSpot.Domain.Dto;
 
+import com.equipo7.AParkApp.feature.parkingSpot.Domain.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,9 +18,9 @@ public class ParkingSpotResponse {
 
     private String name;
 
-    private Boolean status;
-
     private Boolean active;
+
+    private Status status;
 
     private int number;
 }
