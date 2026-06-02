@@ -41,6 +41,7 @@ public class UserService implements IUserService {
                 .enabled(true)
                 .username(newAccountRequest.email())
                 .password(passwordEncoder.encode(newAccountRequest.password()))
+                .usuario(saved)
                 .build();
 
         credentialsRepository.save(newCredentials);
