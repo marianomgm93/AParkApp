@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 @RequiredArgsConstructor
 
 public class VehicleTypeService implements IVehicleTypeService{

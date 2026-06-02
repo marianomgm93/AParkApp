@@ -4,6 +4,7 @@ import com.equipo7.AParkApp.feature.vehicle.domain.dto.NewVehicleDTO;
 import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/vehicles")
 public class VehicleController {
     private final IVehicleService vehicleService;
