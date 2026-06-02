@@ -1,7 +1,7 @@
 package com.equipo7.AParkApp.feature.reservation;
 
 import com.equipo7.AParkApp.feature.offer.OfferEntity;
-import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
+import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
 import com.equipo7.AParkApp.feature.user.UserEntity;
 import com.equipo7.AParkApp.feature.vehicle.domain.VehicleEntity;
 import jakarta.persistence.*;

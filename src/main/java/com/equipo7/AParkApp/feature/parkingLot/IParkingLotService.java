@@ -7,6 +7,7 @@ import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
 import java.util.List;
 import java.util.UUID;
 
+
 public interface IParkingLotService {
 
     ParkingLotResponse create(ParkingLotRequest request);

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@AllArgsConstructor
 @RequiredArgsConstructor
 @RequestMapping("/ParkingLot")
 public class ParkingLotController {
@@ -39,7 +38,7 @@ public class ParkingLotController {
     }
 
 
-    @GetMapping
+    @GetMapping("/active")
     public ResponseEntity<List<ParkingLotResponse>> getAllActiveTrue() {
 
 
