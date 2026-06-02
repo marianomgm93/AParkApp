@@ -2,7 +2,9 @@ package com.equipo7.AParkApp.feature.user;
 
 import com.equipo7.AParkApp.feature.user.domain.dto.UserRequest;
 import com.equipo7.AParkApp.feature.user.domain.dto.UserResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +13,10 @@ import java.util.List;
 import java.util.UUID;
 
 @RequestMapping("/user")
-@AllArgsConstructor
 @RestController
+@RequiredArgsConstructor
 public class UserController {
-    private final IUserService userService;
+    private final UserService userService;
 
     @GetMapping
     ResponseEntity<List<UserResponse>> findAll(){
@@ -29,11 +31,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
     @PostMapping
-    ResponseEntity<UserResponse> create(@RequestBody UserRequest user){
+    ResponseEntity<UserResponse> create(@Valid @RequestBody UserRequest user){
         return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
     }
     @PutMapping
-    ResponseEntity<UserResponse> update(@RequestBody UserRequest user){
+    ResponseEntity<UserResponse> update(@Valid @RequestBody UserRequest user){
         return ResponseEntity.ok(userService.update(user));
     }
     @DeleteMapping("/{id}")
