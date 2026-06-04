@@ -1,13 +1,9 @@
-package com.equipo7.AParkApp.feature.vehicle.Type;
+package com.equipo7.AParkApp.feature.VehicleType;
 
 
-import com.equipo7.AParkApp.feature.vehicle.domain.dto.NewVehicleDTO;
-import com.equipo7.AParkApp.feature.vehicle.domain.dto.NewVehicleTypeDTO;
-import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleTypeDTO;
+import com.equipo7.AParkApp.feature.VehicleType.domain.dto.VehicleTypeDTO;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +13,9 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/vehicle-types")
+@RequestMapping("/vehicle-type")
 public class VehicleTypeController {
-    private final IVehicleTypeService vehicleTypeService;
+    private final VehicleTypeService vehicleTypeService;
 
     @GetMapping
     ResponseEntity<List<VehicleTypeDTO>> findAll(){
@@ -32,16 +28,16 @@ public class VehicleTypeController {
     }
 
     @PostMapping
-    ResponseEntity<VehicleTypeDTO> create(@Valid @RequestBody NewVehicleTypeDTO newVehicleTypeDTO){
-        return new ResponseEntity<>(vehicleTypeService.save(newVehicleTypeDTO), HttpStatus.CREATED);
+    ResponseEntity<VehicleTypeDTO> create(@Valid @RequestBody VehicleTypeDTO vehicleTypeDTO){
+        return new ResponseEntity<>(vehicleTypeService.save(vehicleTypeDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{vehicleTypeId}")
-    ResponseEntity<VehicleTypeDTO> update(@PathVariable UUID vehicleTypeId, @Valid @RequestBody NewVehicleTypeDTO newVehicleTypeDTO){
-        return ResponseEntity.ok(vehicleTypeService.update(vehicleTypeId,newVehicleTypeDTO));
+    ResponseEntity<VehicleTypeDTO> update(@PathVariable UUID vehicleTypeId, @Valid @RequestBody VehicleTypeDTO vehicleTypeDTO){
+        return ResponseEntity.ok(vehicleTypeService.update(vehicleTypeId, vehicleTypeDTO));
     }
 
-    @DeleteMapping("/vehicleTypeId")
+    @DeleteMapping("/{vehicleTypeId}")
     ResponseEntity<VehicleTypeDTO> delete(@PathVariable UUID vehicleTypeId){
         vehicleTypeService.delete(vehicleTypeId);
         return ResponseEntity.noContent().build();

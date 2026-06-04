@@ -1,11 +1,9 @@
-package com.equipo7.AParkApp.feature.vehicle.Type;
+package com.equipo7.AParkApp.feature.VehicleType;
 
-import com.equipo7.AParkApp.feature.vehicle.domain.dto.NewVehicleTypeDTO;
-import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleTypeDTO;
+import com.equipo7.AParkApp.feature.VehicleType.domain.dto.VehicleTypeDTO;
 import com.equipo7.AParkApp.feature.vehicle.domain.mappers.NewVehicleTypeMapper;
-import com.equipo7.AParkApp.feature.vehicle.domain.mappers.VehicleTypeMapper;
+import com.equipo7.AParkApp.feature.VehicleType.domain.mappers.VehicleTypeMapper;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +20,9 @@ public class VehicleTypeService implements IVehicleTypeService{
     private final VehicleTypeMapper vehicleTypeMapper;
 
     @Override
-    public VehicleTypeDTO save(NewVehicleTypeDTO newVehicleTypeDTO) {
-        System.out.println(newVehicleTypeDTO);
-        VehicleTypeEntity saved = vehicleTypeRepository.save(newVehicleTypeMapper.toEntity(newVehicleTypeDTO));
+    public VehicleTypeDTO save(VehicleTypeDTO vehicleTypeDTO) {
+        System.out.println(vehicleTypeDTO);
+        VehicleTypeEntity saved = vehicleTypeRepository.save(newVehicleTypeMapper.toEntity(vehicleTypeDTO));
         System.out.println(saved);
         return vehicleTypeMapper.toDTO(saved);
     }
@@ -38,11 +36,11 @@ public class VehicleTypeService implements IVehicleTypeService{
     }
 
     @Override
-    public VehicleTypeDTO update(UUID vehicleTypeId, NewVehicleTypeDTO newVehicleTypeDTO) {
+    public VehicleTypeDTO update(UUID vehicleTypeId, VehicleTypeDTO vehicleTypeDTO) {
         VehicleTypeEntity vehicleType = vehicleTypeRepository.findById(vehicleTypeId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        vehicleType.setName(newVehicleTypeDTO.name());
+        vehicleType.setName(vehicleTypeDTO.name());
 
         VehicleTypeEntity saved = vehicleTypeRepository.save(vehicleType);
         return vehicleTypeMapper.toDTO(saved);

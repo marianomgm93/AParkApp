@@ -1,4 +1,4 @@
-package com.equipo7.AParkApp.feature.vehicle.Type;
+package com.equipo7.AParkApp.feature.VehicleType;
 
 import jakarta.persistence.*;
 import lombok.*;

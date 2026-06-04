@@ -1,4 +1,4 @@
-package com.equipo7.AParkApp.feature.vehicle.Type;
+package com.equipo7.AParkApp.feature.VehicleType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

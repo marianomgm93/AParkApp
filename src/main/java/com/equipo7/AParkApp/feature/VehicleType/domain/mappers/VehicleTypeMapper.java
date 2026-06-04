@@ -1,9 +1,8 @@
-package com.equipo7.AParkApp.feature.vehicle.domain.mappers;
+package com.equipo7.AParkApp.feature.VehicleType.domain.mappers;
 
 import com.equipo7.AParkApp.common.model.IMapper;
-import com.equipo7.AParkApp.feature.vehicle.Type.VehicleTypeEntity;
-import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleDTO;
-import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleTypeDTO;
+import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEntity;
+import com.equipo7.AParkApp.feature.VehicleType.domain.dto.VehicleTypeDTO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -17,6 +16,7 @@ public class VehicleTypeMapper implements IMapper<VehicleTypeEntity, VehicleType
     public VehicleTypeEntity toEntity(VehicleTypeDTO vehicleTypeDTO) {
         return mapper.map(vehicleTypeDTO, VehicleTypeEntity.class);
     }
+
 
     @Override
     public VehicleTypeDTO toDTO(VehicleTypeEntity vehicleTypeEntity) {

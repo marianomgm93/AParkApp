@@ -13,10 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-
 @RequiredArgsConstructor
-
-public class VehicleService implements IVehicleService{
+public class VehicleService implements IVehicleService {
 
     private final VehicleRepository vehicleRepository;
 
@@ -45,11 +43,11 @@ public class VehicleService implements IVehicleService{
                 .orElseThrow(EntityNotFoundException::new);
 
 
-        vehicle.setPlate(newVehicleDTO.plate());
-        vehicle.setModel(newVehicleDTO.model());
-        vehicle.setColor(newVehicleDTO.color());
-        vehicle.setNote(newVehicleDTO.note());
-        vehicle.setBrand(newVehicleDTO.brand());
+        vehicle.setPlate(newVehicleDTO.getPlate());
+        vehicle.setModel(newVehicleDTO.getModel());
+        vehicle.setColor(newVehicleDTO.getColor());
+        vehicle.setNote(newVehicleDTO.getNote());
+        vehicle.setBrand(newVehicleDTO.getBrand());
 
 
         VehicleEntity saved = vehicleRepository.save(vehicle);
