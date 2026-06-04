@@ -1,25 +1,25 @@
 package com.equipo7.AParkApp.feature.vehicle;
 
-import com.equipo7.AParkApp.common.model.IMapper;
-import com.equipo7.AParkApp.feature.user.UserEntity;
-import com.equipo7.AParkApp.feature.vehicle.domain.VehicleEntity;
 import com.equipo7.AParkApp.feature.vehicle.domain.dto.NewVehicleDTO;
 import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleDTO;
+import com.equipo7.AParkApp.feature.vehicle.domain.mappers.NewVehicleMapper;
+import com.equipo7.AParkApp.feature.vehicle.domain.mappers.VehicleMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
-public class VehicleService implements IVehicleService{
+@RequiredArgsConstructor
+public class VehicleService implements IVehicleService {
 
     private final VehicleRepository vehicleRepository;
 
-    private final IMapper<VehicleEntity, NewVehicleDTO> newVehicleMapper;
-    private final IMapper<VehicleEntity, VehicleDTO> vehicleMapper;
+    private final NewVehicleMapper newVehicleMapper;
+    private final VehicleMapper vehicleMapper;
 
     @Override
     public VehicleDTO save(NewVehicleDTO newVehicleDTO) {
@@ -43,11 +43,11 @@ public class VehicleService implements IVehicleService{
                 .orElseThrow(EntityNotFoundException::new);
 
 
-        vehicle.setPlate(newVehicleDTO.plate());
-        vehicle.setModel(newVehicleDTO.model());
-        vehicle.setColor(newVehicleDTO.color());
-        vehicle.setNote(newVehicleDTO.note());
-        vehicle.setBrand(newVehicleDTO.brand());
+        vehicle.setPlate(newVehicleDTO.getPlate());
+        vehicle.setModel(newVehicleDTO.getModel());
+        vehicle.setColor(newVehicleDTO.getColor());
+        vehicle.setNote(newVehicleDTO.getNote());
+        vehicle.setBrand(newVehicleDTO.getBrand());
 
 
         VehicleEntity saved = vehicleRepository.save(vehicle);

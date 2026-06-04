@@ -1,6 +1,7 @@
-package com.equipo7.AParkApp.feature.vehicle.domain;
+package com.equipo7.AParkApp.feature.vehicle;
 
 import com.equipo7.AParkApp.feature.user.UserEntity;
+import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class VehicleEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String plate;
 
     @ManyToOne

@@ -1,6 +1,6 @@
 package com.equipo7.AParkApp.feature.driver;
 
-import com.equipo7.AParkApp.feature.vehicle.domain.VehicleEntity;
+import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
