@@ -1,4 +1,4 @@
-package com.equipo7.AParkApp.feature.user.employee;
+package com.equipo7.AParkApp.feature.employee;
 
 import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
 import com.equipo7.AParkApp.feature.user.UserEntity;
