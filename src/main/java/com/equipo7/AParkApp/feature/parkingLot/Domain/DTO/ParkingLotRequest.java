@@ -14,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -24,11 +26,11 @@ public class ParkingLotRequest {
     @NotBlank
     private String name;
     @NotNull
-    private AddressEntity address;
+    private UUID addressId;
     @Positive
     private int capacity;
     @NotNull
-    private UserEntity owner;
+    private UUID ownerId;
 
 
 }

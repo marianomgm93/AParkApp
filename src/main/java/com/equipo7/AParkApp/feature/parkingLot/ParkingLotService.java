@@ -1,10 +1,13 @@
 package com.equipo7.AParkApp.feature.parkingLot;
 
+import com.equipo7.AParkApp.feature.address.AddressRepository;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotRequest;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotResponse;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.Mappers.ParkingLotRequestMapper;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.Mappers.ParkingLotResponseMapper;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
+import com.equipo7.AParkApp.feature.user.UserEntity;
+import com.equipo7.AParkApp.feature.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,10 @@ import java.util.UUID;
 public class ParkingLotService implements IParkingLotService {
 
     private final IParkingLotRepository repository;
+
+    private final AddressRepository addressRepository;
+
+    private final UserRepository userRepository;
 
     private final ParkingLotRequestMapper requestMapper;
 
@@ -61,9 +68,11 @@ public class ParkingLotService implements IParkingLotService {
                         .orElseThrow(() -> new EntityNotFoundException("Parking Lot Not Found"));
 
         entity.setName(request.getName());
-        entity.setAddress(request.getAddress());
+        entity.setAddress(addressRepository.
+                findById(request.getAddressId())
+                .orElseThrow(()->new EntityNotFoundException("Address not found")));
         entity.setCapacity(request.getCapacity());
-        entity.setOwner(request.getOwner());
+
 
         ParkingLotEntity updatedParkingLotEntity = repository.save(entity);
 
@@ -103,4 +112,6 @@ public class ParkingLotService implements IParkingLotService {
 
         return ActiveParkingLots.stream().map(responseMapper::toDTO).toList();
     }
+
+
 }
