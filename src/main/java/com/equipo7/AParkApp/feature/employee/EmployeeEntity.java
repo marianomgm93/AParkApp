@@ -14,20 +14,22 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "employees_x_parking_lot")
+@Table(name = "employees_x_parking_lot",
+        uniqueConstraints = {
+            @UniqueConstraint(columnNames = {"user_id", "parking_lot_id"})
+        }
+)
 public class EmployeeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-
-    @JoinColumn(name = "employee_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-
-    @JoinColumn(name = "parking_lot_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parking_lot_id", nullable = false)
     private ParkingLotEntity parkingLot;
 
     private BigDecimal salary;

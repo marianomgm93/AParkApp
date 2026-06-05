@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,10 +20,10 @@ import java.math.BigDecimal;
 
 public class EmployeeRequest {
     @NotNull
-    private UserEntity user;
+    private UUID userId;
 
     @NotNull
-    private ParkingLotEntity parkingLot;
+    private UUID parkingLotId;
 
     @NotNull
     private BigDecimal salary;
