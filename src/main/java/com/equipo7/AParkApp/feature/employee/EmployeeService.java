@@ -34,7 +34,7 @@ public class EmployeeService implements IEmployeeService{
         ParkingLotEntity parking = parkingRepository.findById(request.getParkingLotId())
                 .orElseThrow(() -> new EntityNotFoundException("Estacionamiento no encontrado"));
 
-        EmployeeEntity employee = mapper.toEntity(request);
+        Employee employee = mapper.toEntity(request);
         employee.setUser(user);
         employee.setParkingLot(parking);
 
@@ -60,7 +60,7 @@ public class EmployeeService implements IEmployeeService{
     @Override
     @Transactional
     public EmployeeResponse update(UUID id, EmployeeRequest request) {
-        EmployeeEntity entity = repository.findById(id)
+        Employee entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Employee Not Found"));
 
         UserEntity user = userRepository.findById(request.getUserId())

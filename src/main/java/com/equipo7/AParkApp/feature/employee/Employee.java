@@ -19,7 +19,7 @@ import java.util.UUID;
             @UniqueConstraint(columnNames = {"user_id", "parking_lot_id"})
         }
 )
-public class EmployeeEntity {
+public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
