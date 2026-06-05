@@ -13,16 +13,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 public class ParkingLotResponse {
 
+    private UUID id;
     private String name;
-    private AddressEntity address;
+    private UUID ownerId;
+    private String ownerUsername;
+    private UUID addressId;
     private int capacity;
-    private UserEntity owner;
     private boolean active;
 
 }

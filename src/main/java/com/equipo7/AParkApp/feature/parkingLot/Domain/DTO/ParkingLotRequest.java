@@ -23,13 +23,13 @@ import java.util.UUID;
 
 public class ParkingLotRequest {
 
-    @NotBlank
+    @NotBlank(message ="You must enter a correct name")
     private String name;
-    @NotNull
+    @NotNull(message ="You must enter a correct address id")
     private UUID addressId;
-    @Positive
+    @Positive(message ="The capacity must be above zero")
     private int capacity;
-    @NotNull
+    @NotNull(message ="You must enter a correct owner id")
     private UUID ownerId;
 
 
