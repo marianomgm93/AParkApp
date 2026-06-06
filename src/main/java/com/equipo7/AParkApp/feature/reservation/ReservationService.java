@@ -1,8 +1,12 @@
 package com.equipo7.AParkApp.feature.reservation;
 
 import com.equipo7.AParkApp.feature.offer.OfferEntity;
-import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
-import com.equipo7.AParkApp.feature.parkingSpot.ParkingSpotEntity;
+
+import com.equipo7.AParkApp.feature.offer.OfferRepository;
+import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
+import com.equipo7.AParkApp.feature.parkingLot.IParkingLotRepository;
+import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
+import com.equipo7.AParkApp.feature.parkingSpot.IParkingSpotRepository;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationRequestDTO;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationResponseDTO;
 import com.equipo7.AParkApp.feature.reservation.domain.mapper.ReservationRequestMapper;
@@ -11,7 +15,6 @@ import com.equipo7.AParkApp.feature.user.UserRepository;
 import com.equipo7.AParkApp.feature.vehicle.VehicleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +25,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ReservationService implements IReservationService{
     /// TODO CAMBIAR POR LOS REPOSITORIOS REALES
-    private final ParkingLotRepository<ParkingLotEntity, UUID> parkingLotRepository;
-    private final ParkingSpotRepository<ParkingSpotEntity, UUID> parkingSpotRepository;
-    private final OfferRepository<OfferEntity, UUID> offerRepository;
+    private final IParkingLotRepository parkingLotRepository;
+    private final IParkingSpotRepository parkingSpotRepository;
+    private final OfferRepository offerRepository;
     ///
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
@@ -48,7 +51,7 @@ public class ReservationService implements IReservationService{
     @Transactional
     @Override
     public ReservationResponseDTO save(ReservationRequestDTO reservationRequestDTO) {
-        ruleValidation(reservationRequestDTO);
+        //ruleValidation(reservationRequestDTO);
         ReservationEntity saved = repository.save(createEntity(reservationRequestDTO));
         return responseMapper.toDTO(saved);
     }
@@ -73,6 +76,7 @@ public class ReservationService implements IReservationService{
 
 
     /// AUX
+    /*
     private boolean ruleValidation(ReservationRequestDTO reservationRequestDTO) throws OverlappingReservationEx{
          if(repository.existsOverlappingReservation(
                 reservationRequestDTO.vehicleId(),
@@ -82,6 +86,8 @@ public class ReservationService implements IReservationService{
          }
          return false;
     }
+
+     */
     private ReservationEntity createEntity(ReservationRequestDTO reservationRequestDTO) {
 
         ReservationEntity toSave = requestMapper.toEntity(reservationRequestDTO);

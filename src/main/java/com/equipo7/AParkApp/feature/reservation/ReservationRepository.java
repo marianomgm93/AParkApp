@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface ReservationRepository extends JpaRepository<ReservationEntity, UUID> {
     List<ReservationEntity> findByVehiclePlateContainingIgnoreCase(String plate);
-
+/*
     /// verificar que no haya solapamiento de fechas
     @Query("""
     SELECT COUNT(r) > 0
@@ -32,4 +32,6 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime
     );
+
+ */
 }
