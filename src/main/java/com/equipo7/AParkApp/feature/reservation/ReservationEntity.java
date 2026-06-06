@@ -2,6 +2,7 @@ package com.equipo7.AParkApp.feature.reservation;
 
 import com.equipo7.AParkApp.feature.offer.OfferEntity;
 import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
+import com.equipo7.AParkApp.feature.parkingSpot.ParkingSpotEntity;
 import com.equipo7.AParkApp.feature.user.UserEntity;
 import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
 import jakarta.persistence.*;
@@ -25,21 +26,25 @@ public class ReservationEntity {
 
     private LocalDateTime endTime;
 
-    private String status;
+    private ReservationStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parking_lot_id")
     private ParkingLotEntity parkingLot;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parking_spot_id", nullable = true)
+    private ParkingSpotEntity parkingSpot;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")
     private VehicleEntity vehicle;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "offer_id")
     private OfferEntity offer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 }
