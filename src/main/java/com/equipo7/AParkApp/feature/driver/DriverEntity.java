@@ -1,6 +1,7 @@
 package com.equipo7.AParkApp.feature.driver;
 
 import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,12 +21,17 @@ public class DriverEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true,nullable = false)
     private String dni;
 
+    @Column(unique = true,nullable = false)
     private String phone;
+
+    @Column(nullable = false)
+    private Boolean active;
 
     @ManyToMany
     @JoinTable(
