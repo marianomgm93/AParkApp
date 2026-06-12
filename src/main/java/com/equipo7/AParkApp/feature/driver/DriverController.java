@@ -35,7 +35,7 @@ public class DriverController {
     }
 
 
-    @PutMapping("/{dni}")
+    @PatchMapping("/{dni}")
     public ResponseEntity<DriverResponse> modifyDriver(@PathVariable String dni, @RequestBody DriverModifyRequest request) {
 
         return ResponseEntity.ok(driverService.modifyDriver(dni, request));
