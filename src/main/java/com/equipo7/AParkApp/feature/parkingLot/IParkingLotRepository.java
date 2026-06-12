@@ -8,16 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-<<<<<<< HEAD
+
 @Repository
-=======
-
-
->>>>>>> CRUD-addresses
-public interface IParkingLotRepository extends JpaRepository <ParkingLotEntity, UUID>,JpaSpecificationExecutor<ParkingLotEntity> {
+public interface IParkingLotRepository extends JpaRepository<ParkingLotEntity, UUID>, JpaSpecificationExecutor<ParkingLotEntity> {
 
     List<ParkingLotEntity> findByActiveTrue();
-
-
-   Optional <ParkingLotEntity> findByIdAndActiveTrue(UUID id);
+    Optional<ParkingLotEntity> findByIdAndActiveTrue(UUID id);
 }
