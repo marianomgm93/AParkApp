@@ -5,6 +5,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "drivers")
+@NoArgsConstructor
 public class DriverEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -39,5 +41,6 @@ public class DriverEntity {
             joinColumns = @JoinColumn(name = "driver_id"),
             inverseJoinColumns = @JoinColumn(name = "vehicle_id")
     )
-    private List<VehicleEntity> vehicles;
+
+    private List<VehicleEntity> vehicles=new ArrayList<>();
 }

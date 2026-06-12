@@ -1,6 +1,5 @@
 package com.equipo7.AParkApp.feature.driver.domain.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.Getter;
@@ -21,6 +20,6 @@ public class DriverRequest {
     private String phone;
 
     @NotBlank(message = "You must enter a vehicle license plate ")
-    private String patenteVehiculo;
+    private String plate;
 
 }
