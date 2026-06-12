@@ -9,14 +9,13 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class NewVehicleDTO {
-    @NotBlank
+    @NotBlank(message = "You must insert a vehicle plate")
     private String plate;
-    @NotBlank
+    @NotBlank(message = "You must insert a vehicle model")
     private String model;
-    @NotBlank
+    @NotBlank(message = "You must insert the color of the vehicle")
     private String color;
-    @NotBlank
     private String note;
-    @NotBlank
+    @NotBlank(message = "You must insert the brand of the vehicle")
     private String brand;
 }
