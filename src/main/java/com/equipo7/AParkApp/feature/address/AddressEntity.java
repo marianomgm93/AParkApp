@@ -13,7 +13,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 @ToString
 @Builder
-@Table(name = "adresses")
+@Table(name = "addresses")
 public class AddressEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,7 +22,7 @@ public class AddressEntity {
     private String street;
     @Column(nullable = false)
     private Integer number;
-    @Column(name = "zip_code")
+    @Column(name = "zip_code", nullable = false)
     private String zipCode;
     private String notes;
 }

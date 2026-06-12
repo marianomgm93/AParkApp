@@ -1,7 +1,7 @@
 package com.equipo7.AParkApp.feature.vehicle;
 
-import com.equipo7.AParkApp.feature.user.UserEntity;
 import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEntity;
+import com.equipo7.AParkApp.feature.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,6 +16,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "vehicles")
+
 public class VehicleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -32,8 +33,11 @@ public class VehicleEntity {
     private UserEntity user;
 
     private String brand;
+
     private String model;
+
     private String color;
+
     private String note;
 
 }
