@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.common.model.exceptions;
 
+import com.equipo7.AParkApp.feature.ticket.exception.InvalidAmountException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +13,11 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EntityAlreadyExistsEx.class)
-    public ResponseEntity<ExceptionDto> EntityAlreadyExists(EntityAlreadyExistsEx e) {
+    @ExceptionHandler({
+            EntityAlreadyExistsEx.class,
+            InvalidAmountException.class
+    })
+    public ResponseEntity<ExceptionDto> handleBadRequestExceptions(RuntimeException e) {
 
 
         return buildResponse(HttpStatus.BAD_REQUEST, e.getMessage());

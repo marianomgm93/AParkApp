@@ -23,7 +23,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class ReservationService implements IReservationService{
+public class ReservationService implements IReservationService {
     /// TODO CAMBIAR POR LOS REPOSITORIOS REALES
     private final IParkingLotRepository parkingLotRepository;
     private final IParkingSpotRepository parkingSpotRepository;
@@ -34,7 +34,6 @@ public class ReservationService implements IReservationService{
     private final ReservationRepository repository;
     private final ReservationRequestMapper requestMapper;
     private final ReservationResponseMapper responseMapper;
-
 
 
     @Override
@@ -48,6 +47,7 @@ public class ReservationService implements IReservationService{
     public ReservationResponseDTO getById(UUID id) {
         return responseMapper.toDTO(findById(id));
     }
+
     @Transactional
     @Override
     public ReservationResponseDTO save(ReservationRequestDTO reservationRequestDTO) {
@@ -59,16 +59,18 @@ public class ReservationService implements IReservationService{
     @Transactional
     @Override
     public ReservationResponseDTO update(UUID id, ReservationRequestDTO reservationRequestDTO) {
-        ReservationEntity toErase= findById(id);
-        ReservationEntity toSave= createEntity(reservationRequestDTO);
+        ReservationEntity toErase = findById(id);
+        ReservationEntity toSave = createEntity(reservationRequestDTO);
         toSave.setId(toErase.getId());
         return responseMapper.toDTO(repository.save(toSave));
     }
+
     @Transactional
-    public void delete(UUID id){
+    public void delete(UUID id) {
         findById(id).setStatus(ReservationStatus.CANCELLED);
     }
-    public List<ReservationResponseDTO> findByPlate(String plate){
+
+    public List<ReservationResponseDTO> findByPlate(String plate) {
         return repository.findByVehiclePlateContainingIgnoreCase(plate)
                 .stream().map(responseMapper::toDTO)
                 .toList();
@@ -91,21 +93,44 @@ public class ReservationService implements IReservationService{
     private ReservationEntity createEntity(ReservationRequestDTO reservationRequestDTO) {
 
         ReservationEntity toSave = requestMapper.toEntity(reservationRequestDTO);
-        toSave.setParkingLot(parkingLotRepository.findById(reservationRequestDTO.parkingLotId())
-                .orElseThrow(EntityNotFoundException::new));
-        toSave.setParkingSpot(reservationRequestDTO.parkingSpotId() == null ? null :
-                parkingSpotRepository.findById(reservationRequestDTO.parkingSpotId())
-                        .orElseThrow(EntityNotFoundException::new));
-        toSave.setOffer(offerRepository.findById(reservationRequestDTO.offerId())
-                .orElseThrow(EntityNotFoundException::new));
-        toSave.setVehicle(vehicleRepository.findById(reservationRequestDTO.vehicleId())
-                .orElseThrow(EntityNotFoundException::new));
-        toSave.setUser(userRepository.findById(reservationRequestDTO.userId())
-                .orElseThrow(EntityNotFoundException::new));
+
+        toSave.setParkingLot(
+                parkingLotRepository.findById(reservationRequestDTO.parkingLotId())
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "Parking lot not found with id: " + reservationRequestDTO.parkingLotId()))
+        );
+
+        toSave.setParkingSpot(
+                reservationRequestDTO.parkingSpotId() == null
+                        ? null
+                        : parkingSpotRepository.findById(reservationRequestDTO.parkingSpotId())
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "Parking spot not found with id: " + reservationRequestDTO.parkingSpotId()))
+        );
+
+        toSave.setOffer(
+                offerRepository.findById(reservationRequestDTO.offerId())
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "Offer not found with id: " + reservationRequestDTO.offerId()))
+        );
+
+        toSave.setVehicle(
+                vehicleRepository.findById(reservationRequestDTO.vehicleId())
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "Vehicle not found with id: " + reservationRequestDTO.vehicleId()))
+        );
+
+        toSave.setUser(
+                userRepository.findById(reservationRequestDTO.userId())
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "User not found with id: " + reservationRequestDTO.userId()))
+        );
+
         return toSave;
     }
 
-    private ReservationEntity findById(UUID id){
-        return repository.findById(id).orElseThrow(EntityNotFoundException::new);
+    private ReservationEntity findById(UUID id) {
+        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException(
+                "Reservation not found with id: " + id));
     }
 }
