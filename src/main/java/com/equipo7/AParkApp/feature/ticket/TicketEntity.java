@@ -27,16 +27,13 @@ public class TicketEntity {
     @JoinColumn(name = "reservation_id", nullable = false, unique = true)
     private ReservationEntity reservation;
 
-    @OneToOne
-    @JoinColumn(name = "parking_spot_id")
-    private ParkingSpotEntity parkingSpot;
-
     private BigDecimal amount;
+    private BigDecimal paid;
 
     @CreationTimestamp
     @Column(name = "creation_date")
     private LocalDateTime timeStamp;
 
-    private boolean status;
+    private TicketStatus status;
     private String note;
 }

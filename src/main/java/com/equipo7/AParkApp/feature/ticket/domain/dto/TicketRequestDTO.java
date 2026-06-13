@@ -16,10 +16,10 @@ import java.util.UUID;
 public record TicketRequestDTO(
         @NotNull(message = "Invalid reservation")
         UUID reservationId,
-        @NotNull(message = "Invalid Spot")
-        UUID parkingSpot,
         @PositiveOrZero(message = "Amount must be positive")
         BigDecimal amount,
+        @PositiveOrZero(message = "Amount must be positive")
+        BigDecimal paid,
         @NotNull(message = "Invalid date-time")
         LocalDateTime timeStamp,
         String note) {
