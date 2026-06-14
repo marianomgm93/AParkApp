@@ -1,11 +1,10 @@
 package com.equipo7.AParkApp.feature.price;
 
 import com.equipo7.AParkApp.feature.stay.StayTypeEntity;
-import com.equipo7.AParkApp.feature.vehicle.VehicleTypeEntity;
+import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter

@@ -1,9 +1,8 @@
-package com.equipo7.AParkApp.feature.vehicle;
+package com.equipo7.AParkApp.feature.VehicleType;
 
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -11,6 +10,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "vehicle_types")
@@ -21,7 +21,4 @@ public class VehicleTypeEntity {
 
     @Column(nullable = false, unique = true)
     private String name;
-
-    @OneToMany(mappedBy = "vehicleType")
-    private List<VehicleEntity> vehicles;
 }

@@ -1,7 +1,7 @@
 package com.equipo7.AParkApp.feature.offer;
 
-import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
-import com.equipo7.AParkApp.feature.parkingSpot.ParkingSpotEntity;
+import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
+import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +23,7 @@ public class OfferEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @ManyToOne
-    @JoinColumn(name = "parking_lot_id")
+    @JoinColumn(name = "parking_lot_id", nullable = false)
     private ParkingLotEntity parkingLot;
     @ManyToOne
     @JoinColumn(name = "parking_spot_id", nullable = true)
@@ -35,6 +35,6 @@ public class OfferEntity {
 
     @Column(name = "end_time")
     private LocalDateTime endTime;
-
-
+    @Column(nullable = false)
+    private boolean active;
 }

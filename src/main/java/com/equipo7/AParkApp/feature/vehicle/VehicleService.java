@@ -1,0 +1,69 @@
+package com.equipo7.AParkApp.feature.vehicle;
+
+import com.equipo7.AParkApp.feature.vehicle.domain.dto.NewVehicleDTO;
+import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleDTO;
+import com.equipo7.AParkApp.feature.vehicle.domain.mappers.NewVehicleMapper;
+import com.equipo7.AParkApp.feature.vehicle.domain.mappers.VehicleMapper;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class VehicleService implements IVehicleService {
+
+    private final VehicleRepository vehicleRepository;
+
+    private final NewVehicleMapper newVehicleMapper;
+    private final VehicleMapper vehicleMapper;
+
+    @Override
+    public VehicleDTO save(NewVehicleDTO newVehicleDTO) {
+        System.out.println(newVehicleDTO);
+        VehicleEntity saved = vehicleRepository.save(newVehicleMapper.toEntity(newVehicleDTO));
+        System.out.println(saved);
+        return vehicleMapper.toDTO(saved);
+    }
+
+    @Override
+    public void delete(UUID vehicleId) {
+        VehicleEntity vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        vehicleRepository.delete(vehicle);
+    }
+
+    @Override
+    public VehicleDTO update(UUID vehicleId, NewVehicleDTO newVehicleDTO) {
+        VehicleEntity vehicle = vehicleRepository.findById(vehicleId)
+                .orElseThrow(EntityNotFoundException::new);
+
+
+        vehicle.setPlate(newVehicleDTO.getPlate());
+        vehicle.setModel(newVehicleDTO.getModel());
+        vehicle.setColor(newVehicleDTO.getColor());
+        vehicle.setNote(newVehicleDTO.getNote());
+        vehicle.setBrand(newVehicleDTO.getBrand());
+
+
+        VehicleEntity saved = vehicleRepository.save(vehicle);
+
+        return vehicleMapper.toDTO(saved);
+    }
+
+    @Override
+    public VehicleDTO findById(UUID vehicleId) {
+        return vehicleRepository.findById(vehicleId)
+                .map(vehicleMapper::toDTO)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    public List<VehicleDTO> findAll() {
+        return vehicleRepository.findAll().stream().map(vehicleMapper::toDTO).toList();
+    }
+}

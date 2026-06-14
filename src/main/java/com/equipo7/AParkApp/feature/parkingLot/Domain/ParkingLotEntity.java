@@ -1,8 +1,9 @@
-package com.equipo7.AParkApp.feature.parkingLot;
+package com.equipo7.AParkApp.feature.parkingLot.Domain;
 
 import com.equipo7.AParkApp.feature.address.AddressEntity;
 import com.equipo7.AParkApp.feature.user.UserEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.UUID;
@@ -15,12 +16,16 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "parking_lots")
+@NoArgsConstructor
 public class ParkingLotEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String name;
+
+    @Column(nullable = false)
+    private boolean active;
 
 
     @OneToOne
@@ -30,8 +35,8 @@ public class ParkingLotEntity {
     @Column(name = "total_capacity")
     private int capacity;
 
-    ///TODO VALIDAR PARA SOLO USUARIOS CON ROL DE OWNER
     @ManyToOne
     @JoinColumn(name = "owner_id")
     private UserEntity owner;
+
 }

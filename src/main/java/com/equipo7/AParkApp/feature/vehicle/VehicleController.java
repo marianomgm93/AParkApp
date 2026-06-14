@@ -1,0 +1,46 @@
+package com.equipo7.AParkApp.feature.vehicle;
+
+import com.equipo7.AParkApp.feature.vehicle.domain.dto.NewVehicleDTO;
+import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleDTO;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/vehicles")
+public class VehicleController {
+    private final IVehicleService vehicleService;
+
+    @GetMapping
+    ResponseEntity<List<VehicleDTO>> findAll(){
+        return ResponseEntity.ok(vehicleService.findAll());
+    }
+
+    @GetMapping("/{vehicleId}")
+    ResponseEntity<VehicleDTO> findById(@PathVariable UUID vehicleId){
+        return ResponseEntity.ok(vehicleService.findById(vehicleId));
+    }
+
+    @PostMapping
+    ResponseEntity<VehicleDTO> create(@Valid @RequestBody NewVehicleDTO newVehicleDTO){
+        return new ResponseEntity<>(vehicleService.save(newVehicleDTO), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{vehicleId}")
+    ResponseEntity<VehicleDTO> updade(@PathVariable UUID vehicleId, @Valid @RequestBody NewVehicleDTO newVehicleDTO){
+        return ResponseEntity.ok(vehicleService.update(vehicleId,newVehicleDTO));
+    }
+
+    @DeleteMapping("/{vehicleId}")
+    ResponseEntity<VehicleDTO> delete(@PathVariable UUID vehicleId){
+        vehicleService.delete(vehicleId);
+        return ResponseEntity.noContent().build();
+    }
+}
