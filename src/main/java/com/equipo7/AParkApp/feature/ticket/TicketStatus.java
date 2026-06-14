@@ -1,8 +1,8 @@
 package com.equipo7.AParkApp.feature.ticket;
 
 public enum TicketStatus {
-    ACTIVE,
+    OPEN,
+    PARTIALLY_PAID,
     PAID,
-    CANCELLED,
-    CLOSED
+    CANCELLED
 }
