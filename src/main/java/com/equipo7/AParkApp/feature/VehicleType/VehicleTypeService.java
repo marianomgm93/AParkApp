@@ -1,8 +1,8 @@
 package com.equipo7.AParkApp.feature.VehicleType;
 
 import com.equipo7.AParkApp.feature.VehicleType.domain.dto.VehicleTypeDTO;
-import com.equipo7.AParkApp.feature.vehicle.domain.mappers.NewVehicleTypeMapper;
 import com.equipo7.AParkApp.feature.VehicleType.domain.mappers.VehicleTypeMapper;
+import com.equipo7.AParkApp.feature.vehicle.domain.mappers.NewVehicleTypeMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 
-public class VehicleTypeService implements IVehicleTypeService{
+public class VehicleTypeService implements IVehicleTypeService {
     private final VehicleTypeRepository vehicleTypeRepository;
 
     private final NewVehicleTypeMapper newVehicleTypeMapper;
@@ -21,9 +21,7 @@ public class VehicleTypeService implements IVehicleTypeService{
 
     @Override
     public VehicleTypeDTO save(VehicleTypeDTO vehicleTypeDTO) {
-        System.out.println(vehicleTypeDTO);
         VehicleTypeEntity saved = vehicleTypeRepository.save(newVehicleTypeMapper.toEntity(vehicleTypeDTO));
-        System.out.println(saved);
         return vehicleTypeMapper.toDTO(saved);
     }
 
