@@ -2,6 +2,7 @@ package com.equipo7.AParkApp.feature.reservation;
 
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationRequestDTO;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationResponseDTO;
+import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,34 +20,47 @@ public class ReservationController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ReservationResponseDTO> findAll(){
+    public List<ReservationResponseDTO> findAll() {
         return reservationService.getAll();
     }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationResponseDTO findById(UUID id){
+    public ReservationResponseDTO findById(@PathVariable UUID id) {
         return reservationService.getById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ReservationResponseDTO create(@Valid @RequestBody ReservationRequestDTO request){
+    public ReservationResponseDTO create(@Valid @RequestBody ReservationRequestDTO request) {
         return reservationService.save(request);
     }
+
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationResponseDTO modify(@PathVariable UUID id, @Valid @RequestBody ReservationRequestDTO request){
-        return reservationService.update(id,request);
+    public ReservationResponseDTO modify(@PathVariable UUID id, @Valid @RequestBody ReservationUpdateRequest request) {
+        return reservationService.update(id, request);
     }
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID id){
-        reservationService.delete(id);
-    }
+
     @GetMapping("/vehicle")
     @ResponseStatus(HttpStatus.OK)
-    public List<ReservationResponseDTO> findByPlate(@RequestParam String plate){
+    public List<ReservationResponseDTO> findByPlate(@RequestParam String plate) {
         return reservationService.findByPlate(plate);
     }
 
+    @PatchMapping("/{id}/check-in")
+    @ResponseStatus(HttpStatus.OK)
+    public ReservationResponseDTO checkIn(@PathVariable UUID id) {
+        return reservationService.checkIn(id);
+    }
+    @PatchMapping("/{id}/check-out")
+    @ResponseStatus(HttpStatus.OK)
+    public ReservationResponseDTO checkOut(@PathVariable UUID id) {
+        return reservationService.checkOut(id);
+    }
+    @PatchMapping("/{id}/cancel")
+    @ResponseStatus(HttpStatus.OK)
+    public ReservationResponseDTO cancel(@PathVariable UUID id) {
+        return reservationService.cancel(id);
+    }
 }

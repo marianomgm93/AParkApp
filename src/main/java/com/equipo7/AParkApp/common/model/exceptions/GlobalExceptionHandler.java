@@ -15,7 +15,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             EntityAlreadyExistsEx.class,
-            InvalidAmountException.class
+            InvalidAmountException.class,
+            IllegalStateException.class
     })
     public ResponseEntity<ExceptionDto> handleBadRequestExceptions(RuntimeException e) {
 
