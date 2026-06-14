@@ -10,76 +10,76 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping ("/parkingspots")
+@RequestMapping("/parkingspots")
 @RequiredArgsConstructor
 public class ParkingSpotController {
 
-    private final IParkingSpotService service;
+    private final ParkingSpotService service;
 
 
     @PostMapping
-    public ResponseEntity <ParkingSpotResponse> create( @Valid @RequestBody ParkingSpotRequest request){
+    public ResponseEntity<ParkingSpotResponse> create(@Valid @RequestBody ParkingSpotRequest request) {
 
-        ParkingSpotResponse response=service.createParkingSpot(request);
+        ParkingSpotResponse response = service.createParkingSpot(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
-    public ResponseEntity <List<ParkingSpotResponse>> findAll()
-    {
+    public ResponseEntity<List<ParkingSpotResponse>> findAll() {
 
-    return ResponseEntity.ok(service.getAllParkingSpots());
+        return ResponseEntity.ok(service.getAllParkingSpots());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity <ParkingSpotResponse> findById(@PathVariable UUID id)
-    {
+    public ResponseEntity<ParkingSpotResponse> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getParkingSpotById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ParkingSpotResponse> update(@PathVariable UUID id,@Valid @RequestBody ParkingSpotRequest request)
-        {
+    public ResponseEntity<ParkingSpotResponse> update(@PathVariable UUID id, @Valid @RequestBody ParkingSpotRequest request) {
 
-       return  ResponseEntity.ok(service.updateParkingSpot(id,request));
-        }
+        return ResponseEntity.ok(service.updateParkingSpot(id, request));
+    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void>delete(@PathVariable UUID id)
-    {
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.deleteParkingSpotById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/restore")
-    public ResponseEntity<Void> restore(@PathVariable UUID id)
-    {
+    public ResponseEntity<Void> restore(@PathVariable UUID id) {
         service.restoreParkingSpot(id);
-        return  ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}/occupy")
-    public  ResponseEntity<Void> occupy(@PathVariable UUID id)
-    {
-    service.occupy(id);
+    public ResponseEntity<Void> occupy(@PathVariable UUID id) {
+        service.occupy(id);
 
-        return  ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}/release")
-    public ResponseEntity<Void> release(@PathVariable UUID id)
-    {
+    public ResponseEntity<Void> release(@PathVariable UUID id) {
         service.release(id);
-        return  ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/available")
+    public List<ParkingSpotResponse> getAvailableSpots(
+            @RequestParam UUID parkingLotId,
+            @RequestParam LocalDateTime startTime,
+            @RequestParam LocalDateTime endTime) {
 
-
+        return service.findAvailableSpots(parkingLotId, startTime, endTime);
+    }
 
 
 }
