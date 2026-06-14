@@ -5,6 +5,7 @@ import com.equipo7.AParkApp.feature.parkingSpot.Domain.Dto.ParkingSpotResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -73,12 +74,24 @@ public class ParkingSpotController {
     }
 
     @GetMapping("/available")
-    public List<ParkingSpotResponse> getAvailableSpots(
+    public ResponseEntity<List<ParkingSpotResponse>> getAvailableSpots(
             @RequestParam UUID parkingLotId,
-            @RequestParam LocalDateTime startTime,
-            @RequestParam LocalDateTime endTime) {
 
-        return service.findAvailableSpots(parkingLotId, startTime, endTime);
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime startTime,
+
+            @RequestParam
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime endTime) {
+
+        return ResponseEntity.ok(
+                service.findAvailableSpots(
+                        parkingLotId,
+                        startTime,
+                        endTime
+                )
+        );
     }
 
 

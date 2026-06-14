@@ -28,7 +28,6 @@ public class ParkingSpotService implements IParkingSpotService {
     private final IParkingLotRepository parkingLotRepository;
     private final ParkingSpotRequestMapper requestMapper;
     private final ParkingSpotResponseMapper responseMapper;
-    private final ReservationRepository reservationRepository;
 
     @Override
     public ParkingSpotResponse createParkingSpot(ParkingSpotRequest request) {

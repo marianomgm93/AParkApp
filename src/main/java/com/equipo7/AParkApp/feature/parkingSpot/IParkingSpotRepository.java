@@ -1,7 +1,6 @@
 package com.equipo7.AParkApp.feature.parkingSpot;
 
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
-import com.equipo7.AParkApp.feature.reservation.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,8 +13,6 @@ import java.util.UUID;
 
 @Repository
 public interface IParkingSpotRepository extends JpaRepository<ParkingSpotEntity, UUID> {
-
-    List<ParkingSpotEntity> findByStatusTrue();
 
     Optional<ParkingSpotEntity> findByIdAndActiveTrue(UUID id);
 
@@ -39,8 +36,59 @@ public interface IParkingSpotRepository extends JpaRepository<ParkingSpotEntity,
             )
             """)
     List<ParkingSpotEntity> findAvailableSpots(
-            UUID parkingLotId,
-            LocalDateTime startTime,
-            LocalDateTime endTime
+            @Param("parkingLotId") UUID parkingLotId,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
+    );
+
+    @Query("""
+            SELECT COUNT(ps) > 0
+            FROM ParkingSpotEntity ps
+            WHERE ps.id = :parkingSpotId
+            AND ps.parkingLot.id = :parkingLotId
+            AND ps.active = true
+            AND NOT EXISTS (
+                SELECT r
+                FROM ReservationEntity r
+                WHERE r.parkingSpot = ps
+                AND r.status IN (
+                    com.equipo7.AParkApp.feature.reservation.ReservationStatus.RESERVED,
+                    com.equipo7.AParkApp.feature.reservation.ReservationStatus.CHECKED_IN
+                )
+                AND r.startTime < :endTime
+                AND r.endTime > :startTime
+            )
+            """)
+    boolean isAvailable(
+            @Param("parkingSpotId") UUID parkingSpotId,
+            @Param("parkingLotId") UUID parkingLotId,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime);
+
+    @Query("""
+            SELECT COUNT(ps) > 0
+            FROM ParkingSpotEntity ps
+            WHERE ps.id = :parkingSpotId
+            AND ps.parkingLot.id = :parkingLotId
+            AND ps.active = true
+            AND NOT EXISTS (
+                SELECT r
+                FROM ReservationEntity r
+                WHERE r.parkingSpot = ps
+                AND r.id <> :reservationId
+                AND r.status IN (
+                    com.equipo7.AParkApp.feature.reservation.ReservationStatus.RESERVED,
+                    com.equipo7.AParkApp.feature.reservation.ReservationStatus.CHECKED_IN
+                )
+                AND r.startTime < :endTime
+                AND r.endTime > :startTime
+            )
+            """)
+    boolean isAvailableForUpdate(
+            @Param("reservationId") UUID reservationId,
+            @Param("parkingSpotId") UUID parkingSpotId,
+            @Param("parkingLotId") UUID parkingLotId,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
     );
 }

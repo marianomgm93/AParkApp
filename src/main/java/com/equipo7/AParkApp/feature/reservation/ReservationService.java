@@ -89,8 +89,7 @@ public class ReservationService implements IReservationService {
                         + request.vehicleId())));
         toSave.setStartTime(request.startTime());
         toSave.setEndTime(request.endTime());
-        verifyParkingSpot(request.parkingSpotId(),
-                request.startTime(),request.endTime(),toSave);
+        verifyParkingSpotForUpdate(id, request.parkingSpotId(), request.startTime(), request.endTime(), toSave);
         return responseMapper.toDTO(repository.save(toSave));
     }
 
@@ -221,14 +220,67 @@ public class ReservationService implements IReservationService {
                 "Reservation not found with id: " + id));
     }
 
-    private void verifyParkingSpot(UUID parkingSpotId, LocalDateTime startTime, LocalDateTime endTime, ReservationEntity toSave) {
+    private void verifyParkingSpot(
+            UUID parkingSpotId,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            ReservationEntity toSave) {
+
         if (parkingSpotId != null) {
-            ParkingSpotEntity parking = parkingSpotRepository.findById(parkingSpotId).orElseThrow(() -> new EntityNotFoundException("Parking spot not found with id " + parkingSpotId));
-            if (parkingSpotRepository.findAvailableSpots(toSave.getParkingLot().getId(),
-                    startTime, endTime).contains(parking)) {
-                toSave.setParkingSpot(parking);
-            } else
-                throw new ParkingSpotUnavailableException("The selected parking spot is not available for the requested period");
+
+
+            ParkingSpotEntity parking =
+                    parkingSpotRepository.findByIdAndActiveTrue(parkingSpotId)
+                            .orElseThrow(() ->
+                                    new EntityNotFoundException(
+                                            "Parking spot not found"));
+
+            if (!parkingSpotRepository.isAvailable(
+                    parkingSpotId,
+                    toSave.getParkingLot().getId(),
+                    startTime,
+                    endTime)) {
+
+                throw new ParkingSpotUnavailableException(
+                        "The selected parking spot is not available for the requested period");
+            }
+
+            toSave.setParkingSpot(parking);
         }
+    }
+
+    private void verifyParkingSpotForUpdate(
+            UUID reservationId,
+            UUID parkingSpotId,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            ReservationEntity reservation) {
+
+        if (parkingSpotId == null) {
+            reservation.setParkingSpot(null);
+            return;
+        }
+
+        ParkingSpotEntity parkingSpot =
+                parkingSpotRepository.findByIdAndActiveTrue(parkingSpotId)
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
+                                        "Parking spot not found with id "
+                                                + parkingSpotId));
+
+        boolean available = parkingSpotRepository.isAvailableForUpdate(
+                reservationId,
+                parkingSpotId,
+                reservation.getParkingLot().getId(),
+                startTime,
+                endTime
+        );
+
+        if (!available) {
+            throw new ParkingSpotUnavailableException(
+                    "The selected parking spot is not available for the requested period");
+        }
+
+        reservation.setParkingSpot(parkingSpot);
     }
 }
