@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface ReservationRepository extends JpaRepository<ReservationEntity, UUID> {
     List<ReservationEntity> findByVehiclePlateContainingIgnoreCase(String plate);
-/*
+
     /// verificar que no haya solapamiento de fechas
 @Query("""
 SELECT COUNT(r) > 0
@@ -27,5 +27,21 @@ boolean existsOverlappingReservation(
         LocalDateTime startTime,
         LocalDateTime endTime
 );
- */
+
+    @Query("""
+SELECT r
+FROM ReservationEntity r
+WHERE r.parkingSpot.id = :spotId
+AND r.status IN (
+    com.equipo7.AParkApp.feature.reservation.ReservationStatus.RESERVED,
+    com.equipo7.AParkApp.feature.reservation.ReservationStatus.CHECKED_IN
+)
+AND r.startTime < :endTime
+AND r.endTime > :startTime
+""")
+    List<ReservationEntity> findActiveReservationsBySpotAndPeriod(
+            @Param("spotId") UUID spotId,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
+    );
 }

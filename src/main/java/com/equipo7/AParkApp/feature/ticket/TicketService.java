@@ -25,7 +25,6 @@ public class TicketService implements ITicketService {
     private final TicketRequestMapper requestMapper;
     private final TicketResponseMapper responseMapper;
     private final ReservationRepository reservationRepository;
-    private final IParkingSpotRepository parkingSpotRepository;
 
     @Override
     public List<TicketResponseDTO> findAll() {
@@ -68,7 +67,7 @@ public class TicketService implements ITicketService {
 
     @Override
     public void delete(UUID id) {
-        getById(id).setStatus(TicketStatus.CLOSED);
+        getById(id).setStatus(TicketStatus.CANCELLED);
     }
 
     /// ////////AUX
