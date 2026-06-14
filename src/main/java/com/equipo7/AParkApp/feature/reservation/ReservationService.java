@@ -10,6 +10,7 @@ import com.equipo7.AParkApp.feature.parkingSpot.Domain.Status;
 import com.equipo7.AParkApp.feature.parkingSpot.IParkingSpotRepository;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationRequestDTO;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationResponseDTO;
+import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationUpdateRequest;
 import com.equipo7.AParkApp.feature.reservation.domain.mapper.ReservationRequestMapper;
 import com.equipo7.AParkApp.feature.reservation.domain.mapper.ReservationResponseMapper;
 import com.equipo7.AParkApp.feature.ticket.TicketEntity;
@@ -52,6 +53,7 @@ public class ReservationService implements IReservationService {
     public ReservationResponseDTO getById(UUID id) {
         return responseMapper.toDTO(findById(id));
     }
+
     @Transactional
     @Override
     public ReservationResponseDTO save(ReservationRequestDTO dto) {
@@ -78,23 +80,28 @@ public class ReservationService implements IReservationService {
 
     @Transactional
     @Override
-    public ReservationResponseDTO update(UUID id, ReservationRequestDTO reservationRequestDTO) {
-        ReservationEntity toErase = findById(id);
-        ReservationEntity toSave = createEntity(reservationRequestDTO);
-        toSave.setId(toErase.getId());
+    public ReservationResponseDTO update(UUID id, ReservationUpdateRequest request) {
+        ReservationEntity toSave = findById(id);
+        toSave.setVehicle(vehicleRepository.findById(request.vehicleId())
+                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found with id "
+                        + request.vehicleId())));
+        toSave.setStartTime(request.startTime());
+        toSave.setEndTime(request.endTime());
+        ///TODO ASIGNAR PARKING SPOT (FALTA VALIDACION PARKINGSPOTFREE)
         return responseMapper.toDTO(repository.save(toSave));
     }
+
     @Transactional
     public ReservationResponseDTO cancel(UUID id) {
 
         ReservationEntity reservation = findById(id);
 
-        if(reservation.getStatus() == ReservationStatus.COMPLETED) {
+        if (reservation.getStatus() == ReservationStatus.COMPLETED) {
             throw new IllegalStateException(
                     "Completed reservation cannot be cancelled");
         }
 
-        if(reservation.getStatus() == ReservationStatus.CHECKED_IN
+        if (reservation.getStatus() == ReservationStatus.CHECKED_IN
                 && reservation.getParkingSpot() != null) {
 
             reservation.getParkingSpot().setStatus(Status.FREE);
@@ -110,19 +117,20 @@ public class ReservationService implements IReservationService {
                 .stream().map(responseMapper::toDTO)
                 .toList();
     }
+
     @Transactional
     public ReservationResponseDTO checkIn(UUID reservationId) {
 
         ReservationEntity reservation = findById(reservationId);
 
-        if(reservation.getStatus() != ReservationStatus.RESERVED) {
+        if (reservation.getStatus() != ReservationStatus.RESERVED) {
             throw new IllegalStateException(
                     "Only RESERVED reservations can check in");
         }
 
         reservation.setStatus(ReservationStatus.CHECKED_IN);
 
-        if(reservation.getParkingSpot() != null) {
+        if (reservation.getParkingSpot() != null) {
             reservation.getParkingSpot().setStatus(Status.OCCUPIED);
         }
 
@@ -130,19 +138,20 @@ public class ReservationService implements IReservationService {
                 repository.save(reservation)
         );
     }
+
     @Transactional
     public ReservationResponseDTO checkOut(UUID reservationId) {
 
         ReservationEntity reservation = findById(reservationId);
 
-        if(reservation.getStatus() != ReservationStatus.CHECKED_IN) {
+        if (reservation.getStatus() != ReservationStatus.CHECKED_IN) {
             throw new IllegalStateException(
                     "Only CHECKED_IN reservations can check out");
         }
 
         reservation.setStatus(ReservationStatus.COMPLETED);
 
-        if(reservation.getParkingSpot() != null) {
+        if (reservation.getParkingSpot() != null) {
             reservation.getParkingSpot().setStatus(Status.FREE);
         }
 
@@ -155,8 +164,12 @@ public class ReservationService implements IReservationService {
     /// AUX
     private void ruleValidation(ReservationRequestDTO dto) {
 
-        if(repository.existsOverlappingReservation(
+        if (repository.existsOverlappingReservation(
                 dto.vehicleId(),
+                List.of(
+                        ReservationStatus.RESERVED,
+                        ReservationStatus.CHECKED_IN
+                ),
                 dto.startTime(),
                 dto.endTime())) {
 

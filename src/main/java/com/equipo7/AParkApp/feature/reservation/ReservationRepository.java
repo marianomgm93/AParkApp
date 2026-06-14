@@ -14,19 +14,20 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     List<ReservationEntity> findByVehiclePlateContainingIgnoreCase(String plate);
 
     /// verificar que no haya solapamiento de fechas
-@Query("""
+    @Query("""
 SELECT COUNT(r) > 0
 FROM ReservationEntity r
 WHERE r.vehicle.id = :vehicleId
-AND r.status <> CANCELLED
+AND r.status IN :statuses
 AND r.startTime < :endTime
 AND r.endTime > :startTime
 """)
-boolean existsOverlappingReservation(
-        UUID vehicleId,
-        LocalDateTime startTime,
-        LocalDateTime endTime
-);
+    boolean existsOverlappingReservation(
+            UUID vehicleId,
+            List<ReservationStatus> statuses,
+            LocalDateTime startTime,
+            LocalDateTime endTime
+    );
 
     @Query("""
 SELECT r

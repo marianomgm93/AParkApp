@@ -2,6 +2,7 @@ package com.equipo7.AParkApp.feature.reservation;
 
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationRequestDTO;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationResponseDTO;
+import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationResponseDTO findById(UUID id) {
+    public ReservationResponseDTO findById(@PathVariable UUID id) {
         return reservationService.getById(id);
     }
 
@@ -37,7 +38,7 @@ public class ReservationController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ReservationResponseDTO modify(@PathVariable UUID id, @Valid @RequestBody ReservationRequestDTO request) {
+    public ReservationResponseDTO modify(@PathVariable UUID id, @Valid @RequestBody ReservationUpdateRequest request) {
         return reservationService.update(id, request);
     }
 

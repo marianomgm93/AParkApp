@@ -66,8 +66,9 @@ public class TicketService implements ITicketService {
     }
 
     @Override
+    @Transactional
     public void delete(UUID id) {
-        getById(id).setStatus(TicketStatus.CANCELLED);
+        repository.delete(getById(id));
     }
 
     /// ////////AUX
