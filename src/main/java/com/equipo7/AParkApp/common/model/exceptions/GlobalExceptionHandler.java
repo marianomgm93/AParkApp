@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.common.model.exceptions;
 
+import com.equipo7.AParkApp.feature.parkingSpot.ParkingSpotUnavailableException;
 import com.equipo7.AParkApp.feature.ticket.exception.InvalidAmountException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             EntityAlreadyExistsEx.class,
             InvalidAmountException.class,
-            IllegalStateException.class
+            IllegalStateException.class,
+            ParkingSpotUnavailableException.class
     })
     public ResponseEntity<ExceptionDto> handleBadRequestExceptions(RuntimeException e) {
 

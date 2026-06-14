@@ -8,6 +8,7 @@ import com.equipo7.AParkApp.feature.parkingSpot.Domain.Mappers.ParkingSpotReques
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Mappers.ParkingSpotResponseMapper;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Status;
+import com.equipo7.AParkApp.feature.reservation.ReservationRepository;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +28,6 @@ public class ParkingSpotService implements IParkingSpotService {
     private final IParkingLotRepository parkingLotRepository;
     private final ParkingSpotRequestMapper requestMapper;
     private final ParkingSpotResponseMapper responseMapper;
-
 
     @Override
     public ParkingSpotResponse createParkingSpot(ParkingSpotRequest request) {
@@ -124,6 +125,18 @@ public class ParkingSpotService implements IParkingSpotService {
         entity.setStatus(Status.FREE);
         repository.save(entity);
     }
+    public List<ParkingSpotResponse> findAvailableSpots(
+            UUID parkingLotId,
+            LocalDateTime startTime,
+            LocalDateTime endTime) {
 
+        return repository.findAvailableSpots(
+                        parkingLotId,
+                        startTime,
+                        endTime)
+                .stream()
+                .map(responseMapper::toDto)
+                .toList();
+    }
 
 }
