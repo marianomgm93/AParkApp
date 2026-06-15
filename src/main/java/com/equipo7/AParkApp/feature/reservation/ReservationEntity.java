@@ -3,6 +3,7 @@ package com.equipo7.AParkApp.feature.reservation;
 import com.equipo7.AParkApp.feature.offer.OfferEntity;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
+import com.equipo7.AParkApp.feature.stay.StayType;
 import com.equipo7.AParkApp.feature.user.UserEntity;
 import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
 import jakarta.persistence.*;
@@ -43,6 +44,10 @@ public class ReservationEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "offer_id")
     private OfferEntity offer;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "stay_type",nullable = false)
+    private StayType stayType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

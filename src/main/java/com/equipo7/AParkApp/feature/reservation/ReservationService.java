@@ -9,11 +9,13 @@ import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Status;
 import com.equipo7.AParkApp.feature.parkingSpot.IParkingSpotRepository;
 import com.equipo7.AParkApp.feature.parkingSpot.ParkingSpotUnavailableException;
+import com.equipo7.AParkApp.feature.price.PriceService;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationRequestDTO;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationResponseDTO;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationUpdateRequest;
 import com.equipo7.AParkApp.feature.reservation.domain.mapper.ReservationRequestMapper;
 import com.equipo7.AParkApp.feature.reservation.domain.mapper.ReservationResponseMapper;
+import com.equipo7.AParkApp.feature.stay.StayType;
 import com.equipo7.AParkApp.feature.ticket.TicketEntity;
 import com.equipo7.AParkApp.feature.ticket.TicketRepository;
 import com.equipo7.AParkApp.feature.ticket.TicketStatus;
@@ -32,7 +34,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ReservationService implements IReservationService {
-    /// TODO CAMBIAR POR LOS REPOSITORIOS REALES
     private final IParkingLotRepository parkingLotRepository;
     private final IParkingSpotRepository parkingSpotRepository;
     private final OfferRepository offerRepository;
@@ -43,6 +44,7 @@ public class ReservationService implements IReservationService {
     private final ReservationRequestMapper requestMapper;
     private final ReservationResponseMapper responseMapper;
     private final TicketRepository ticketRepository;
+    private final PriceService priceService;
 
     @Override
     public List<ReservationResponseDTO> getAll() {
@@ -56,6 +58,7 @@ public class ReservationService implements IReservationService {
         return responseMapper.toDTO(findById(id));
     }
 
+    /// TODO AGREGAR EL CALCULO DE PRICE
     @Transactional
     @Override
     public ReservationResponseDTO save(ReservationRequestDTO dto) {
@@ -68,9 +71,11 @@ public class ReservationService implements IReservationService {
 
         ReservationEntity saved = repository.save(entity);
 
+        BigDecimal amount = priceService.calculateReservationPrice(saved);
+
         TicketEntity ticket = TicketEntity.builder()
                 .reservation(saved)
-                .amount(BigDecimal.ZERO)
+                .amount(amount)
                 .paid(BigDecimal.ZERO)
                 .status(TicketStatus.OPEN)
                 .build();
@@ -157,6 +162,23 @@ public class ReservationService implements IReservationService {
             reservation.getParkingSpot().setStatus(Status.FREE);
         }
 
+
+        reservation.setEndTime(LocalDateTime.now());
+
+        TicketEntity ticket =
+                ticketRepository
+                        .findByReservationId(reservationId)
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
+                                        "Ticket not found"));
+
+        ticket.setAmount(
+                priceService.calculateReservationPrice(
+                        reservation));
+
+        repository.save(reservation);
+        ticketRepository.save(ticket);
+
         return responseMapper.toDTO(
                 repository.save(reservation)
         );
@@ -194,12 +216,26 @@ public class ReservationService implements IReservationService {
                 reservationRequestDTO.startTime(), reservationRequestDTO.endTime(),
                 toSave);
 
-        toSave.setOffer(
-                offerRepository.findById(reservationRequestDTO.offerId())
-                        .orElseThrow(() -> new EntityNotFoundException(
-                                "Offer not found with id: " + reservationRequestDTO.offerId()))
-        );
+        if (reservationRequestDTO.offerId() != null) {
+            OfferEntity offer = offerRepository.findById(
+                            reservationRequestDTO.offerId())
+                    .orElseThrow(() ->
+                            new EntityNotFoundException(
+                                    "Offer not found with id: "
+                                            + reservationRequestDTO.offerId()));
+            toSave.setOffer(offer);
+            toSave.setStayType(offer.getStayType());
 
+        } else {
+
+            if (reservationRequestDTO.stayType() == null) {
+                throw new IllegalArgumentException(
+                        "StayType is required when no offer is selected");
+            }
+
+            toSave.setStayType(
+                    reservationRequestDTO.stayType());
+        }
         toSave.setVehicle(
                 vehicleRepository.findById(reservationRequestDTO.vehicleId())
                         .orElseThrow(() -> new EntityNotFoundException(

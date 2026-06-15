@@ -25,6 +25,7 @@ public class ReservationRequestMapper implements IMapper<ReservationEntity, Rese
                     reservationEntity.getParkingSpot().getId(),
                     reservationEntity.getVehicle().getId(),
                     reservationEntity.getOffer().getId(),
+                    reservationEntity.getStayType(),
                     reservationEntity.getUser().getId()
             );
     }
