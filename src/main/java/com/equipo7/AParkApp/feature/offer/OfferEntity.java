@@ -28,7 +28,6 @@ public class OfferEntity {
     private ParkingLotEntity parkingLot;
     @ManyToOne
     @JoinColumn(name = "parking_spot_id", nullable = true)
-    /// TODO VALIDAR DE SER NULO DEBE OBLIGATORIAMENTE CARGARSE EN TICKET
     private ParkingSpotEntity parkingSpot;
 
     @Enumerated(EnumType.STRING)

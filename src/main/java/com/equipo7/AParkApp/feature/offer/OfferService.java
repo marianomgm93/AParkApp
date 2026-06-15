@@ -66,12 +66,12 @@ public class OfferService implements IOfferService{
     private OfferEntity createEntity(OfferRequestDTO request) throws EntityNotFoundException{
 
         OfferEntity offer = requestMapper.toEntity(request);
-        offer.setParkingLot(lotRepository.findById(request.parkingLotId()).orElseThrow(EntityNotFoundException::new));
-        offer.setParkingSpot(spotRepository.findById(request.parkingSpotId()).orElseThrow(EntityNotFoundException::new));
+        offer.setParkingLot(lotRepository.findById(request.parkingLotId()).orElseThrow(()->new EntityNotFoundException("Parking Lot Not Found")));
+        offer.setParkingSpot(spotRepository.findById(request.parkingSpotId()).orElseThrow(()->new EntityNotFoundException("Parking Spot Not Found")));
         return offer;
     }
     private OfferEntity getById(UUID id) throws EntityNotFoundException{
-        return repository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return repository.findById(id).orElseThrow(()->new EntityNotFoundException("Offer with id: "+id+" not found!"));
     }
 
 }
