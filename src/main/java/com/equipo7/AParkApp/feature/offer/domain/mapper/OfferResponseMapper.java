@@ -9,20 +9,26 @@ import org.springframework.stereotype.Component;
 public class OfferResponseMapper implements IMapper<OfferEntity, OfferResponseDTO> {
 
     @Override
-    public OfferEntity toEntity(OfferResponseDTO offerResponseDTO) {
-        return OfferEntity.builder()
-                .startTime(offerResponseDTO.startTime())
-                .endTime(offerResponseDTO.endTime())
-                .build();
+    public OfferEntity toEntity(OfferResponseDTO dto) {
+        throw new UnsupportedOperationException(
+                "OfferResponseDTO cannot be converted to OfferEntity");
     }
 
     @Override
-    public OfferResponseDTO toDTO(OfferEntity offerEntity) {
+    public OfferResponseDTO toDTO(OfferEntity offer) {
+
         return OfferResponseDTO.builder()
-                .parkingLotId(offerEntity.getParkingLot().getId())
-                .parkingSpotId(offerEntity.getParkingSpot().getId())
-                .startTime(offerEntity.getStartTime())
-                .endTime(offerEntity.getEndTime())
+                .id(offer.getId())
+                .parkingLotId(offer.getParkingLot().getId())
+                .parkingSpotId(
+                        offer.getParkingSpot() != null
+                                ? offer.getParkingSpot().getId()
+                                : null)
+                .stayType(offer.getStayType())
+                .startTime(offer.getStartTime())
+                .endTime(offer.getEndTime())
+                .active(offer.isActive())
                 .build();
     }
+
 }

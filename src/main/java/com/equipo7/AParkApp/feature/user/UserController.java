@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.feature.user;
 
+import com.equipo7.AParkApp.feature.auth.dto.NewAccountRequest;
 import com.equipo7.AParkApp.feature.user.domain.dto.UserRequest;
 import com.equipo7.AParkApp.feature.user.domain.dto.UserResponse;
 import jakarta.validation.Valid;
@@ -21,41 +22,40 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    ResponseEntity<List<UserResponse>> findAll(){
+    ResponseEntity<List<UserResponse>> findAll() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    ResponseEntity<UserResponse> findById(@PathVariable UUID id){
+    ResponseEntity<UserResponse> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{email}")
-    ResponseEntity<UserResponse> findByEmail(@RequestParam String email){
+    ResponseEntity<UserResponse> findByEmail(@RequestParam String email) {
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    ResponseEntity<UserResponse> create(@Valid @RequestBody UserRequest user){
+    ResponseEntity<UserResponse> create(@Valid @RequestBody NewAccountRequest user) {
         return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
     }
 
 
-
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping
-    ResponseEntity<UserResponse> update(@Valid @RequestBody UserRequest user){
-        return ResponseEntity.ok(userService.update(user));
+    @PutMapping("/{id}")
+    ResponseEntity<UserResponse> update(@PathVariable UUID id, @Valid @RequestBody UserRequest user) {
+        return ResponseEntity.ok(userService.update(id, user));
     }
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> delete(@PathVariable UUID id){
+    ResponseEntity<Void> delete(@PathVariable UUID id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
