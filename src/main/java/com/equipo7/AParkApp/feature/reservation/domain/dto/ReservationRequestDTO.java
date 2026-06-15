@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.feature.reservation.domain.dto;
 
+import com.equipo7.AParkApp.feature.stay.StayType;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 
@@ -23,8 +24,9 @@ public record ReservationRequestDTO(
         @NotNull
         UUID vehicleId,
 
-        @NotNull
         UUID offerId,
+
+        StayType stayType,
 
         @NotNull
         UUID userId
