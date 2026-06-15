@@ -12,8 +12,7 @@ public interface IUserService {
     UserResponse save(NewAccountRequest newAccountRequest);
     UserResponse getUserById(UUID userId);
     UserResponse getUserByEmail(String userEmail);
-    UserResponse update(UserRequest userRequest);
-    UserResponse save(UserRequest userRequest);
+    UserResponse update(UUID id,UserRequest userRequest);
 
     void delete(UUID userId);
 }
