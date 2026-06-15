@@ -27,8 +27,11 @@ public class TicketEntity {
     @JoinColumn(name = "reservation_id", nullable = false, unique = true)
     private ReservationEntity reservation;
 
-    private BigDecimal amount;
-    private BigDecimal paid;
+    @Builder.Default
+    private BigDecimal amount = BigDecimal.ZERO;
+
+    @Builder.Default
+    private BigDecimal paid = BigDecimal.ZERO;
 
     @CreationTimestamp
     @Column(name = "creation_date")

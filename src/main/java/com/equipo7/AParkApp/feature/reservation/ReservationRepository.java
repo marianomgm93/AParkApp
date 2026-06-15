@@ -23,10 +23,10 @@ AND r.startTime < :endTime
 AND r.endTime > :startTime
 """)
     boolean existsOverlappingReservation(
-            UUID vehicleId,
-            List<ReservationStatus> statuses,
-            LocalDateTime startTime,
-            LocalDateTime endTime
+            @Param("vehicleId") UUID vehicleId,
+            @Param("statuses") List<ReservationStatus> statuses,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
     );
 
     @Query("""
@@ -42,6 +42,22 @@ AND r.endTime > :startTime
 """)
     List<ReservationEntity> findActiveReservationsBySpotAndPeriod(
             @Param("spotId") UUID spotId,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
+    );
+    @Query("""
+SELECT COUNT(r) > 0
+FROM ReservationEntity r
+WHERE r.id <> :reservationId
+AND r.vehicle.id = :vehicleId
+AND r.status IN :statuses
+AND r.startTime < :endTime
+AND r.endTime > :startTime
+""")
+    boolean existsOverlappingReservationForUpdate(
+            @Param("reservationId") UUID reservationId,
+            @Param("vehicleId") UUID vehicleId,
+            @Param("statuses") List<ReservationStatus> statuses,
             @Param("startTime") LocalDateTime startTime,
             @Param("endTime") LocalDateTime endTime
     );

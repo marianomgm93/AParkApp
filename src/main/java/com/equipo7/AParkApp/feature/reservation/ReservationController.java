@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.feature.reservation;
 
+import com.equipo7.AParkApp.feature.offer.domain.dto.AcquireOfferRequest;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationRequestDTO;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationResponseDTO;
 import com.equipo7.AParkApp.feature.reservation.domain.dto.ReservationUpdateRequest;
@@ -53,14 +54,23 @@ public class ReservationController {
     public ReservationResponseDTO checkIn(@PathVariable UUID id) {
         return reservationService.checkIn(id);
     }
+
     @PatchMapping("/{id}/check-out")
     @ResponseStatus(HttpStatus.OK)
     public ReservationResponseDTO checkOut(@PathVariable UUID id) {
         return reservationService.checkOut(id);
     }
+
     @PatchMapping("/{id}/cancel")
     @ResponseStatus(HttpStatus.OK)
     public ReservationResponseDTO cancel(@PathVariable UUID id) {
         return reservationService.cancel(id);
+    }
+
+    @PostMapping("/acquire-offer/{offerId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReservationResponseDTO acquireOffer(@PathVariable UUID offerId, @Valid @RequestBody AcquireOfferRequest request) {
+
+        return reservationService.acquireOffer(offerId, request);
     }
 }
