@@ -176,12 +176,12 @@ public class ReservationService implements IReservationService {
                 priceService.calculateReservationPrice(
                         reservation));
 
-        repository.save(reservation);
-        ticketRepository.save(ticket);
-
-        return responseMapper.toDTO(
+        ReservationResponseDTO response = responseMapper.toDTO(
                 repository.save(reservation)
         );
+        ticketRepository.save(ticket);
+
+        return response;
     }
 
 

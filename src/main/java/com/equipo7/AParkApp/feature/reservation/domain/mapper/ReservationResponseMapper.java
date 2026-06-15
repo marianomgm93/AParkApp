@@ -24,9 +24,13 @@ public class ReservationResponseMapper implements IMapper<ReservationEntity, Res
                 reservationEntity.getStartTime(),
                 reservationEntity.getEndTime(),
                 reservationEntity.getParkingLot().getId(),
-                reservationEntity.getParkingSpot().getId(),
+                reservationEntity.getParkingSpot() != null
+                        ? reservationEntity.getParkingSpot().getId()
+                        : null,
                 reservationEntity.getVehicle().getId(),
-                reservationEntity.getOffer().getId(),
+                reservationEntity.getOffer() != null
+                        ? reservationEntity.getOffer().getId()
+                        : null,
                 reservationEntity.getUser().getId(),
                 reservationEntity.getStayType().toString(),
                 reservationEntity.getStatus().toString()

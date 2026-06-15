@@ -128,26 +128,25 @@ public class PriceService {
         BigDecimal hourlyRate =
                 BigDecimal.valueOf(price.getPrice());
 
-        long minutes = Duration.between(
+        long totalMinutes = Duration.between(
                 reservation.getStartTime(),
                 reservation.getEndTime()
         ).toMinutes();
 
-        if (minutes <= 60) {
+        if (totalMinutes <= 60) {
             return hourlyRate;
         }
 
-        long extraMinutes = minutes - 60;
+        long extraMinutes = totalMinutes - 60;
 
-        long blocks30 =
-                (long) Math.ceil(extraMinutes / 30.0);
+        long blocks30 = (long) Math.ceil(
+                extraMinutes / 30.0);
 
-        BigDecimal extraCharge =
+        return hourlyRate.add(
                 hourlyRate
                         .multiply(BigDecimal.valueOf(0.5))
-                        .multiply(BigDecimal.valueOf(blocks30));
-
-        return hourlyRate.add(extraCharge);
+                        .multiply(BigDecimal.valueOf(blocks30))
+        ).setScale(2, RoundingMode.HALF_UP);
     }
     private BigDecimal calculateFixedPrice(
             ReservationEntity reservation) {
@@ -160,25 +159,37 @@ public class PriceService {
                         new EntityNotFoundException(
                                 "Price configuration not found"));
 
-        BigDecimal basePrice = BigDecimal.valueOf(price.getPrice());
+        BigDecimal basePrice =
+                BigDecimal.valueOf(price.getPrice());
 
-        long totalHours = Duration.between(
-                reservation.getStartTime(),
-                reservation.getEndTime()
-        ).toHours();
+        long totalDays = Math.max(
+                1,
+                Duration.between(
+                        reservation.getStartTime(),
+                        reservation.getEndTime()
+                ).toDays()
+        );
 
         BigDecimal multiplier;
 
         switch (reservation.getStayType()) {
 
-            case Day -> multiplier = BigDecimal.valueOf(
-                    Math.max(1.0, totalHours / 24.0));
+            case Day -> multiplier =
+                    BigDecimal.valueOf(totalDays);
 
-            case Week -> multiplier = BigDecimal.valueOf(
-                    Math.max(1.0, totalHours / (24.0 * 7)));
+            case Week -> multiplier =
+                    BigDecimal.valueOf(totalDays)
+                            .divide(
+                                    BigDecimal.valueOf(7),
+                                    4,
+                                    RoundingMode.HALF_UP);
 
-            case Month -> multiplier = BigDecimal.valueOf(
-                    Math.max(1.0, totalHours / (24.0 * 30)));
+            case Month -> multiplier =
+                    BigDecimal.valueOf(totalDays)
+                            .divide(
+                                    BigDecimal.valueOf(30),
+                                    4,
+                                    RoundingMode.HALF_UP);
 
             default -> throw new IllegalStateException(
                     "Invalid stay type for fixed price calculation");
