@@ -17,7 +17,7 @@ import java.util.UUID;
 public class OfferController {
     private final OfferService service;
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE','CLIENT')")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<OfferResponseDTO> findAll() {

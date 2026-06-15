@@ -1,11 +1,10 @@
 package com.equipo7.AParkApp.feature.parkingLot;
 
+import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotClientView;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotRequest;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotResponse;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/ParkingLot")
 public class ParkingLotController {
 
-    private final IParkingLotService parkingLotService;
+    private final ParkingLotService parkingLotService;
 
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -47,6 +46,7 @@ public class ParkingLotController {
 
         return ResponseEntity.ok(parkingLotService.getAllActiveParkingLots());
     }
+
     @PreAuthorize("hasRole('ADMIN')")
 
     @PutMapping("/{id}")
@@ -73,5 +73,11 @@ public class ParkingLotController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/client")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<List<ParkingLotClientView>> getParkingLotsClient() {
+
+        return ResponseEntity.ok(parkingLotService.getAllParkingLotForClient());
+    }
 
 }
