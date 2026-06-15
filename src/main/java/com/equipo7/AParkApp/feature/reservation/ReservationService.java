@@ -3,6 +3,7 @@ package com.equipo7.AParkApp.feature.reservation;
 import com.equipo7.AParkApp.feature.offer.OfferEntity;
 
 import com.equipo7.AParkApp.feature.offer.OfferRepository;
+import com.equipo7.AParkApp.feature.offer.domain.dto.AcquireOfferRequest;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
 import com.equipo7.AParkApp.feature.parkingLot.IParkingLotRepository;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
@@ -19,7 +20,9 @@ import com.equipo7.AParkApp.feature.stay.StayType;
 import com.equipo7.AParkApp.feature.ticket.TicketEntity;
 import com.equipo7.AParkApp.feature.ticket.TicketRepository;
 import com.equipo7.AParkApp.feature.ticket.TicketStatus;
+import com.equipo7.AParkApp.feature.user.UserEntity;
 import com.equipo7.AParkApp.feature.user.UserRepository;
+import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
 import com.equipo7.AParkApp.feature.vehicle.VehicleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +65,10 @@ public class ReservationService implements IReservationService {
     @Transactional
     @Override
     public ReservationResponseDTO save(ReservationRequestDTO dto) {
-
+        validateVehicleAvailability(
+                dto.vehicleId(),
+                dto.startTime(),
+                dto.endTime());
         ruleValidation(dto);
 
         ReservationEntity entity = createEntity(dto);
@@ -71,7 +77,11 @@ public class ReservationService implements IReservationService {
 
         ReservationEntity saved = repository.save(entity);
 
-        BigDecimal amount = priceService.calculateReservationPrice(saved);
+        BigDecimal amount = BigDecimal.ZERO;
+
+        if (saved.getStayType() != StayType.Hour) {
+            amount = priceService.calculateReservationPrice(saved);
+        }
 
         TicketEntity ticket = TicketEntity.builder()
                 .reservation(saved)
@@ -92,6 +102,11 @@ public class ReservationService implements IReservationService {
         toSave.setVehicle(vehicleRepository.findById(request.vehicleId())
                 .orElseThrow(() -> new EntityNotFoundException("Vehicle not found with id "
                         + request.vehicleId())));
+        validateVehicleAvailabilityForUpdate(
+                id,
+                request.vehicleId(),
+                request.startTime(),
+                request.endTime());
         toSave.setStartTime(request.startTime());
         toSave.setEndTime(request.endTime());
         verifyParkingSpotForUpdate(id, request.parkingSpotId(), request.startTime(), request.endTime(), toSave);
@@ -136,7 +151,7 @@ public class ReservationService implements IReservationService {
         }
 
         reservation.setStatus(ReservationStatus.CHECKED_IN);
-
+        reservation.setCheckInTime(LocalDateTime.now());
         if (reservation.getParkingSpot() != null) {
             reservation.getParkingSpot().setStatus(Status.OCCUPIED);
         }
@@ -157,7 +172,7 @@ public class ReservationService implements IReservationService {
         }
 
         reservation.setStatus(ReservationStatus.COMPLETED);
-
+        reservation.setCheckOutTime(LocalDateTime.now());
         if (reservation.getParkingSpot() != null) {
             reservation.getParkingSpot().setStatus(Status.FREE);
         }
@@ -184,6 +199,80 @@ public class ReservationService implements IReservationService {
         return response;
     }
 
+    @Transactional
+    public ReservationResponseDTO acquireOffer(
+            UUID offerId,
+            AcquireOfferRequest request) {
+
+        OfferEntity offer =
+                offerRepository.findByIdAndActiveTrue(offerId)
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
+                                        "Offer not found"));
+
+        if (offer.getEndTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException(
+                    "Offer has expired");
+        }
+
+        UserEntity user =
+                userRepository.findById(request.userId())
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
+                                        "User not found"));
+
+        VehicleEntity vehicle =
+                vehicleRepository.findById(request.vehicleId())
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
+                                        "Vehicle not found"));
+
+        if (!vehicle.getUser().getId().equals(user.getId())) {
+            throw new IllegalStateException(
+                    "Vehicle does not belong to user");
+        }
+        validateVehicleAvailability(
+                vehicle.getId(),
+                offer.getStartTime(),
+                offer.getEndTime());
+        ReservationEntity reservation =
+                ReservationEntity.builder()
+                        .user(user)
+                        .vehicle(vehicle)
+                        .offer(offer)
+                        .parkingLot(offer.getParkingLot())
+                        .parkingSpot(offer.getParkingSpot())
+                        .stayType(offer.getStayType())
+                        .startTime(offer.getStartTime())
+                        .endTime(offer.getEndTime())
+                        .status(ReservationStatus.RESERVED)
+                        .build();
+
+        ReservationEntity savedReservation =
+                repository.save(reservation);
+
+        BigDecimal amount = BigDecimal.ZERO;
+
+        if (savedReservation.getStayType() != StayType.Hour) {
+            amount = priceService.calculateReservationPrice(
+                    savedReservation);
+        }
+
+        TicketEntity ticket =
+                TicketEntity.builder()
+                        .reservation(savedReservation)
+                        .amount(amount)
+                        .paid(BigDecimal.ZERO)
+                        .status(TicketStatus.OPEN)
+                        .build();
+
+        ticketRepository.save(ticket);
+
+        offer.setActive(false);
+        offerRepository.save(offer);
+
+        return responseMapper.toDTO(savedReservation);
+    }
 
     /// AUX
     private void ruleValidation(ReservationRequestDTO dto) {
@@ -256,11 +345,7 @@ public class ReservationService implements IReservationService {
                 "Reservation not found with id: " + id));
     }
 
-    private void verifyParkingSpot(
-            UUID parkingSpotId,
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            ReservationEntity toSave) {
+    private void verifyParkingSpot(UUID parkingSpotId, LocalDateTime startTime, LocalDateTime endTime, ReservationEntity toSave) {
 
         if (parkingSpotId != null) {
 
@@ -318,5 +403,47 @@ public class ReservationService implements IReservationService {
         }
 
         reservation.setParkingSpot(parkingSpot);
+    }
+    private void validateVehicleAvailability(
+            UUID vehicleId,
+            LocalDateTime startTime,
+            LocalDateTime endTime) {
+
+        List<ReservationStatus> activeStatuses = List.of(
+                ReservationStatus.RESERVED,
+                ReservationStatus.CHECKED_IN
+        );
+
+        if (repository.existsOverlappingReservation(
+                vehicleId,
+                activeStatuses,
+                startTime,
+                endTime)) {
+
+            throw new OverlappingReservationEx(
+                    "Vehicle already has a reservation for this period");
+        }
+    }
+    private void validateVehicleAvailabilityForUpdate(
+            UUID reservationId,
+            UUID vehicleId,
+            LocalDateTime startTime,
+            LocalDateTime endTime) {
+
+        List<ReservationStatus> activeStatuses = List.of(
+                ReservationStatus.RESERVED,
+                ReservationStatus.CHECKED_IN
+        );
+
+        if (repository.existsOverlappingReservationForUpdate(
+                reservationId,
+                vehicleId,
+                activeStatuses,
+                startTime,
+                endTime)) {
+
+            throw new OverlappingReservationEx(
+                    "Vehicle already has another reservation for this period");
+        }
     }
 }

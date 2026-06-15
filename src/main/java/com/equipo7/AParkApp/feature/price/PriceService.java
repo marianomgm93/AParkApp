@@ -99,23 +99,14 @@ public class PriceService {
 
     public BigDecimal calculateReservationPrice(ReservationEntity reservation) {
 
-        switch (reservation.getStayType()) {
-
-            case Hour:
-                return calculateHourlyPrice(reservation);
-
-            case Day:
-            case Week:
-            case Month:
-                return calculateFixedPrice(reservation);
-
-            default:
-                throw new IllegalStateException(
-                        "Unsupported stay type");
+        if (reservation.getStayType() == StayType.Hour) {
+            return calculateHourlyPrice(reservation);
         }
+
+        return calculateFixedPrice(reservation);
     }
-    private BigDecimal calculateHourlyPrice(
-            ReservationEntity reservation) {
+
+    private BigDecimal calculateHourlyPrice(ReservationEntity reservation) {
 
         PriceEntity price = priceRepository
                 .findByVehicleTypeAndStayType(
@@ -129,8 +120,8 @@ public class PriceService {
                 BigDecimal.valueOf(price.getPrice());
 
         long totalMinutes = Duration.between(
-                reservation.getStartTime(),
-                reservation.getEndTime()
+                reservation.getCheckInTime(),
+                reservation.getCheckOutTime()
         ).toMinutes();
 
         if (totalMinutes <= 60) {

@@ -15,6 +15,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "reservations")
@@ -52,4 +53,8 @@ public class ReservationEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
+    @Column(name = "check_in_time")
+    private LocalDateTime checkInTime;
+    @Column(name = "check_out_time")
+    private LocalDateTime checkOutTime;
 }
