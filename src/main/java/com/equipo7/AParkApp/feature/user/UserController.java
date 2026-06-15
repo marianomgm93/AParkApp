@@ -34,7 +34,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{email}")
-    ResponseEntity<UserResponse> findById(@RequestParam String email){
+    ResponseEntity<UserResponse> findByEmail(@RequestParam String email){
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 

@@ -48,6 +48,7 @@ public class UserService implements IUserService {
 
         return responseMapper.toDTO(saved);
     }
+
     @Override
     public List<UserResponse> getAllUsers() {
         return ur.findAll().stream()
@@ -68,22 +69,19 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserResponse update(UserRequest userRequest){
-        UserEntity user= responseMapper.toEntity(getUserByEmail(userRequest.getEmail()));
+    public UserResponse update(UUID id,UserRequest userRequest){
+        UserEntity user= findUserById(id);
         user.setName(userRequest.getName());
         UserEntity saved=ur.save(user);
         return responseMapper.toDTO(saved);
     }
 
-    @Override
-    public UserResponse save(UserRequest userRequest) {
-        UserEntity toBeSave=requestMapper.toEntity(userRequest);
-        UserEntity saved= ur.save(toBeSave);
-        return responseMapper.toDTO(saved);
-    }
 
     @Override
     public void delete(UUID userId) {
         responseMapper.toEntity(getUserById(userId)).setActive(false);
+    }
+    public UserEntity findUserById(UUID userId) {
+        return ur.findById(userId).orElseThrow(()->new EntityNotFoundException("User not found"));
     }
 }
