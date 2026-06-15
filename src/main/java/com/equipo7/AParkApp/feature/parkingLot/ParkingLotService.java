@@ -1,6 +1,7 @@
 package com.equipo7.AParkApp.feature.parkingLot;
 
 import com.equipo7.AParkApp.feature.address.AddressRepository;
+import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotClientView;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotRequest;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotResponse;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.Mappers.ParkingLotRequestMapper;
@@ -111,6 +112,32 @@ public class ParkingLotService implements IParkingLotService {
         List<ParkingLotEntity> ActiveParkingLots = repository.findByActiveTrue();
 
         return ActiveParkingLots.stream().map(responseMapper::toDTO).toList();
+    }
+
+    public List<ParkingLotClientView> getAllParkingLotForClient() {
+
+        ParkingLotClientView dto = new ParkingLotClientView();
+
+        return repository.findAll()
+                .stream()
+                .map(this::toClientView)
+                .toList();
+
+    }
+
+
+
+    private ParkingLotClientView toClientView(ParkingLotEntity parkingLot) {
+
+        ParkingLotClientView view = new ParkingLotClientView();
+
+        view.setName(parkingLot.getName());
+        view.setCapacity(parkingLot.getCapacity());
+        view.setStreet(parkingLot.getAddress().getStreet());
+        view.setNumber(parkingLot.getAddress().getNumber());
+        view.setZipCode(parkingLot.getAddress().getZipCode());
+
+        return view;
     }
 
 

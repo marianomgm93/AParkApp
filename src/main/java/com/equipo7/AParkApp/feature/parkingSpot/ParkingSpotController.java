@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class ParkingSpotController {
 
     private final ParkingSpotService service;
 
-
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PostMapping
     public ResponseEntity<ParkingSpotResponse> create(@Valid @RequestBody ParkingSpotRequest request) {
 
@@ -31,48 +32,53 @@ public class ParkingSpotController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @GetMapping
     public ResponseEntity<List<ParkingSpotResponse>> findAll() {
 
         return ResponseEntity.ok(service.getAllParkingSpots());
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @GetMapping("/{id}")
     public ResponseEntity<ParkingSpotResponse> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getParkingSpotById(id));
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PutMapping("/{id}")
     public ResponseEntity<ParkingSpotResponse> update(@PathVariable UUID id, @Valid @RequestBody ParkingSpotRequest request) {
 
         return ResponseEntity.ok(service.updateParkingSpot(id, request));
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.deleteParkingSpotById(id);
         return ResponseEntity.noContent().build();
     }
-
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PatchMapping("/{id}/restore")
     public ResponseEntity<Void> restore(@PathVariable UUID id) {
         service.restoreParkingSpot(id);
         return ResponseEntity.ok().build();
     }
-
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PatchMapping("/{id}/occupy")
     public ResponseEntity<Void> occupy(@PathVariable UUID id) {
         service.occupy(id);
 
         return ResponseEntity.ok().build();
     }
-
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PatchMapping("/{id}/release")
     public ResponseEntity<Void> release(@PathVariable UUID id) {
         service.release(id);
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @GetMapping("/available")
     public ResponseEntity<List<ParkingSpotResponse>> getAvailableSpots(
             @RequestParam UUID parkingLotId,

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,28 +17,33 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/vehicles")
 public class VehicleController {
-    private final IVehicleService vehicleService;
+    private final VehicleService vehicleService;
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @GetMapping
     ResponseEntity<List<VehicleDTO>> findAll(){
         return ResponseEntity.ok(vehicleService.findAll());
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @GetMapping("/{vehicleId}")
     ResponseEntity<VehicleDTO> findById(@PathVariable UUID vehicleId){
         return ResponseEntity.ok(vehicleService.findById(vehicleId));
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PostMapping
     ResponseEntity<VehicleDTO> create(@Valid @RequestBody NewVehicleDTO newVehicleDTO){
         return new ResponseEntity<>(vehicleService.save(newVehicleDTO), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PutMapping("/{vehicleId}")
-    ResponseEntity<VehicleDTO> updade(@PathVariable UUID vehicleId, @Valid @RequestBody NewVehicleDTO newVehicleDTO){
+    ResponseEntity<VehicleDTO> update(@PathVariable UUID vehicleId, @Valid @RequestBody NewVehicleDTO newVehicleDTO){
         return ResponseEntity.ok(vehicleService.update(vehicleId,newVehicleDTO));
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @DeleteMapping("/{vehicleId}")
     ResponseEntity<VehicleDTO> delete(@PathVariable UUID vehicleId){
         vehicleService.delete(vehicleId);
