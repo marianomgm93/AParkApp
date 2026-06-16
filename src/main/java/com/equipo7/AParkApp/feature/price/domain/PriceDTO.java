@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.feature.price.domain;
 
+import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEnum;
 import com.equipo7.AParkApp.feature.stay.StayType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -19,9 +20,10 @@ public class PriceDTO {
     @Positive(message = "price Must be positive")
     @NotNull(message = "price mustn't be null")
     private double price;
+    @NotNull(message = "vehicle type mustn't be null")
+    private VehicleTypeEnum vehicleType;
 
-    private UUID vehicleTypeId;
-
+    @NotNull(message = "stay type mustn't be null")
     private StayType stayType;
 }
 

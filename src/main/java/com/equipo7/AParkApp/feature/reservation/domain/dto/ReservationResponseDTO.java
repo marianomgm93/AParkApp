@@ -6,15 +6,17 @@ import com.equipo7.AParkApp.feature.stay.StayType;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public record ReservationResponseDTO (
-    LocalDateTime startTime,
-    LocalDateTime endTime,
-    UUID parkingLotId,
-    UUID parkingSpotId,
-    UUID vehicleId,
-    UUID offerId,
-    UUID userId,
-    String stayType,
-    String status
-){}
+public record ReservationResponseDTO(
+        UUID id,
+        LocalDateTime startTime,
+        LocalDateTime endTime,
+        UUID parkingLotId,
+        UUID parkingSpotId,
+        UUID vehicleId,
+        UUID offerId,
+        UUID userId,
+        String stayType,
+        String status
+) {
+}
 

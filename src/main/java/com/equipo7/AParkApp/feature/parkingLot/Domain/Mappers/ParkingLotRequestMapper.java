@@ -13,10 +13,12 @@ public class ParkingLotRequestMapper  {
 
     private final ModelMapper mapper;
 
-    public ParkingLotEntity toEntity(ParkingLotRequest dto)
-    {
+    public ParkingLotEntity toEntity(ParkingLotRequest request) {
 
-        return mapper.map(dto, ParkingLotEntity.class);
+        return ParkingLotEntity.builder()
+                .name(request.getName())
+                .capacity(request.getCapacity())
+                .build();
     }
 
     public ParkingLotRequest toDTO(ParkingLotEntity entity)

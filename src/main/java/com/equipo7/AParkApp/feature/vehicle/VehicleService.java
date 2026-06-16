@@ -36,17 +36,8 @@ public class VehicleService implements IVehicleService {
 
         }
 
-        VehicleEntity vehicle = newVehicleMapper.toEntity(newVehicleDTO);
+        VehicleEntity vehicle = creationEntity(newVehicleDTO);
 
-        UserEntity user = userRepository.findById(vehicle.getUser().getId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        VehicleTypeEntity type = vehicleTypeRepository.findById(newVehicleDTO.getVehicleTypeId())
-                .orElseThrow(() -> new EntityNotFoundException("Vehicle Type not found"));
-
-        vehicle.setVehicleType(type);
-
-        vehicle.setUser(user);
 
         VehicleEntity saved = vehicleRepository.save(vehicle);
 
@@ -63,17 +54,33 @@ public class VehicleService implements IVehicleService {
     }
 
     @Override
-    public VehicleDTO update(UUID vehicleId, NewVehicleDTO newVehicleDTO) {
+    public VehicleDTO update(UUID vehicleId, NewVehicleDTO dto) {
+
         VehicleEntity vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Vehicle not found"));
+
+        // Validar patente duplicada
+        if (!vehicle.getPlate().equals(dto.getPlate())
+                && vehicleRepository.existsByPlate(dto.getPlate())) {
+
+            throw new EntityAlreadyExistsEx(
+                    "Vehicle with plate " + dto.getPlate() + " already exists");
+        }
+
+        // Validar usuario
+        UserEntity user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() ->
+                        new EntityNotFoundException("User not found"));
 
 
-        vehicle.setPlate(newVehicleDTO.getPlate());
-        vehicle.setModel(newVehicleDTO.getModel());
-        vehicle.setColor(newVehicleDTO.getColor());
-        vehicle.setNote(newVehicleDTO.getNote());
-        vehicle.setBrand(newVehicleDTO.getBrand());
-
+        vehicle.setPlate(dto.getPlate());
+        vehicle.setModel(dto.getModel());
+        vehicle.setColor(dto.getColor());
+        vehicle.setNote(dto.getNote());
+        vehicle.setBrand(dto.getBrand());
+        vehicle.setUser(user);
+        vehicle.setVehicleType(dto.getVehicleType());
 
         VehicleEntity saved = vehicleRepository.save(vehicle);
 
@@ -90,5 +97,12 @@ public class VehicleService implements IVehicleService {
     @Override
     public List<VehicleDTO> findAll() {
         return vehicleRepository.findAll().stream().map(vehicleMapper::toDTO).toList();
+    }
+    VehicleEntity creationEntity(NewVehicleDTO newVehicleDTO) {
+        VehicleEntity vehicle = newVehicleMapper.toEntity(newVehicleDTO);
+        vehicle.setUser( userRepository.findById(newVehicleDTO.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found")));
+
+        return vehicle;
     }
 }
