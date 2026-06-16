@@ -46,6 +46,9 @@ components:
           type: string
         password:
           type: string
+      example:
+        username: admin@example.com
+        password: Secret123!
     AuthResponse:
       type: object
       additionalProperties: false
@@ -53,6 +56,8 @@ components:
       properties:
         token:
           type: string
+      example:
+        token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiJ9.signature
     NewAccountRequest:
       type: object
       additionalProperties: false
@@ -65,6 +70,10 @@ components:
         email:
           type: string
           format: email
+      example:
+        name: Juan Perez
+        password: Secret123!
+        email: juan.perez@example.com
     UserRequest:
       type: object
       additionalProperties: false
@@ -75,6 +84,9 @@ components:
         email:
           type: string
           format: email
+      example:
+        name: Juan Perez
+        email: juan.perez@example.com
     UserResponse:
       type: object
       additionalProperties: false
@@ -88,6 +100,10 @@ components:
         email:
           type: string
           format: email
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440000
+        name: Juan Perez
+        email: juan.perez@example.com
     DriverRequest:
       type: object
       additionalProperties: false
@@ -101,6 +117,11 @@ components:
           type: string
         plate:
           type: string
+      example:
+        name: Carlos Gomez
+        dni: 12345678
+        phone: 3001234567
+        plate: ABC123
     DriverModifyRequest:
       type: object
       additionalProperties: false
@@ -109,6 +130,9 @@ components:
           type: string
         phone:
           type: string
+      example:
+        name: Carlos Gomez
+        phone: 3001234567
     DriverResponse:
       type: object
       additionalProperties: false
@@ -123,6 +147,11 @@ components:
           type: string
         phone:
           type: string
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440001
+        name: Carlos Gomez
+        dni: 12345678
+        phone: 3001234567
     VehicleDTO:
       type: object
       additionalProperties: false
@@ -146,6 +175,15 @@ components:
           format: uuid
         vehicleType:
           $ref: '#/components/schemas/VehicleTypeEnum'
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440010
+        plate: ABC123
+        model: Corolla
+        color: White
+        note: Electric windows
+        brand: Toyota
+        userId: 550e8400-e29b-41d4-a716-446655440000
+        vehicleType: Car
     NewVehicleDTO:
       type: object
       additionalProperties: false
@@ -166,6 +204,14 @@ components:
           type: string
         vehicleType:
           $ref: '#/components/schemas/VehicleTypeEnum'
+      example:
+        plate: ABC123
+        userId: 550e8400-e29b-41d4-a716-446655440000
+        model: Corolla
+        color: White
+        note: Electric windows
+        brand: Toyota
+        vehicleType: Car
     VehicleTypeDTO:
       type: object
       additionalProperties: false
@@ -173,6 +219,8 @@ components:
       properties:
         name:
           type: string
+      example:
+        name: Car
     ParkingLotRequest:
       type: object
       additionalProperties: false
@@ -190,6 +238,11 @@ components:
         ownerId:
           type: string
           format: uuid
+      example:
+        name: Centro
+        addressId: 550e8400-e29b-41d4-a716-446655440100
+        capacity: 120
+        ownerId: 550e8400-e29b-41d4-a716-446655440000
     ParkingLotResponse:
       type: object
       additionalProperties: false
@@ -213,6 +266,14 @@ components:
           format: int32
         active:
           type: boolean
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440200
+        name: Centro
+        ownerId: 550e8400-e29b-41d4-a716-446655440000
+        ownerUsername: admin@example.com
+        addressId: 550e8400-e29b-41d4-a716-446655440100
+        capacity: 120
+        active: true
     ParkingLotClientView:
       type: object
       additionalProperties: false
@@ -230,6 +291,12 @@ components:
         capacity:
           type: integer
           format: int32
+      example:
+        name: Centro
+        street: Main Street
+        number: 123
+        zipCode: 110111
+        capacity: 120
     ParkingSpotRequest:
       type: object
       additionalProperties: false
@@ -246,6 +313,11 @@ components:
           type: integer
           format: int32
           minimum: 1
+      example:
+        name: A1
+        parkingLotId: 550e8400-e29b-41d4-a716-446655440200
+        active: true
+        number: 1
     ParkingSpotResponse:
       type: object
       additionalProperties: false
@@ -263,6 +335,12 @@ components:
         number:
           type: integer
           format: int32
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440300
+        name: A1
+        active: true
+        status: FREE
+        number: 1
     AddressRequest:
       type: object
       additionalProperties: false
@@ -277,6 +355,11 @@ components:
           type: string
         notes:
           type: string
+      example:
+        street: Main Street
+        number: 123
+        zipCode: 110111
+        notes: Near the mall
     AddressResponse:
       type: object
       additionalProperties: false
@@ -294,6 +377,12 @@ components:
           type: string
         notes:
           type: string
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440100
+        street: Main Street
+        number: 123
+        zipCode: 110111
+        notes: Near the mall
     OfferRequestDTO:
       type: object
       additionalProperties: false
@@ -313,6 +402,12 @@ components:
         endTime:
           type: string
           format: date-time
+      example:
+        parkingLotId: 550e8400-e29b-41d4-a716-446655440200
+        parkingSpotId: 550e8400-e29b-41d4-a716-446655440300
+        stayType: Hour
+        startTime: 2026-06-16T08:00:00
+        endTime: 2026-06-16T18:00:00
     OfferResponseDTO:
       type: object
       additionalProperties: false
@@ -337,6 +432,14 @@ components:
           format: date-time
         active:
           type: boolean
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440400
+        parkingLotId: 550e8400-e29b-41d4-a716-446655440200
+        parkingSpotId: 550e8400-e29b-41d4-a716-446655440300
+        stayType: Hour
+        startTime: 2026-06-16T08:00:00
+        endTime: 2026-06-16T18:00:00
+        active: true
     ReservationRequestDTO:
       type: object
       additionalProperties: false
@@ -365,6 +468,15 @@ components:
         userId:
           type: string
           format: uuid
+      example:
+        startTime: 2026-06-16T08:00:00
+        endTime: 2026-06-16T18:00:00
+        parkingLotId: 550e8400-e29b-41d4-a716-446655440200
+        parkingSpotId: 550e8400-e29b-41d4-a716-446655440300
+        vehicleId: 550e8400-e29b-41d4-a716-446655440010
+        offerId: 550e8400-e29b-41d4-a716-446655440400
+        stayType: Hour
+        userId: 550e8400-e29b-41d4-a716-446655440000
     ReservationUpdateRequest:
       type: object
       additionalProperties: false
@@ -382,6 +494,11 @@ components:
         vehicleId:
           type: string
           format: uuid
+      example:
+        startTime: 2026-06-16T08:00:00
+        endTime: 2026-06-16T18:00:00
+        parkingSpotId: 550e8400-e29b-41d4-a716-446655440300
+        vehicleId: 550e8400-e29b-41d4-a716-446655440010
     ReservationResponseDTO:
       type: object
       additionalProperties: false
@@ -415,6 +532,17 @@ components:
           $ref: '#/components/schemas/StayTypeEnum'
         status:
           $ref: '#/components/schemas/ReservationStatusEnum'
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440500
+        startTime: 2026-06-16T08:00:00
+        endTime: 2026-06-16T18:00:00
+        parkingLotId: 550e8400-e29b-41d4-a716-446655440200
+        parkingSpotId: 550e8400-e29b-41d4-a716-446655440300
+        vehicleId: 550e8400-e29b-41d4-a716-446655440010
+        offerId: 550e8400-e29b-41d4-a716-446655440400
+        userId: 550e8400-e29b-41d4-a716-446655440000
+        stayType: Hour
+        status: RESERVED
     AcquireOfferRequest:
       type: object
       additionalProperties: false
@@ -426,6 +554,9 @@ components:
         vehicleId:
           type: string
           format: uuid
+      example:
+        userId: 550e8400-e29b-41d4-a716-446655440000
+        vehicleId: 550e8400-e29b-41d4-a716-446655440010
     PriceDTO:
       type: object
       additionalProperties: false
@@ -442,6 +573,11 @@ components:
           $ref: '#/components/schemas/VehicleTypeEnum'
         stayType:
           $ref: '#/components/schemas/StayTypeEnum'
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440600
+        price: 15000.0
+        vehicleType: Car
+        stayType: Hour
     TicketResponseDTO:
       type: object
       additionalProperties: false
@@ -464,6 +600,13 @@ components:
           format: date-time
         note:
           type: string
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440700
+        reservationId: 550e8400-e29b-41d4-a716-446655440500
+        amount: 15000.0
+        paid: 15000.0
+        timeStamp: 2026-06-16T12:00:00
+        note: Pago confirmado
     PaidRequestDTO:
       type: object
       additionalProperties: false
@@ -475,8 +618,13 @@ components:
         pay:
           type: number
           format: double
+      example:
+        id: 550e8400-e29b-41d4-a716-446655440700
+        pay: 15000.0
 paths:
-  /api/auth/login:
+  /auth/login:
+    servers:
+      - url: http://localhost:8080/api
     post:
       tags: [Autenticación]
       summary: Inicia sesión y genera un token JWT
@@ -493,7 +641,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthResponse'
-  /api/auth/register:
+  /auth/register:
+    servers:
+      - url: http://localhost:8080/api
     post:
       tags: [Autenticación]
       summary: Registra una nueva cuenta de usuario
