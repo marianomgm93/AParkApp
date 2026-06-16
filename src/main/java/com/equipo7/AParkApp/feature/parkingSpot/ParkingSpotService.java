@@ -38,7 +38,7 @@ public class ParkingSpotService implements IParkingSpotService {
                                 request.getParkingLotId()).orElseThrow
                                 (() -> new EntityNotFoundException("Parking Lot Not Found"));
 
-        ParkingSpotEntity entity=requestMapper.toEntity(request);
+        ParkingSpotEntity entity = requestMapper.toEntity(request);
 
         entity.setParkingLot(parkingLot);
         entity.setStatus(Status.FREE);

@@ -11,8 +11,10 @@ public class OfferRequestMapper implements IMapper<OfferEntity, OfferRequestDTO>
     @Override
     public OfferEntity toEntity(OfferRequestDTO requestDTO) {
         return OfferEntity.builder()
+                .stayType(requestDTO.stayType())
                 .startTime(requestDTO.startTime())
                 .endTime(requestDTO.endTime())
+                .active(true)
                 .build();
     }
 

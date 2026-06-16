@@ -1,6 +1,7 @@
 package com.equipo7.AParkApp.feature.price;
 
 import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEntity;
+import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEnum;
 import com.equipo7.AParkApp.feature.stay.StayType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,6 +13,7 @@ import java.util.UUID;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "prices")
@@ -23,9 +25,9 @@ public class PriceEntity {
     @Column(name = "price")
     private Double price;
 
-    @ManyToOne
-    @JoinColumn(name = "vehicle_type_id")
-    private VehicleTypeEntity vehicleType;
+    @Column(nullable = false, name = "vehicle_type")
+    @Enumerated(EnumType.STRING)
+    private VehicleTypeEnum vehicleType;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

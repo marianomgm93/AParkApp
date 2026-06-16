@@ -42,13 +42,9 @@ public class PriceService {
     public PriceDTO create(PriceDTO dto) {
 
 
-        VehicleTypeEntity vehicleType = vehicleTypeRepository.findById(dto.getVehicleTypeId())
-                .orElseThrow(() -> new EntityNotFoundException("Vehicle type not found"));
-
-
         PriceEntity price = PriceEntity.builder()
                 .price(dto.getPrice())
-                .vehicleType(vehicleType)
+                .vehicleType(dto.getVehicleType())
                 .stayType(dto.getStayType())
                 .build();
 
@@ -64,12 +60,9 @@ public class PriceService {
                 .orElseThrow(() -> new EntityNotFoundException("Price not found"));
 
 
-        VehicleTypeEntity vehicleType = vehicleTypeRepository.findById(dto.getVehicleTypeId()).
-                orElseThrow(() -> new EntityNotFoundException("Vehicle type not found"));
-
 
         price.setPrice(dto.getPrice());
-        price.setVehicleType(vehicleType);
+        price.setVehicleType(dto.getVehicleType());
         price.setStayType(dto.getStayType());
 
 
@@ -92,7 +85,7 @@ public class PriceService {
         return PriceDTO.builder()
                 .id(price.getId())
                 .price(price.getPrice())
-                .vehicleTypeId(price.getVehicleType().getId())
+                .vehicleType(price.getVehicleType())
                 .stayType(price.getStayType())
                 .build();
     }

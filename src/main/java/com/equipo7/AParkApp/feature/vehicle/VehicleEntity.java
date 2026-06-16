@@ -1,6 +1,7 @@
 package com.equipo7.AParkApp.feature.vehicle;
 
 import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEntity;
+import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEnum;
 import com.equipo7.AParkApp.feature.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,9 +26,9 @@ public class VehicleEntity {
     @Column(unique = true, nullable = false)
     private String plate;
 
-    @ManyToOne
-    @JoinColumn(name = "vehicle_types_id")
-    private VehicleTypeEntity vehicleType;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false,name = "vehicle_type")
+    private VehicleTypeEnum vehicleType;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;

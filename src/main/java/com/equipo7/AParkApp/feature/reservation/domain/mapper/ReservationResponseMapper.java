@@ -21,6 +21,7 @@ public class ReservationResponseMapper implements IMapper<ReservationEntity, Res
     @Override
     public ReservationResponseDTO toDTO(ReservationEntity reservationEntity) {
         return new ReservationResponseDTO(
+                reservationEntity.getId(),
                 reservationEntity.getStartTime(),
                 reservationEntity.getEndTime(),
                 reservationEntity.getParkingLot().getId(),

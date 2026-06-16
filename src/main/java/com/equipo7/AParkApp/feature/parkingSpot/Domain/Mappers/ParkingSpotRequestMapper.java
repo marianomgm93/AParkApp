@@ -15,8 +15,11 @@ public class ParkingSpotRequestMapper  {
 
     public ParkingSpotEntity toEntity(ParkingSpotRequest dto) {
 
-
-    return mapper.map(dto,ParkingSpotEntity.class);
+        return ParkingSpotEntity.builder()
+                .name(dto.getName())
+                .active(dto.isActive())
+                .number(dto.getNumber())
+                .build();
     }
 
 

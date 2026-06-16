@@ -76,7 +76,7 @@ public class ReservationController {
     public ReservationResponseDTO cancel(@PathVariable UUID id) {
         return reservationService.cancel(id);
     }
-
+    @PreAuthorize("hasRole('CLIENT')")
     @PostMapping("/acquire-offer/{offerId}")
     @ResponseStatus(HttpStatus.CREATED)
     public ReservationResponseDTO acquireOffer(@PathVariable UUID offerId, @Valid @RequestBody AcquireOfferRequest request) {

@@ -14,10 +14,29 @@ public class NewVehicleMapper implements IMapper<VehicleEntity, NewVehicleDTO> {
     private final ModelMapper mapper;
 
     public VehicleEntity toEntity(NewVehicleDTO newVehicleDTO) {
-        return mapper.map(newVehicleDTO, VehicleEntity.class);
+        return VehicleEntity.builder()
+                .plate(newVehicleDTO.getPlate())
+                .model(newVehicleDTO.getModel())
+                .color(newVehicleDTO.getColor())
+                .note(newVehicleDTO.getNote())
+                .vehicleType(newVehicleDTO.getVehicleType())
+                .brand(newVehicleDTO.getBrand())
+                .build();
     }
 
     public NewVehicleDTO toDTO(VehicleEntity vehicleEntity) {
-        return mapper.map(vehicleEntity, NewVehicleDTO.class);
+        return NewVehicleDTO.builder()
+                .plate(vehicleEntity.getPlate())
+                .userId(
+                        vehicleEntity.getUser() != null
+                                ? vehicleEntity.getUser().getId()
+                                : null)
+                .model(vehicleEntity.getModel())
+                .color(vehicleEntity.getColor())
+                .note(vehicleEntity.getNote())
+                .brand(vehicleEntity.getBrand())
+                .vehicleType(
+                        vehicleEntity.getVehicleType())
+                .build();
     }
 }

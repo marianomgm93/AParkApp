@@ -31,7 +31,7 @@ public class TicketController {
         return service.findToday();
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE','CLIENT')")
     @PostMapping("/pay")
     @ResponseStatus(HttpStatus.OK)
     public TicketResponseDTO addPay(@Valid @RequestBody PaidRequestDTO request) {

@@ -38,7 +38,7 @@ public class VehicleTypeService implements IVehicleTypeService {
         VehicleTypeEntity vehicleType = vehicleTypeRepository.findById(vehicleTypeId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        vehicleType.setName(vehicleTypeDTO.name());
+        vehicleType.setName(vehicleTypeDTO.getName());
 
         VehicleTypeEntity saved = vehicleTypeRepository.save(vehicleType);
         return vehicleTypeMapper.toDTO(saved);
