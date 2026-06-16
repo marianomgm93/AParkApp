@@ -1,0 +1,1787 @@
+openapi: 3.0.3
+info:
+  title: AParkApp API
+  version: 1.0.0
+  description: Documentación OpenAPI de los endpoints disponibles en la carpeta feature.
+servers:
+  - url: http://localhost:8080
+tags:
+  - name: Autenticación
+  - name: Usuarios
+  - name: Conductores
+  - name: Vehículos
+  - name: Tipos de vehículo
+  - name: Parqueaderos
+  - name: Celdas de parqueo
+  - name: Direcciones
+  - name: Ofertas
+  - name: Reservas
+  - name: Precios
+  - name: Tickets
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    VehicleTypeEnum:
+      type: string
+      enum: [Car, MotorCycle, Truck, SUV, Custom]
+    StayTypeEnum:
+      type: string
+      enum: [Hour, Day, Week, Month]
+    ReservationStatusEnum:
+      type: string
+      enum: [RESERVED, CHECKED_IN, COMPLETED, CANCELLED]
+    ParkingSpotStatusEnum:
+      type: string
+      enum: [OCCUPIED, FREE]
+    AuthRequest:
+      type: object
+      additionalProperties: false
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    AuthResponse:
+      type: object
+      additionalProperties: false
+      required: [token]
+      properties:
+        token:
+          type: string
+    NewAccountRequest:
+      type: object
+      additionalProperties: false
+      required: [name, password, email]
+      properties:
+        name:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+          format: email
+    UserRequest:
+      type: object
+      additionalProperties: false
+      required: [name, email]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+    UserResponse:
+      type: object
+      additionalProperties: false
+      required: [id, name, email]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+    DriverRequest:
+      type: object
+      additionalProperties: false
+      required: [name, dni, phone, plate]
+      properties:
+        name:
+          type: string
+        dni:
+          type: string
+        phone:
+          type: string
+        plate:
+          type: string
+    DriverModifyRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+    DriverResponse:
+      type: object
+      additionalProperties: false
+      required: [id, name, dni, phone]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        dni:
+          type: string
+        phone:
+          type: string
+    VehicleDTO:
+      type: object
+      additionalProperties: false
+      required: [id, plate, model, color, brand, userId, vehicleType]
+      properties:
+        id:
+          type: string
+          format: uuid
+        plate:
+          type: string
+        model:
+          type: string
+        color:
+          type: string
+        note:
+          type: string
+        brand:
+          type: string
+        userId:
+          type: string
+          format: uuid
+        vehicleType:
+          $ref: '#/components/schemas/VehicleTypeEnum'
+    NewVehicleDTO:
+      type: object
+      additionalProperties: false
+      required: [plate, userId, model, color, brand, vehicleType]
+      properties:
+        plate:
+          type: string
+        userId:
+          type: string
+          format: uuid
+        model:
+          type: string
+        color:
+          type: string
+        note:
+          type: string
+        brand:
+          type: string
+        vehicleType:
+          $ref: '#/components/schemas/VehicleTypeEnum'
+    VehicleTypeDTO:
+      type: object
+      additionalProperties: false
+      required: [name]
+      properties:
+        name:
+          type: string
+    ParkingLotRequest:
+      type: object
+      additionalProperties: false
+      required: [name, addressId, capacity, ownerId]
+      properties:
+        name:
+          type: string
+        addressId:
+          type: string
+          format: uuid
+        capacity:
+          type: integer
+          format: int32
+          minimum: 1
+        ownerId:
+          type: string
+          format: uuid
+    ParkingLotResponse:
+      type: object
+      additionalProperties: false
+      required: [id, name, ownerId, ownerUsername, addressId, capacity, active]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        ownerId:
+          type: string
+          format: uuid
+        ownerUsername:
+          type: string
+        addressId:
+          type: string
+          format: uuid
+        capacity:
+          type: integer
+          format: int32
+        active:
+          type: boolean
+    ParkingLotClientView:
+      type: object
+      additionalProperties: false
+      required: [name, street, number, zipCode, capacity]
+      properties:
+        name:
+          type: string
+        street:
+          type: string
+        number:
+          type: integer
+          format: int32
+        zipCode:
+          type: string
+        capacity:
+          type: integer
+          format: int32
+    ParkingSpotRequest:
+      type: object
+      additionalProperties: false
+      required: [name, parkingLotId, active, number]
+      properties:
+        name:
+          type: string
+        parkingLotId:
+          type: string
+          format: uuid
+        active:
+          type: boolean
+        number:
+          type: integer
+          format: int32
+          minimum: 1
+    ParkingSpotResponse:
+      type: object
+      additionalProperties: false
+      required: [id, name, active, status, number]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        active:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/ParkingSpotStatusEnum'
+        number:
+          type: integer
+          format: int32
+    AddressRequest:
+      type: object
+      additionalProperties: false
+      required: [street, number, zipCode]
+      properties:
+        street:
+          type: string
+        number:
+          type: integer
+          format: int32
+        zipCode:
+          type: string
+        notes:
+          type: string
+    AddressResponse:
+      type: object
+      additionalProperties: false
+      required: [id, street, number, zipCode, notes]
+      properties:
+        id:
+          type: string
+          format: uuid
+        street:
+          type: string
+        number:
+          type: integer
+          format: int32
+        zipCode:
+          type: string
+        notes:
+          type: string
+    OfferRequestDTO:
+      type: object
+      additionalProperties: false
+      required: [parkingLotId, stayType, startTime, endTime]
+      properties:
+        parkingLotId:
+          type: string
+          format: uuid
+        parkingSpotId:
+          type: string
+          format: uuid
+        stayType:
+          $ref: '#/components/schemas/StayTypeEnum'
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    OfferResponseDTO:
+      type: object
+      additionalProperties: false
+      required: [id, parkingLotId, parkingSpotId, stayType, startTime, endTime, active]
+      properties:
+        id:
+          type: string
+          format: uuid
+        parkingLotId:
+          type: string
+          format: uuid
+        parkingSpotId:
+          type: string
+          format: uuid
+        stayType:
+          $ref: '#/components/schemas/StayTypeEnum'
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+    ReservationRequestDTO:
+      type: object
+      additionalProperties: false
+      required: [startTime, parkingLotId, vehicleId, userId]
+      properties:
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        parkingLotId:
+          type: string
+          format: uuid
+        parkingSpotId:
+          type: string
+          format: uuid
+        vehicleId:
+          type: string
+          format: uuid
+        offerId:
+          type: string
+          format: uuid
+        stayType:
+          $ref: '#/components/schemas/StayTypeEnum'
+        userId:
+          type: string
+          format: uuid
+    ReservationUpdateRequest:
+      type: object
+      additionalProperties: false
+      required: [startTime, vehicleId]
+      properties:
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        parkingSpotId:
+          type: string
+          format: uuid
+        vehicleId:
+          type: string
+          format: uuid
+    ReservationResponseDTO:
+      type: object
+      additionalProperties: false
+      required: [id, startTime, endTime, parkingLotId, parkingSpotId, vehicleId, offerId, userId, stayType, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        parkingLotId:
+          type: string
+          format: uuid
+        parkingSpotId:
+          type: string
+          format: uuid
+        vehicleId:
+          type: string
+          format: uuid
+        offerId:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        stayType:
+          $ref: '#/components/schemas/StayTypeEnum'
+        status:
+          $ref: '#/components/schemas/ReservationStatusEnum'
+    AcquireOfferRequest:
+      type: object
+      additionalProperties: false
+      required: [userId, vehicleId]
+      properties:
+        userId:
+          type: string
+          format: uuid
+        vehicleId:
+          type: string
+          format: uuid
+    PriceDTO:
+      type: object
+      additionalProperties: false
+      required: [id, price, vehicleType, stayType]
+      properties:
+        id:
+          type: string
+          format: uuid
+        price:
+          type: number
+          format: double
+          exclusiveMinimum: 0
+        vehicleType:
+          $ref: '#/components/schemas/VehicleTypeEnum'
+        stayType:
+          $ref: '#/components/schemas/StayTypeEnum'
+    TicketResponseDTO:
+      type: object
+      additionalProperties: false
+      required: [id, reservationId, amount, paid, timeStamp, note]
+      properties:
+        id:
+          type: string
+          format: uuid
+        reservationId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: double
+        paid:
+          type: number
+          format: double
+        timeStamp:
+          type: string
+          format: date-time
+        note:
+          type: string
+    PaidRequestDTO:
+      type: object
+      additionalProperties: false
+      required: [id, pay]
+      properties:
+        id:
+          type: string
+          format: uuid
+        pay:
+          type: number
+          format: double
+paths:
+  /api/auth/login:
+    post:
+      tags: [Autenticación]
+      summary: Inicia sesión y genera un token JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Token generado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /api/auth/register:
+    post:
+      tags: [Autenticación]
+      summary: Registra una nueva cuenta de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAccountRequest'
+      responses:
+        '201':
+          description: Usuario registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+  /user:
+    get:
+      tags: [Usuarios]
+      security:
+        - bearerAuth: []
+      summary: Lista todos los usuarios
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserResponse'
+    post:
+      tags: [Usuarios]
+      security:
+        - bearerAuth: []
+      summary: Crea un usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAccountRequest'
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+  /user/{id}:
+    get:
+      tags: [Usuarios]
+      security:
+        - bearerAuth: []
+      summary: Obtiene un usuario por id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+    put:
+      tags: [Usuarios]
+      security:
+        - bearerAuth: []
+      summary: Actualiza un usuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Usuario actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+    delete:
+      tags: [Usuarios]
+      security:
+        - bearerAuth: []
+      summary: Elimina un usuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Usuario eliminado
+  /user/email:
+    get:
+      tags: [Usuarios]
+      security:
+        - bearerAuth: []
+      summary: Obtiene un usuario por correo electrónico
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+  /drivers:
+    get:
+      tags: [Conductores]
+      security:
+        - bearerAuth: []
+      summary: Lista todos los conductores
+      responses:
+        '200':
+          description: Lista de conductores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DriverResponse'
+    post:
+      tags: [Conductores]
+      security:
+        - bearerAuth: []
+      summary: Crea un conductor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverRequest'
+      responses:
+        '201':
+          description: Conductor creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverResponse'
+  /drivers/active:
+    get:
+      tags: [Conductores]
+      security:
+        - bearerAuth: []
+      summary: Lista los conductores activos
+      responses:
+        '200':
+          description: Lista de conductores activos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DriverResponse'
+  /drivers/{dni}:
+    get:
+      tags: [Conductores]
+      security:
+        - bearerAuth: []
+      summary: Obtiene un conductor por DNI
+      parameters:
+        - name: dni
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Conductor encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverResponse'
+    patch:
+      tags: [Conductores]
+      security:
+        - bearerAuth: []
+      summary: Actualiza un conductor
+      parameters:
+        - name: dni
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverModifyRequest'
+      responses:
+        '200':
+          description: Conductor actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverResponse'
+    delete:
+      tags: [Conductores]
+      security:
+        - bearerAuth: []
+      summary: Elimina un conductor
+      parameters:
+        - name: dni
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Conductor eliminado
+  /drivers/{dni}/vehicles/{plate}:
+    post:
+      tags: [Conductores]
+      security:
+        - bearerAuth: []
+      summary: Asocia un vehículo a un conductor
+      parameters:
+        - name: dni
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: plate
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asociación realizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverResponse'
+    delete:
+      tags: [Conductores]
+      security:
+        - bearerAuth: []
+      summary: Desasocia un vehículo de un conductor
+      parameters:
+        - name: dni
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: plate
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Asociación eliminada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverResponse'
+  /vehicles:
+    get:
+      tags: [Vehículos]
+      security:
+        - bearerAuth: []
+      summary: Lista todos los vehículos
+      responses:
+        '200':
+          description: Lista de vehículos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleDTO'
+    post:
+      tags: [Vehículos]
+      security:
+        - bearerAuth: []
+      summary: Crea un vehículo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewVehicleDTO'
+      responses:
+        '201':
+          description: Vehículo creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleDTO'
+  /vehicles/{vehicleId}:
+    get:
+      tags: [Vehículos]
+      security:
+        - bearerAuth: []
+      summary: Obtiene un vehículo por id
+      parameters:
+        - name: vehicleId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Vehículo encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleDTO'
+    put:
+      tags: [Vehículos]
+      security:
+        - bearerAuth: []
+      summary: Actualiza un vehículo
+      parameters:
+        - name: vehicleId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewVehicleDTO'
+      responses:
+        '200':
+          description: Vehículo actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleDTO'
+    delete:
+      tags: [Vehículos]
+      security:
+        - bearerAuth: []
+      summary: Elimina un vehículo
+      parameters:
+        - name: vehicleId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Vehículo eliminado
+  /vehicle-type:
+    get:
+      tags: [Tipos de vehículo]
+      security:
+        - bearerAuth: []
+      summary: Lista los tipos de vehículo
+      responses:
+        '200':
+          description: Lista de tipos de vehículo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VehicleTypeDTO'
+    post:
+      tags: [Tipos de vehículo]
+      security:
+        - bearerAuth: []
+      summary: Crea un tipo de vehículo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleTypeDTO'
+      responses:
+        '201':
+          description: Tipo de vehículo creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleTypeDTO'
+  /vehicle-type/{vehicleTypeId}:
+    get:
+      tags: [Tipos de vehículo]
+      security:
+        - bearerAuth: []
+      summary: Obtiene un tipo de vehículo por id
+      parameters:
+        - name: vehicleTypeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Tipo de vehículo encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleTypeDTO'
+    put:
+      tags: [Tipos de vehículo]
+      security:
+        - bearerAuth: []
+      summary: Actualiza un tipo de vehículo
+      parameters:
+        - name: vehicleTypeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleTypeDTO'
+      responses:
+        '200':
+          description: Tipo de vehículo actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleTypeDTO'
+    delete:
+      tags: [Tipos de vehículo]
+      security:
+        - bearerAuth: []
+      summary: Elimina un tipo de vehículo
+      parameters:
+        - name: vehicleTypeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Tipo de vehículo eliminado
+  /ParkingLot:
+    get:
+      tags: [Parqueaderos]
+      security:
+        - bearerAuth: []
+      summary: Lista todos los parqueaderos
+      responses:
+        '200':
+          description: Lista de parqueaderos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParkingLotResponse'
+    post:
+      tags: [Parqueaderos]
+      security:
+        - bearerAuth: []
+      summary: Crea un parqueadero
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParkingLotRequest'
+      responses:
+        '201':
+          description: Parqueadero creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkingLotResponse'
+  /ParkingLot/active:
+    get:
+      tags: [Parqueaderos]
+      security:
+        - bearerAuth: []
+      summary: Lista los parqueaderos activos
+      responses:
+        '200':
+          description: Parqueaderos activos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParkingLotResponse'
+  /ParkingLot/{id}:
+    put:
+      tags: [Parqueaderos]
+      security:
+        - bearerAuth: []
+      summary: Actualiza un parqueadero
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParkingLotRequest'
+      responses:
+        '200':
+          description: Parqueadero actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkingLotResponse'
+    delete:
+      tags: [Parqueaderos]
+      security:
+        - bearerAuth: []
+      summary: Elimina un parqueadero
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Parqueadero eliminado
+  /ParkingLot/{id}/restore:
+    patch:
+      tags: [Parqueaderos]
+      security:
+        - bearerAuth: []
+      summary: Restaura un parqueadero eliminado
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Parqueadero restaurado
+  /ParkingLot/client:
+    get:
+      tags: [Parqueaderos]
+      security:
+        - bearerAuth: []
+      summary: Lista los parqueaderos visibles para cliente
+      responses:
+        '200':
+          description: Vista cliente de parqueaderos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParkingLotClientView'
+  /parkingspots:
+    get:
+      tags: [Celdas de parqueo]
+      security:
+        - bearerAuth: []
+      summary: Lista todas las celdas de parqueo
+      responses:
+        '200':
+          description: Lista de celdas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParkingSpotResponse'
+    post:
+      tags: [Celdas de parqueo]
+      security:
+        - bearerAuth: []
+      summary: Crea una celda de parqueo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParkingSpotRequest'
+      responses:
+        '201':
+          description: Celda creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkingSpotResponse'
+  /parkingspots/{id}:
+    get:
+      tags: [Celdas de parqueo]
+      security:
+        - bearerAuth: []
+      summary: Obtiene una celda de parqueo por id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Celda encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkingSpotResponse'
+    put:
+      tags: [Celdas de parqueo]
+      security:
+        - bearerAuth: []
+      summary: Actualiza una celda de parqueo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParkingSpotRequest'
+      responses:
+        '200':
+          description: Celda actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParkingSpotResponse'
+    delete:
+      tags: [Celdas de parqueo]
+      security:
+        - bearerAuth: []
+      summary: Elimina una celda de parqueo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Celda eliminada
+  /parkingspots/{id}/restore:
+    patch:
+      tags: [Celdas de parqueo]
+      security:
+        - bearerAuth: []
+      summary: Restaura una celda de parqueo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Celda restaurada
+  /parkingspots/{id}/occupy:
+    patch:
+      tags: [Celdas de parqueo]
+      security:
+        - bearerAuth: []
+      summary: Marca una celda como ocupada
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Celda ocupada
+  /parkingspots/{id}/release:
+    patch:
+      tags: [Celdas de parqueo]
+      security:
+        - bearerAuth: []
+      summary: Libera una celda ocupada
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Celda liberada
+  /parkingspots/available:
+    get:
+      tags: [Celdas de parqueo]
+      security:
+        - bearerAuth: []
+      summary: Consulta celdas disponibles en un rango horario
+      parameters:
+        - name: parkingLotId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: startTime
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: endTime
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Celdas disponibles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParkingSpotResponse'
+  /Addresses:
+    get:
+      tags: [Direcciones]
+      security:
+        - bearerAuth: []
+      summary: Lista todas las direcciones
+      responses:
+        '200':
+          description: Lista de direcciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AddressResponse'
+    post:
+      tags: [Direcciones]
+      security:
+        - bearerAuth: []
+      summary: Crea una dirección
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressRequest'
+      responses:
+        '201':
+          description: Dirección creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressResponse'
+  /Addresses/{id}:
+    get:
+      tags: [Direcciones]
+      security:
+        - bearerAuth: []
+      summary: Obtiene una dirección por id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Dirección encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressResponse'
+    patch:
+      tags: [Direcciones]
+      security:
+        - bearerAuth: []
+      summary: Actualiza una dirección
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressRequest'
+      responses:
+        '200':
+          description: Dirección actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressResponse'
+    delete:
+      tags: [Direcciones]
+      security:
+        - bearerAuth: []
+      summary: Elimina una dirección
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Dirección eliminada
+  /offer:
+    get:
+      tags: [Ofertas]
+      security:
+        - bearerAuth: []
+      summary: Lista las ofertas activas
+      responses:
+        '200':
+          description: Lista de ofertas activas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OfferResponseDTO'
+    post:
+      tags: [Ofertas]
+      security:
+        - bearerAuth: []
+      summary: Crea una oferta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfferRequestDTO'
+      responses:
+        '201':
+          description: Oferta creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponseDTO'
+  /offer/{id}:
+    get:
+      tags: [Ofertas]
+      security:
+        - bearerAuth: []
+      summary: Obtiene una oferta por id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Oferta encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponseDTO'
+    put:
+      tags: [Ofertas]
+      security:
+        - bearerAuth: []
+      summary: Actualiza una oferta
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfferRequestDTO'
+      responses:
+        '200':
+          description: Oferta actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponseDTO'
+    delete:
+      tags: [Ofertas]
+      security:
+        - bearerAuth: []
+      summary: Elimina una oferta
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Oferta eliminada
+  /reservation:
+    get:
+      tags: [Reservas]
+      security:
+        - bearerAuth: []
+      summary: Lista todas las reservas
+      responses:
+        '200':
+          description: Lista de reservas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReservationResponseDTO'
+    post:
+      tags: [Reservas]
+      security:
+        - bearerAuth: []
+      summary: Crea una reserva
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationRequestDTO'
+      responses:
+        '201':
+          description: Reserva creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponseDTO'
+  /reservation/{id}:
+    get:
+      tags: [Reservas]
+      security:
+        - bearerAuth: []
+      summary: Obtiene una reserva por id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Reserva encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponseDTO'
+    put:
+      tags: [Reservas]
+      security:
+        - bearerAuth: []
+      summary: Actualiza una reserva
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationUpdateRequest'
+      responses:
+        '200':
+          description: Reserva actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponseDTO'
+  /reservation/vehicle:
+    get:
+      tags: [Reservas]
+      security:
+        - bearerAuth: []
+      summary: Lista reservas por patente de vehículo
+      parameters:
+        - name: plate
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reservas encontradas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReservationResponseDTO'
+  /reservation/{id}/check-in:
+    patch:
+      tags: [Reservas]
+      security:
+        - bearerAuth: []
+      summary: Registra el check-in de una reserva
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Reserva actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponseDTO'
+  /reservation/{id}/check-out:
+    patch:
+      tags: [Reservas]
+      security:
+        - bearerAuth: []
+      summary: Registra el check-out de una reserva
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Reserva actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponseDTO'
+  /reservation/{id}/cancel:
+    patch:
+      tags: [Reservas]
+      security:
+        - bearerAuth: []
+      summary: Cancela una reserva
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Reserva cancelada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponseDTO'
+  /reservation/acquire-offer/{offerId}:
+    post:
+      tags: [Reservas]
+      security:
+        - bearerAuth: []
+      summary: Adquiere una oferta y crea la reserva
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcquireOfferRequest'
+      responses:
+        '201':
+          description: Reserva creada desde oferta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationResponseDTO'
+  /prices:
+    get:
+      tags: [Precios]
+      security:
+        - bearerAuth: []
+      summary: Lista todos los precios
+      responses:
+        '200':
+          description: Lista de precios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PriceDTO'
+    post:
+      tags: [Precios]
+      security:
+        - bearerAuth: []
+      summary: Crea un precio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceDTO'
+      responses:
+        '200':
+          description: Precio creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceDTO'
+  /prices/{id}:
+    get:
+      tags: [Precios]
+      security:
+        - bearerAuth: []
+      summary: Obtiene un precio por id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Precio encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceDTO'
+    patch:
+      tags: [Precios]
+      security:
+        - bearerAuth: []
+      summary: Actualiza un precio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceDTO'
+      responses:
+        '200':
+          description: Precio actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceDTO'
+    delete:
+      tags: [Precios]
+      security:
+        - bearerAuth: []
+      summary: Elimina un precio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Precio eliminado
+  /tickets:
+    get:
+      tags: [Tickets]
+      security:
+        - bearerAuth: []
+      summary: Lista todos los tickets
+      responses:
+        '200':
+          description: Lista de tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TicketResponseDTO'
+  /tickets/today:
+    get:
+      tags: [Tickets]
+      security:
+        - bearerAuth: []
+      summary: Lista los tickets de hoy
+      responses:
+        '200':
+          description: Lista de tickets del día
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TicketResponseDTO'
+  /tickets/pay:
+    post:
+      tags: [Tickets]
+      security:
+        - bearerAuth: []
+      summary: Registra el pago de un ticket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaidRequestDTO'
+      responses:
+        '200':
+          description: Ticket pagado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponseDTO'
+  /tickets/{id}:
+    delete:
+      tags: [Tickets]
+      security:
+        - bearerAuth: []
+      summary: Cancela un ticket
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Ticket cancelado

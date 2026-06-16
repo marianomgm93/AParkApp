@@ -1,6 +1,9 @@
 package com.equipo7.AParkApp.feature.price;
 
 import com.equipo7.AParkApp.feature.price.domain.PriceDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +15,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/prices")
 @RequiredArgsConstructor
+@Tag(name = "Precios", description = "Gestión de tarifas y precios")
+@SecurityRequirement(name = "bearerAuth")
 public class PriceController {
 
 
@@ -20,6 +25,7 @@ public class PriceController {
 
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @GetMapping
+    @Operation(summary = "Lista todos los precios")
     public ResponseEntity<List<PriceDTO>> findAll() {
 
         return ResponseEntity.ok(priceService.findAll());
@@ -27,6 +33,7 @@ public class PriceController {
 
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @GetMapping("/{id}")
+    @Operation(summary = "Obtiene un precio por id")
     public ResponseEntity<PriceDTO> findById(@PathVariable UUID id) {
 
         return ResponseEntity.ok(priceService.findById(id));
@@ -34,6 +41,7 @@ public class PriceController {
 
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PostMapping
+    @Operation(summary = "Crea un precio")
     public ResponseEntity<PriceDTO> create(@RequestBody PriceDTO dto) {
 
         return ResponseEntity.ok(priceService.create(dto));
@@ -41,6 +49,7 @@ public class PriceController {
 
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PatchMapping("/{id}")
+    @Operation(summary = "Actualiza un precio")
     public ResponseEntity<PriceDTO> update(
             @PathVariable UUID id,
             @RequestBody PriceDTO dto) {
@@ -50,6 +59,7 @@ public class PriceController {
 
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @DeleteMapping("/{id}")
+    @Operation(summary = "Elimina un precio")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
 
         priceService.delete(id);
