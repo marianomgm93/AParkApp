@@ -36,14 +36,24 @@ public class DatabaseInitializerConfig {
             PermitEntity verUsuarios = permitRepository.save(PermitEntity.builder().permit(Permits.ELIMINAR_USUARIO).build());
 
             // 3. Crear y guardar Roles asignando los permisos correspondientes
-            RoleEntity roleUser = new RoleEntity(Roles.ROLE_CLIENT);
-            roleUser.getPermits().add(crearCuenta);
-            roleRepository.save(roleUser);
+            RoleEntity roleClient = new RoleEntity(Roles.ROLE_CLIENT);
+            roleClient.getPermits().add(crearCuenta);
+            roleRepository.save(roleClient);
 
             RoleEntity roleAdmin = new RoleEntity(Roles.ROLE_ADMIN);
             roleAdmin.getPermits().add(crearCuenta);
             roleAdmin.getPermits().add(verUsuarios);
             roleRepository.save(roleAdmin);
+            ////
+            RoleEntity roleOwner = new RoleEntity(Roles.ROLE_OWNER);
+            roleOwner.getPermits().add(crearCuenta);
+            roleOwner.getPermits().add(verUsuarios);
+            roleRepository.save(roleOwner);
+
+            RoleEntity roleEmployee = new RoleEntity(Roles.ROLE_EMPLOYEE);
+            roleEmployee.getPermits().add(crearCuenta);
+            roleEmployee.getPermits().add(verUsuarios);
+            roleRepository.save(roleEmployee);
 
             // 4. Crear los 10 usuarios de prueba en un bucle
             String passwordPlano = "password123";
@@ -60,6 +70,37 @@ public class DatabaseInitializerConfig {
             adminCreds.setUsuario(adminUser);
             adminCreds.getRoles().add(roleAdmin);
             credentialsRepository.save(adminCreds);
+
+            // Ejemplo: Crear Owner
+            UserEntity ownerUser = UserEntity.builder().email("owner@example.com").name("casca").active(true).build();
+            userRepository.save(ownerUser);
+
+            CredentialsEntity ownerCreds = new CredentialsEntity();
+            ownerCreds.setUsername("owner");
+            ownerCreds.setPassword(passwordEncriptada); // Guardamos el hash generado en vivo
+            ownerCreds.setEnabled(true);
+            ownerCreds.setUsuario(ownerUser);
+            ownerCreds.getRoles().add(roleOwner);
+            credentialsRepository.save(ownerCreds);
+
+            // Ejemplo: Crear Client
+            UserEntity clientUser = UserEntity.builder()
+                    .email("client@example.com")
+                    .name("juan")
+                    .active(true)
+                    .build();
+
+            userRepository.save(clientUser);
+
+            CredentialsEntity clientCreds = new CredentialsEntity();
+            clientCreds.setUsername("client");
+            clientCreds.setPassword(passwordEncriptada);
+            clientCreds.setEnabled(true);
+            clientCreds.setUsuario(clientUser);
+            clientCreds.getRoles().add(roleClient);
+
+            credentialsRepository.save(clientCreds);
+
 /*
             // Ejemplo: Crear los 9 usuarios restantes con un for-loop dinámico
             for (int i = 1; i <= 9; i++) {
