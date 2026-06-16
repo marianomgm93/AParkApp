@@ -1,11 +1,15 @@
 package com.equipo7.AParkApp.feature.vehicle;
 
+import com.equipo7.AParkApp.common.model.exceptions.EntityAlreadyExistsEx;
+import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEntity;
+import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeRepository;
+import com.equipo7.AParkApp.feature.user.UserEntity;
+import com.equipo7.AParkApp.feature.user.UserRepository;
 import com.equipo7.AParkApp.feature.vehicle.domain.dto.NewVehicleDTO;
 import com.equipo7.AParkApp.feature.vehicle.domain.dto.VehicleDTO;
 import com.equipo7.AParkApp.feature.vehicle.domain.mappers.NewVehicleMapper;
 import com.equipo7.AParkApp.feature.vehicle.domain.mappers.VehicleMapper;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +24,33 @@ public class VehicleService implements IVehicleService {
 
     private final NewVehicleMapper newVehicleMapper;
     private final VehicleMapper vehicleMapper;
+    private final UserRepository userRepository;
+    private final VehicleTypeRepository vehicleTypeRepository;
 
     @Override
     public VehicleDTO save(NewVehicleDTO newVehicleDTO) {
-        System.out.println(newVehicleDTO);
-        VehicleEntity saved = vehicleRepository.save(newVehicleMapper.toEntity(newVehicleDTO));
-        System.out.println(saved);
+
+        if (vehicleRepository.existsByPlate(newVehicleDTO.getPlate())) {
+
+            throw new EntityAlreadyExistsEx("Vehicle with plate " + newVehicleDTO.getPlate() + " already exists");
+
+        }
+
+        VehicleEntity vehicle = newVehicleMapper.toEntity(newVehicleDTO);
+
+        UserEntity user = userRepository.findById(vehicle.getUser().getId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        VehicleTypeEntity type = vehicleTypeRepository.findById(newVehicleDTO.getVehicleTypeId())
+                .orElseThrow(() -> new EntityNotFoundException("Vehicle Type not found"));
+
+        vehicle.setVehicleType(type);
+
+        vehicle.setUser(user);
+
+        VehicleEntity saved = vehicleRepository.save(vehicle);
+
+
         return vehicleMapper.toDTO(saved);
     }
 
