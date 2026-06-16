@@ -13,6 +13,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "users")
 public class UserEntity {
     @Id
@@ -24,4 +25,6 @@ public class UserEntity {
 
     @Column(unique = true,nullable = false)
     private String email;
+
+    private boolean active;
 }

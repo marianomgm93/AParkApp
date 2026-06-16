@@ -1,8 +1,9 @@
 package com.equipo7.AParkApp.feature.reservation;
 
 import com.equipo7.AParkApp.feature.offer.OfferEntity;
-import com.equipo7.AParkApp.feature.parkingLot.ParkingLotEntity;
-import com.equipo7.AParkApp.feature.ticket.TicketEntity;
+import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
+import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
+import com.equipo7.AParkApp.feature.stay.StayType;
 import com.equipo7.AParkApp.feature.user.UserEntity;
 import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
 import jakarta.persistence.*;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "reservations")
@@ -26,21 +28,33 @@ public class ReservationEntity {
 
     private LocalDateTime endTime;
 
-    private String status;
+    private ReservationStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parking_lot_id")
     private ParkingLotEntity parkingLot;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parking_spot_id", nullable = true)
+    private ParkingSpotEntity parkingSpot;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_id")
     private VehicleEntity vehicle;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "offer_id")
     private OfferEntity offer;
 
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
+    @Column(name = "stay_type",nullable = false)
+    private StayType stayType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
+    @Column(name = "check_in_time")
+    private LocalDateTime checkInTime;
+    @Column(name = "check_out_time")
+    private LocalDateTime checkOutTime;
 }
