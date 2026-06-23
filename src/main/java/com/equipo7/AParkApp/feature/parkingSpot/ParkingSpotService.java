@@ -68,12 +68,12 @@ public class ParkingSpotService implements IParkingSpotService {
     public ParkingSpotResponse updateParkingSpot(UUID id, ParkingSpotRequest request) {
 
         ParkingSpotEntity entity = repository.findByIdAndActiveTrue(id)
-                        .orElseThrow(() -> new EntityNotFoundException("Lugar no encontrado"));
+                        .orElseThrow(() -> new EntityNotFoundException("Parking Spot not found"));
 
 
         ParkingLotEntity parkingLot = parkingLotRepository.
                 findByIdAndActiveTrue(request.getParkingLotId())
-                        .orElseThrow(() -> new EntityNotFoundException("Cochera no encontrada"));
+                        .orElseThrow(() -> new EntityNotFoundException("Parking LOT not found"));
 
         entity.setNumber(request.getNumber());
         entity.setParkingLot(parkingLot);
@@ -86,7 +86,7 @@ public class ParkingSpotService implements IParkingSpotService {
     @Override
     public void deleteParkingSpotById(UUID id) {
         ParkingSpotEntity entity=repository.findByIdAndActiveTrue(id)
-                .orElseThrow(() -> new EntityNotFoundException("Lugar no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Parking Spot not found"));
 
         entity.setActive(false);
         entity.setStatus(Status.FREE);
@@ -97,7 +97,7 @@ public class ParkingSpotService implements IParkingSpotService {
     public void restoreParkingSpot(UUID id) {
 
         ParkingSpotEntity entity=repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Lugar no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Parking Spot not found"));
 
         entity.setActive(true);
         entity.setStatus(Status.FREE);
@@ -108,7 +108,7 @@ public class ParkingSpotService implements IParkingSpotService {
     @Override
     public void occupy(UUID id) {
         ParkingSpotEntity entity=repository.findByIdAndActiveTrue(id)
-                .orElseThrow(() -> new EntityNotFoundException("Lugar no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Parking Spot not found"));
 
         entity.setActive(true);
         entity.setStatus(Status.OCCUPIED);
@@ -119,7 +119,7 @@ public class ParkingSpotService implements IParkingSpotService {
     @Override
     public void release(UUID id) {
         ParkingSpotEntity entity=repository.findByIdAndActiveTrue(id).
-                orElseThrow(() -> new EntityNotFoundException("Lugar no encontrado"));
+                orElseThrow(() -> new EntityNotFoundException("Parking Spot not found"));
 
         entity.setActive(false);
         entity.setStatus(Status.FREE);

@@ -5,11 +5,13 @@ import com.equipo7.AParkApp.feature.address.domain.dto.AddressRequest;
 import com.equipo7.AParkApp.feature.address.domain.dto.AddressResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
+@Setter
 @Getter
 public class AddressResponseMapper {
 

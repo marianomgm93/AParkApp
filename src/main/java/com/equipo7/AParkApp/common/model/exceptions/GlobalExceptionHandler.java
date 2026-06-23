@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,7 +33,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ExceptionDto> BadArguments(MethodArgumentNotValidException ex) {
 
-        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + Objects.requireNonNullElse(error.getDefaultMessage(),
+                        "Invalid value")).collect(Collectors.joining(", "));
+
+        return buildResponse(HttpStatus.BAD_REQUEST, message);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

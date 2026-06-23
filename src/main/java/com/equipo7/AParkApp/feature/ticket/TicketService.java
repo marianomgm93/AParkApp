@@ -50,6 +50,7 @@ public class TicketService implements ITicketService {
     @Override
     @Transactional
     public TicketResponseDTO create(TicketRequestDTO request) {
+
         return responseMapper.toDTO(repository.save(createEntity(request)));
     }
 

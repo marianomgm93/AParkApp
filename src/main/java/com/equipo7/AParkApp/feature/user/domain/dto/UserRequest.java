@@ -10,9 +10,10 @@ import lombok.*;
 @Setter
 @Builder
 public class UserRequest {
-    @NotBlank(message = "username cannot be void")
+    @NotBlank(message = "username cannot be Blank")
     String name;
+
     @NotBlank
-    @Email(message = "intro a valid email")
+    @Email(message = "Enter a valid email")
     String email;
 }
