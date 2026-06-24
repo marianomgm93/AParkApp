@@ -62,14 +62,14 @@ public class UserService implements IUserService {
 
     @Override
     public UserResponse getUserById(UUID userId) throws EntityNotFoundException {
-        return ur.findById(userId).map(responseMapper::toDTO).orElseThrow(EntityNotFoundException::new);
+        return ur.findById(userId).map(responseMapper::toDTO).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     @Override
     public UserResponse getUserByEmail(String userEmail) throws EntityNotFoundException {
         return ur.findByEmail(userEmail)
                 .map(responseMapper::toDTO)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     @Override

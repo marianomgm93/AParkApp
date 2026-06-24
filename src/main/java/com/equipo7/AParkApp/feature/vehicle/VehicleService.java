@@ -36,10 +36,7 @@ public class VehicleService implements IVehicleService {
         }
 
         VehicleEntity vehicle = creationEntity(newVehicleDTO);
-
-
         VehicleEntity saved = vehicleRepository.save(vehicle);
-
 
         return vehicleMapper.toDTO(saved);
     }

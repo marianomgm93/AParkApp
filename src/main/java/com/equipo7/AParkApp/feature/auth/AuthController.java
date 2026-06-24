@@ -8,6 +8,7 @@ import com.equipo7.AParkApp.feature.user.UserService;
 import com.equipo7.AParkApp.feature.user.domain.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Inicia sesión y genera un token JWT")
-    public ResponseEntity<AuthResponse> authenticateUser(@RequestBody
-                                                         AuthRequest authRequest){
+    public ResponseEntity<AuthResponse> authenticateUser(@Valid @RequestBody AuthRequest authRequest){
         UserDetails user = authService.authenticate(authRequest);
         String token = jwtService.generateToken(user);
         return ResponseEntity.ok(new AuthResponse(token));
@@ -37,7 +37,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Registra una nueva cuenta de usuario")
-    public ResponseEntity<UserResponse> registerUser(@RequestBody NewAccountRequest newAccountRequest){
+    public ResponseEntity<UserResponse> registerUser(@Valid  @RequestBody NewAccountRequest newAccountRequest){
         return new ResponseEntity<>(userService.save(newAccountRequest),
                 HttpStatus.CREATED);
     }

@@ -22,6 +22,7 @@ public class GlobalExceptionHandler {
             InvalidAmountException.class,
             IllegalStateException.class,
             ParkingSpotUnavailableException.class,
+            ParkingSpotUnavailableException.class,
             OverlappingReservationEx.class,
     })
     public ResponseEntity<ExceptionDto> handleBadRequestExceptions(RuntimeException e) {
