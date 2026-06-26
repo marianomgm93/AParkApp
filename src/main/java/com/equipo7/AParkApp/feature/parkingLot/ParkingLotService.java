@@ -116,8 +116,6 @@ public class ParkingLotService implements IParkingLotService {
 
     public List<ParkingLotClientView> getAllParkingLotForClient() {
 
-        ParkingLotClientView dto = new ParkingLotClientView();
-
         return repository.findAll()
                 .stream()
                 .map(this::toClientView)

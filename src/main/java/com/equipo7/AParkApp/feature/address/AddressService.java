@@ -1,12 +1,13 @@
 package com.equipo7.AParkApp.feature.address;
 
+import com.equipo7.AParkApp.common.model.exceptions.EntityAlreadyExistsEx;
 import com.equipo7.AParkApp.feature.address.domain.dto.AddressRequest;
 import com.equipo7.AParkApp.feature.address.domain.dto.AddressResponse;
 import com.equipo7.AParkApp.feature.address.domain.mappers.AddressRequestMapper;
 import com.equipo7.AParkApp.feature.address.domain.mappers.AddressResponseMapper;
 import com.equipo7.AParkApp.feature.parkingLot.exception.AddressNotFound;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class AddressService {
 
     public AddressResponse ObtenerDireccion(UUID id) {
         AddressEntity direccion = addressRepository.findById(id)
-                .orElseThrow(() -> new AddressNotFound("Address not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
 
         return responseMapper.toDTO(direccion);
     }
@@ -45,7 +46,7 @@ public class AddressService {
     public void eliminarDireccion(UUID id) {
 
         AddressEntity entity = addressRepository.findById(id)
-                .orElseThrow(() -> new AddressNotFound("Address not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
 
         addressRepository.delete(entity);
 
@@ -54,10 +55,10 @@ public class AddressService {
 
     public AddressResponse ActualizarDireccion(UUID id, AddressRequest request) {
 
-        AddressEntity entity=addressRepository.findById(id)
-                .orElseThrow(()->new AddressNotFound("Address not found"));
+        AddressEntity entity = addressRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
 
-        AddressEntity nuevo=requestMapper.toEntity(request);
+        AddressEntity nuevo = requestMapper.toEntity(request);
 
         entity.setStreet(nuevo.getStreet());
         entity.setNumber(nuevo.getNumber());
@@ -66,11 +67,9 @@ public class AddressService {
 
         AddressEntity saved = addressRepository.save(entity);
 
-        return  responseMapper.toDTO(saved);
+        return responseMapper.toDTO(saved);
 
     }
-
-
 
 
 }

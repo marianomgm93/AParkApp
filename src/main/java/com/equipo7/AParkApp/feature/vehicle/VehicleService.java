@@ -1,7 +1,6 @@
 package com.equipo7.AParkApp.feature.vehicle;
 
 import com.equipo7.AParkApp.common.model.exceptions.EntityAlreadyExistsEx;
-import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEntity;
 import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeRepository;
 import com.equipo7.AParkApp.feature.user.UserEntity;
 import com.equipo7.AParkApp.feature.user.UserRepository;
@@ -37,10 +36,7 @@ public class VehicleService implements IVehicleService {
         }
 
         VehicleEntity vehicle = creationEntity(newVehicleDTO);
-
-
         VehicleEntity saved = vehicleRepository.save(vehicle);
-
 
         return vehicleMapper.toDTO(saved);
     }
@@ -48,7 +44,7 @@ public class VehicleService implements IVehicleService {
     @Override
     public void delete(UUID vehicleId) {
         VehicleEntity vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
 
         vehicleRepository.delete(vehicle);
     }
@@ -57,21 +53,16 @@ public class VehicleService implements IVehicleService {
     public VehicleDTO update(UUID vehicleId, NewVehicleDTO dto) {
 
         VehicleEntity vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Vehicle not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
 
-        // Validar patente duplicada
         if (!vehicle.getPlate().equals(dto.getPlate())
                 && vehicleRepository.existsByPlate(dto.getPlate())) {
 
-            throw new EntityAlreadyExistsEx(
-                    "Vehicle with plate " + dto.getPlate() + " already exists");
+            throw new EntityAlreadyExistsEx("Vehicle with plate " + dto.getPlate() + " already exists");
         }
 
-        // Validar usuario
         UserEntity user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() ->
-                        new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
 
         vehicle.setPlate(dto.getPlate());
@@ -91,16 +82,18 @@ public class VehicleService implements IVehicleService {
     public VehicleDTO findById(UUID vehicleId) {
         return vehicleRepository.findById(vehicleId)
                 .map(vehicleMapper::toDTO)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Vehicle not found"));
     }
 
     @Override
     public List<VehicleDTO> findAll() {
         return vehicleRepository.findAll().stream().map(vehicleMapper::toDTO).toList();
     }
+
     VehicleEntity creationEntity(NewVehicleDTO newVehicleDTO) {
         VehicleEntity vehicle = newVehicleMapper.toEntity(newVehicleDTO);
-        vehicle.setUser( userRepository.findById(newVehicleDTO.getUserId())
+
+        vehicle.setUser(userRepository.findById(newVehicleDTO.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found")));
 
         return vehicle;

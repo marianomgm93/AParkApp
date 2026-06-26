@@ -50,6 +50,7 @@ public class TicketService implements ITicketService {
     @Override
     @Transactional
     public TicketResponseDTO create(TicketRequestDTO request) {
+
         return responseMapper.toDTO(repository.save(createEntity(request)));
     }
 
@@ -58,7 +59,7 @@ public class TicketService implements ITicketService {
         TicketEntity toModify = getById(paidRequestDTO.id());
         BigDecimal totalPay = paidRequestDTO.pay().add(toModify.getPaid());
         if (totalPay.compareTo(toModify.getAmount()) > 0 )
-            throw new InvalidAmountException("Paided amount is bigger than total Amount");
+            throw new InvalidAmountException("Paid amount is bigger than total Amount");
         toModify.setPaid(totalPay);
         if (toModify.getAmount().compareTo(totalPay) == 0)
             toModify.setStatus(TicketStatus.PAID);

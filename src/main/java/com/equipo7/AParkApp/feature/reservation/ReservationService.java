@@ -1,10 +1,8 @@
 package com.equipo7.AParkApp.feature.reservation;
 
 import com.equipo7.AParkApp.feature.offer.OfferEntity;
-
 import com.equipo7.AParkApp.feature.offer.OfferRepository;
 import com.equipo7.AParkApp.feature.offer.domain.dto.AcquireOfferRequest;
-import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
 import com.equipo7.AParkApp.feature.parkingLot.IParkingLotRepository;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Status;
@@ -404,6 +402,7 @@ public class ReservationService implements IReservationService {
 
         reservation.setParkingSpot(parkingSpot);
     }
+
     private void validateVehicleAvailability(
             UUID vehicleId,
             LocalDateTime startTime,
@@ -424,6 +423,7 @@ public class ReservationService implements IReservationService {
                     "Vehicle already has a reservation for this period");
         }
     }
+
     private void validateVehicleAvailabilityForUpdate(
             UUID reservationId,
             UUID vehicleId,

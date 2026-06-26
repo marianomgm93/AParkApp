@@ -9,26 +9,29 @@ import java.util.UUID;
 
 public record ReservationRequestDTO(
 
-        @NotNull
-        @Future
+        @NotNull(message = "You must insert a StartTime")
+        @Future(message = "The start time Must be in the future!")
         LocalDateTime startTime,
 
-        @Future
+        @Future(message = "the end time must be in the future!")
         LocalDateTime endTime,
 
-        @NotNull
+        @NotNull(message = "Parking lot ID mustn't be null")
         UUID parkingLotId,
 
+        @NotNull(message = "Parking lot ID mustn't be null")
         UUID parkingSpotId,
 
-        @NotNull
+        @NotNull(message = "Vehicle Id mustn't be null")
         UUID vehicleId,
 
+        @NotNull(message = "Offer Id mustn't be null")
         UUID offerId,
 
+        @NotNull(message = "Stay type mustn't be null")
         StayType stayType,
 
-        @NotNull
+        @NotNull(message = "User Id mustn't be null")
         UUID userId
 
 ) {

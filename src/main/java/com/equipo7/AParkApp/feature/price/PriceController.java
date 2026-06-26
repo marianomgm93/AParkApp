@@ -4,6 +4,7 @@ import com.equipo7.AParkApp.feature.price.domain.PriceDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,7 +43,7 @@ public class PriceController {
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PostMapping
     @Operation(summary = "Crea un precio")
-    public ResponseEntity<PriceDTO> create(@RequestBody PriceDTO dto) {
+    public ResponseEntity<PriceDTO> create(@RequestBody @Valid PriceDTO dto) {
 
         return ResponseEntity.ok(priceService.create(dto));
     }
@@ -52,7 +53,7 @@ public class PriceController {
     @Operation(summary = "Actualiza un precio")
     public ResponseEntity<PriceDTO> update(
             @PathVariable UUID id,
-            @RequestBody PriceDTO dto) {
+            @RequestBody @Valid PriceDTO dto) {
 
         return ResponseEntity.ok(priceService.update(id, dto));
     }

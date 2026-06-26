@@ -17,16 +17,16 @@ import java.util.UUID;
 @Setter
 public class ParkingSpotRequest {
 
-    @NotBlank
+    @NotBlank(message = "You Must enter a Name")
     private String name;
 
-    @NotNull
+    @NotNull(message = "You Must enter a valid parking spot ID")
     private UUID parkingLotId;
 
     @NotNull
     private boolean active;
 
-    @Positive
+    @Positive(message = "You must enter a valid number")
     private int number;
 }
 

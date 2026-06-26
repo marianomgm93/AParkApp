@@ -2,11 +2,16 @@ package com.equipo7.AParkApp.feature.driver.domain.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class DriverRequest {
 
     @NotBlank(message = "You must insert a Name")
