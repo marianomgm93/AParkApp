@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping
     @Operation(summary = "Lista todos los usuarios")
     ResponseEntity<List<UserResponse>> findAll() {
-        return ResponseEntity.ok(userService.getAllUsers());
+        return ResponseEntity.ok(userService.getAllActiveUsers());
     }
 
 
@@ -69,5 +69,10 @@ public class UserController {
     ResponseEntity<Void> delete(@PathVariable UUID id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getAuthenticatedUser(org.springframework.security.core.Authentication auth) {
+        return ResponseEntity.ok(userService.getUserByUsername(auth.getName()));
     }
 }

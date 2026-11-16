@@ -12,9 +12,14 @@ import org.springframework.stereotype.Component;
 public class UserResponseMapper implements IMapper<UserEntity, UserResponse> {
     private final ModelMapper mapper;
     public UserResponse toDTO(UserEntity userEntity) {
-        return mapper.map(userEntity, UserResponse.class);
+        UserResponse dto = mapper.map(userEntity, UserResponse.class);
+        if (userEntity.getCredentials() != null && userEntity.getCredentials().getRoles() != null) {
+            dto.setRoles(userEntity.getCredentials().getRoles().stream()
+                    .map(role -> role.getRole().name())
+                    .toList());
+        }
+        return dto;
     }
-
     public UserEntity toEntity(UserResponse userResponse){
         return mapper.map(userResponse, UserEntity.class);
     }

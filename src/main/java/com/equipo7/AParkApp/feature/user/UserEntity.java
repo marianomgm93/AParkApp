@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.feature.user;
 
+import com.equipo7.AParkApp.feature.auth.credentials.CredentialsEntity;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -27,4 +28,7 @@ public class UserEntity {
     private String email;
 
     private boolean active;
+
+    @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private CredentialsEntity credentials;
 }

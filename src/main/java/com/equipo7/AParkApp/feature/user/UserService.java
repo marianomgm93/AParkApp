@@ -59,6 +59,11 @@ public class UserService implements IUserService {
                 .map(responseMapper::toDTO)
                 .toList();
     }
+    public List<UserResponse> getAllActiveUsers() {
+        return ur.findAll().stream().filter(UserEntity::isActive)
+                .map(responseMapper::toDTO)
+                .toList();
+    }
 
     @Override
     public UserResponse getUserById(UUID userId) throws EntityNotFoundException {
@@ -82,11 +87,19 @@ public class UserService implements IUserService {
 
 
     @Override
+    @Transactional
     public void delete(UUID userId) {
-        responseMapper.toEntity(getUserById(userId)).setActive(false);
+        UserEntity user = findUserById(userId);
+        user.setActive(false);
+        ur.save(user);
     }
 
     public UserEntity findUserById(UUID userId) {
         return ur.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+    public UserResponse getUserByUsername(String username) {
+        CredentialsEntity creds = credentialsRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return responseMapper.toDTO(creds.getUsuario());
     }
 }
