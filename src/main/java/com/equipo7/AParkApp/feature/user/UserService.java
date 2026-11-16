@@ -40,7 +40,7 @@ public class UserService implements IUserService {
         UserRequest newUser = new UserRequest(newAccountRequest.name(), newAccountRequest.email());
 
         UserEntity saved = ur.save(requestMapper.toEntity(newUser));
-
+        saved.setActive(true);
         CredentialsEntity newCredentials = CredentialsEntity.builder().roles(Set.of(roleRepository.findById(1L).orElseThrow()))
                 .enabled(true)
                 .username(newAccountRequest.email())
@@ -56,6 +56,11 @@ public class UserService implements IUserService {
     @Override
     public List<UserResponse> getAllUsers() {
         return ur.findAll().stream()
+                .map(responseMapper::toDTO)
+                .toList();
+    }
+    public List<UserResponse> getAllActiveUsers() {
+        return ur.findAll().stream().filter(UserEntity::isActive)
                 .map(responseMapper::toDTO)
                 .toList();
     }
@@ -82,11 +87,19 @@ public class UserService implements IUserService {
 
 
     @Override
+    @Transactional
     public void delete(UUID userId) {
-        responseMapper.toEntity(getUserById(userId)).setActive(false);
+        UserEntity user = findUserById(userId);
+        user.setActive(false);
+        ur.save(user);
     }
 
     public UserEntity findUserById(UUID userId) {
         return ur.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+    public UserResponse getUserByUsername(String username) {
+        CredentialsEntity creds = credentialsRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return responseMapper.toDTO(creds.getUsuario());
     }
 }
