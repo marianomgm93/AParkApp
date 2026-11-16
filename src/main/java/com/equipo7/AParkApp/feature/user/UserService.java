@@ -40,7 +40,7 @@ public class UserService implements IUserService {
         UserRequest newUser = new UserRequest(newAccountRequest.name(), newAccountRequest.email());
 
         UserEntity saved = ur.save(requestMapper.toEntity(newUser));
-
+        saved.setActive(true);
         CredentialsEntity newCredentials = CredentialsEntity.builder().roles(Set.of(roleRepository.findById(1L).orElseThrow()))
                 .enabled(true)
                 .username(newAccountRequest.email())
