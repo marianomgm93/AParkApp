@@ -18,7 +18,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/Addresses")
-@PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE', 'CLIENT')")
+@PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE', 'CLIENT')")
 @Tag(name = "Direcciones", description = "Gestión de direcciones asociadas a usuarios")
 @SecurityRequirement(name = "bearerAuth")
 public class AddressController {

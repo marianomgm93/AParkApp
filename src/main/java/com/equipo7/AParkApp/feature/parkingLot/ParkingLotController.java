@@ -46,6 +46,13 @@ public class ParkingLotController {
         return ResponseEntity.ok(parkingLotService.getAllParkingLots());
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtiene un parqueadero por id")
+    public ResponseEntity<ParkingLotResponse> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(parkingLotService.getParkingLotById(id));
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/active")
     @Operation(summary = "Lista los parqueaderos activos")
