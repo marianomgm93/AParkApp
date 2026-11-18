@@ -90,6 +90,13 @@ public class VehicleService implements IVehicleService {
         return vehicleRepository.findAll().stream().map(vehicleMapper::toDTO).toList();
     }
 
+    @Override
+    public List<VehicleDTO> findByUserId(UUID userId) {
+        return vehicleRepository.findByUserId(userId).stream()
+                .map(vehicleMapper::toDTO)
+                .toList();
+    }
+
     VehicleEntity creationEntity(NewVehicleDTO newVehicleDTO) {
         VehicleEntity vehicle = newVehicleMapper.toEntity(newVehicleDTO);
 

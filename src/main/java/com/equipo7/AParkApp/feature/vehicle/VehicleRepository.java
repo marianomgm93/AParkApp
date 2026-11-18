@@ -4,6 +4,7 @@ import com.equipo7.AParkApp.feature.driver.DriverEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,5 +13,6 @@ public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
 
     Optional<VehicleEntity> findByPlate(String plate);
     boolean existsByPlate(String plate);
+    List<VehicleEntity> findByUserId(UUID userId);
 
 }
