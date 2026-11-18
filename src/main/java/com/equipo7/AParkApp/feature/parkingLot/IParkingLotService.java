@@ -17,4 +17,5 @@ public interface IParkingLotService {
     void delete(UUID id);
     void restore(UUID id);
     List <ParkingLotResponse> getAllActiveParkingLots();
+    List <ParkingLotResponse> getParkingLotsByOwnerUsername(String username);
 }
