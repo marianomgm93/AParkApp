@@ -20,10 +20,17 @@ public class ParkingLotResponseMapper {
 
     public ParkingLotResponse toDTO(ParkingLotEntity entity) {
         ParkingLotResponse dto = mapper.map(entity, ParkingLotResponse.class);
-        dto.setOwnerId(entity.getOwner().getId());
-        dto.setOwnerUsername(entity.getOwner().getName());
-        dto.setAddressId(entity.getAddress().getId());
-
+        if (entity.getOwner() != null) {
+            dto.setOwnerId(entity.getOwner().getId());
+            dto.setOwnerUsername(entity.getOwner().getName());
+        }
+        if (entity.getAddress() != null) {
+            dto.setAddressId(entity.getAddress().getId());
+            dto.setStreet(entity.getAddress().getStreet());
+            dto.setNumber(entity.getAddress().getNumber());
+            dto.setZipCode(entity.getAddress().getZipCode());
+            dto.setNotes(entity.getAddress().getNotes());
+        }
 
         return dto;
     }

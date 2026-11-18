@@ -26,7 +26,7 @@ public class ParkingLotController {
     private final ParkingLotService parkingLotService;
 
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
     @PostMapping
     @Operation(summary = "Crea un parqueadero")
     public ResponseEntity<ParkingLotResponse> create(@Valid @RequestBody ParkingLotRequest request) {
@@ -46,7 +46,14 @@ public class ParkingLotController {
         return ResponseEntity.ok(parkingLotService.getAllParkingLots());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtiene un parqueadero por id")
+    public ResponseEntity<ParkingLotResponse> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(parkingLotService.getParkingLotById(id));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT', 'OWNER')")
     @GetMapping("/active")
     @Operation(summary = "Lista los parqueaderos activos")
     public ResponseEntity<List<ParkingLotResponse>> getAllActiveTrue() {
@@ -55,8 +62,14 @@ public class ParkingLotController {
         return ResponseEntity.ok(parkingLotService.getAllActiveParkingLots());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
+    @GetMapping("/owner")
+    @Operation(summary = "Lista los parqueaderos del propietario autenticado")
+    public ResponseEntity<List<ParkingLotResponse>> getMyParkingLots(org.springframework.security.core.Authentication auth) {
+        return ResponseEntity.ok(parkingLotService.getParkingLotsByOwnerUsername(auth.getName()));
+    }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
     @PutMapping("/{id}")
     @Operation(summary = "Actualiza un parqueadero")
     public ResponseEntity<ParkingLotResponse> update(@PathVariable UUID id, @RequestBody ParkingLotRequest request) {

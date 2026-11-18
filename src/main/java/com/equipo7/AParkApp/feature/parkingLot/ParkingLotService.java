@@ -1,6 +1,8 @@
 package com.equipo7.AParkApp.feature.parkingLot;
 
 import com.equipo7.AParkApp.feature.address.AddressRepository;
+import com.equipo7.AParkApp.feature.auth.credentials.CredentialsEntity;
+import com.equipo7.AParkApp.feature.auth.credentials.CredentialsRepository;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotClientView;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotRequest;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.DTO.ParkingLotResponse;
@@ -24,6 +26,8 @@ public class ParkingLotService implements IParkingLotService {
     private final AddressRepository addressRepository;
 
     private final UserRepository userRepository;
+
+    private final CredentialsRepository credentialsRepository;
 
     private final ParkingLotRequestMapper requestMapper;
 
@@ -66,7 +70,7 @@ public class ParkingLotService implements IParkingLotService {
     public ParkingLotResponse update(UUID id, ParkingLotRequest request) {
 
         ParkingLotEntity entity =
-                repository.findByIdAndActiveTrue(id)
+                repository.findById(id)
                         .orElseThrow(() -> new EntityNotFoundException("Parking Lot Not Found"));
 
         entity.setName(request.getName());
@@ -74,7 +78,10 @@ public class ParkingLotService implements IParkingLotService {
                 findById(request.getAddressId())
                 .orElseThrow(() -> new EntityNotFoundException("Address not found")));
         entity.setCapacity(request.getCapacity());
-
+        if (request.getOwnerId() != null) {
+            entity.setOwner(userRepository.findById(request.getOwnerId())
+                    .orElseThrow(() -> new EntityNotFoundException("Owner not found")));
+        }
 
         ParkingLotEntity updatedParkingLotEntity = repository.save(entity);
 
@@ -86,7 +93,7 @@ public class ParkingLotService implements IParkingLotService {
     @Override
     public void delete(UUID id) {
 
-        ParkingLotEntity entity = repository.findByIdAndActiveTrue(id)
+        ParkingLotEntity entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Parking Lot Not Found"));
 
         entity.setActive(false);
@@ -101,9 +108,24 @@ public class ParkingLotService implements IParkingLotService {
         ParkingLotEntity entity = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Parking Lot Not Found"));
 
-        entity.setActive(false);
+        entity.setActive(true);
         repository.save(entity);
 
+    }
+
+    @Override
+    public List<ParkingLotResponse> getParkingLotsByOwnerUsername(String username) {
+        CredentialsEntity credentials = credentialsRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User credentials not found for: " + username));
+
+        if (credentials.getUsuario() == null) {
+            throw new EntityNotFoundException("No user profile associated with credentials: " + username);
+        }
+
+        UUID ownerId = credentials.getUsuario().getId();
+        List<ParkingLotEntity> ownerLots = repository.findByOwnerId(ownerId);
+
+        return ownerLots.stream().map(responseMapper::toDTO).toList();
     }
 
     @Override
