@@ -1,5 +1,6 @@
 package com.equipo7.AParkApp.feature.auth.config;
 
+import com.equipo7.AParkApp.feature.VehicleType.VehicleTypeEnum;
 import com.equipo7.AParkApp.feature.address.AddressEntity;
 import com.equipo7.AParkApp.feature.address.AddressRepository;
 import com.equipo7.AParkApp.feature.auth.credentials.CredentialsEntity;
@@ -12,9 +13,13 @@ import com.equipo7.AParkApp.feature.parkingLot.IParkingLotRepository;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.ParkingSpotEntity;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Status;
 import com.equipo7.AParkApp.feature.parkingSpot.IParkingSpotRepository;
+import com.equipo7.AParkApp.feature.price.PriceEntity;
+import com.equipo7.AParkApp.feature.price.PriceRepository;
 import com.equipo7.AParkApp.feature.stay.StayType;
 import com.equipo7.AParkApp.feature.user.UserEntity;
 import com.equipo7.AParkApp.feature.user.UserRepository;
+import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
+import com.equipo7.AParkApp.feature.vehicle.VehicleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +45,8 @@ public class DatabaseInitializerConfig {
             IParkingLotRepository parkingLotRepository,
             IParkingSpotRepository parkingSpotRepository,
             OfferRepository offerRepository,
+            VehicleRepository vehicleRepository,
+            PriceRepository priceRepository,
             PasswordEncoder passwordEncoder
     ) {
         return args -> {
@@ -119,6 +126,10 @@ public class DatabaseInitializerConfig {
             } else {
                 roleOwner = roleRepository.findAll().stream()
                         .filter(r -> r.getRole() == Roles.ROLE_OWNER)
+                        .findFirst()
+                        .orElse(null);
+                roleClient = roleRepository.findAll().stream()
+                        .filter(r -> r.getRole() == Roles.ROLE_CLIENT)
                         .findFirst()
                         .orElse(null);
             }
@@ -285,8 +296,108 @@ public class DatabaseInitializerConfig {
                 System.out.println(">> ¡Estacionamientos, plazas y ofertas cargados exitosamente!");
             }
 
+            // 4. Crear cliente de prueba con vehículo si no existe
+            RoleEntity finalRoleClient = roleClient != null ? roleClient : roleRepository.findAll().stream()
+                    .filter(r -> r.getRole() == Roles.ROLE_CLIENT)
+                    .findFirst()
+                    .orElse(null);
+
+            UserEntity client1;
+            Optional<CredentialsEntity> client1CredsOpt = credentialsRepository.findByUsername("client1");
+            if (client1CredsOpt.isEmpty()) {
+                client1 = UserEntity.builder()
+                        .email("client1@example.com")
+                        .name("Lucas Cliente")
+                        .active(true)
+                        .build();
+                userRepository.save(client1);
+
+                CredentialsEntity client1Creds = new CredentialsEntity();
+                client1Creds.setUsername("client1");
+                client1Creds.setPassword(passwordEncriptada);
+                client1Creds.setEnabled(true);
+                client1Creds.setUsuario(client1);
+                if (finalRoleClient != null) {
+                    client1Creds.getRoles().add(finalRoleClient);
+                }
+                credentialsRepository.save(client1Creds);
+            } else {
+                client1 = client1CredsOpt.get().getUsuario();
+            }
+
+            if (!vehicleRepository.existsByPlate("AA123BB")) {
+                VehicleEntity vehicle1 = VehicleEntity.builder()
+                        .plate("AA123BB")
+                        .brand("Toyota")
+                        .model("Corolla")
+                        .color("Blanco")
+                        .vehicleType(VehicleTypeEnum.Car)
+                        .note("Vehículo de prueba de cliente")
+                        .user(client1)
+                        .build();
+                vehicleRepository.save(vehicle1);
+            }
+
+            // Asegurar también que el usuario "client" por defecto tenga un vehículo
+            Optional<CredentialsEntity> defaultClientOpt = credentialsRepository.findByUsername("client");
+            if (defaultClientOpt.isPresent() && !vehicleRepository.existsByPlate("AF987XX")) {
+                VehicleEntity defaultVehicle = VehicleEntity.builder()
+                        .plate("AF987XX")
+                        .brand("Volkswagen")
+                        .model("Gol")
+                        .color("Gris")
+                        .vehicleType(VehicleTypeEnum.Car)
+                        .note("Auto particular de Juan")
+                        .user(defaultClientOpt.get().getUsuario())
+                        .build();
+                vehicleRepository.save(defaultVehicle);
+            }
+
+            // 5. Sembrar tarifas base si no existen
+            System.out.println(">> Cargando tarifas base de precios...");
+
+            // Car
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Car, StayType.Hour, 1000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Car, StayType.Day, 8000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Car, StayType.Week, 30000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Car, StayType.Month, 90000.0);
+
+            // MotorCycle
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.MotorCycle, StayType.Hour, 500.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.MotorCycle, StayType.Day, 4000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.MotorCycle, StayType.Week, 15000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.MotorCycle, StayType.Month, 45000.0);
+
+            // SUV (tarifas proporcionales a Car)
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.SUV, StayType.Hour, 1200.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.SUV, StayType.Day, 10000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.SUV, StayType.Week, 36000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.SUV, StayType.Month, 110000.0);
+
+            // Truck (tarifas proporcionales a Car)
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Truck, StayType.Hour, 1500.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Truck, StayType.Day, 12000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Truck, StayType.Week, 45000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Truck, StayType.Month, 135000.0);
+
+            // Custom (tarifas equivalentes a Car)
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Custom, StayType.Hour, 1000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Custom, StayType.Day, 8000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Custom, StayType.Week, 30000.0);
+            seedPriceIfAbsent(priceRepository, VehicleTypeEnum.Custom, StayType.Month, 90000.0);
+
             System.out.println(">> Base de datos inicializada correctamente.");
         };
+    }
+
+    private void seedPriceIfAbsent(PriceRepository repo, VehicleTypeEnum vehicleType, StayType stayType, Double price) {
+        if (repo.findByVehicleTypeAndStayType(vehicleType, stayType).isEmpty()) {
+            repo.save(PriceEntity.builder()
+                    .vehicleType(vehicleType)
+                    .stayType(stayType)
+                    .price(price)
+                    .build());
+        }
     }
 }
 

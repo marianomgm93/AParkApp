@@ -12,4 +12,5 @@ public interface IVehicleService {
     VehicleDTO update(UUID vehicleId, NewVehicleDTO newVehicleDTO);
     VehicleDTO findById(UUID vehicleId);
     List<VehicleDTO> findAll();
+    List<VehicleDTO> findByUserId(UUID userId);
 }

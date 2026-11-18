@@ -12,6 +12,7 @@ import java.util.UUID;
 public record OfferResponseDTO(
         UUID id,
         UUID parkingLotId,
+        String parkingLotName,
         UUID parkingSpotId,
         StayType stayType,
         LocalDateTime startTime,

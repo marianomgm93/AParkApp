@@ -20,6 +20,7 @@ public class OfferResponseMapper implements IMapper<OfferEntity, OfferResponseDT
         return OfferResponseDTO.builder()
                 .id(offer.getId())
                 .parkingLotId(offer.getParkingLot().getId())
+                .parkingLotName(offer.getParkingLot() != null ? offer.getParkingLot().getName() : null)
                 .parkingSpotId(
                         offer.getParkingSpot() != null
                                 ? offer.getParkingSpot().getId()

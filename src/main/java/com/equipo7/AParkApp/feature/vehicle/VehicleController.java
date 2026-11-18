@@ -37,6 +37,13 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.findById(vehicleId));
     }
 
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE', 'CLIENT')")
+    @GetMapping("/user/{userId}")
+    @Operation(summary = "Lista los vehículos de un usuario")
+    ResponseEntity<List<VehicleDTO>> findByUserId(@PathVariable UUID userId) {
+        return ResponseEntity.ok(vehicleService.findByUserId(userId));
+    }
+
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE','CLIENT')")
     @PostMapping
     @Operation(summary = "Crea un vehículo")
