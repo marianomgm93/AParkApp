@@ -17,7 +17,6 @@ public class ReservationResponseMapper implements IMapper<ReservationEntity, Res
                 .status(ReservationStatus.valueOf(reservationResponseDTO.status()))
                 .build();
     }
-
     @Override
     public ReservationResponseDTO toDTO(ReservationEntity reservationEntity) {
         return new ReservationResponseDTO(
@@ -25,6 +24,7 @@ public class ReservationResponseMapper implements IMapper<ReservationEntity, Res
                 reservationEntity.getStartTime(),
                 reservationEntity.getEndTime(),
                 reservationEntity.getParkingLot() != null ? reservationEntity.getParkingLot().getId() : null,
+                reservationEntity.getParkingLot() != null ? reservationEntity.getParkingLot().getName() : null,
                 reservationEntity.getParkingSpot() != null ? reservationEntity.getParkingSpot().getId() : null,
                 reservationEntity.getVehicle() != null ? reservationEntity.getVehicle().getId() : null,
                 reservationEntity.getVehicle() != null ? reservationEntity.getVehicle().getPlate() : null,
