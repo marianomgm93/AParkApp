@@ -11,6 +11,7 @@ import com.equipo7.AParkApp.feature.parkingSpot.IParkingSpotRepository;
 import com.equipo7.AParkApp.feature.parkingSpot.ParkingSpotService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +33,19 @@ public class OfferService implements IOfferService{
     public List<OfferResponseDTO> findAll() {
         return repository.findAll().stream().map(responseMapper::toDTO).toList();
     }
-    @Override
-    public List<OfferResponseDTO> findAllActive() {
-        return repository.findByActiveTrue().stream().map(responseMapper::toDTO).toList();
+    public List<OfferResponseDTO> findAllActive(Authentication auth) {
+        boolean isOwner = auth != null && auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_OWNER"));
+
+        if (isOwner) {
+            return repository.findByOwnerIdentifierAndActiveTrue(auth.getName()).stream()
+                    .map(responseMapper::toDTO)
+                    .toList();
+        }
+
+        return repository.findByActiveTrue().stream()
+                .map(responseMapper::toDTO)
+                .toList();
     }
 
     @Override
@@ -57,17 +68,26 @@ public class OfferService implements IOfferService{
         toSave.setId(toUpdate.getId());
         return responseMapper.toDTO(repository.save(toSave));
     }
+    @Transactional
     @Override
     public void delete(UUID id) {
-        getById(id).setActive(false);
+        OfferEntity offer = getById(id);
+        offer.setActive(false);
+        repository.save(offer);
     }
-
     /////////// AUX
-    private OfferEntity createEntity(OfferRequestDTO request) throws EntityNotFoundException{
-
+    private OfferEntity createEntity(OfferRequestDTO request) throws EntityNotFoundException {
         OfferEntity offer = requestMapper.toEntity(request);
-        offer.setParkingLot(lotRepository.findById(request.parkingLotId()).orElseThrow(()->new EntityNotFoundException("Parking Lot Not Found")));
-        offer.setParkingSpot(spotRepository.findById(request.parkingSpotId()).orElseThrow(()->new EntityNotFoundException("Parking Spot Not Found")));
+        offer.setParkingLot(lotRepository.findById(request.parkingLotId())
+                .orElseThrow(() -> new EntityNotFoundException("Parking Lot Not Found")));
+
+        if (request.parkingSpotId() != null) {
+            offer.setParkingSpot(spotRepository.findById(request.parkingSpotId())
+                    .orElseThrow(() -> new EntityNotFoundException("Parking Spot Not Found")));
+        } else {
+            offer.setParkingSpot(null);
+        }
+
         return offer;
     }
     private OfferEntity getById(UUID id) throws EntityNotFoundException{
