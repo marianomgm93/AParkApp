@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +29,8 @@ public class ReservationController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Lista todas las reservas")
-    public List<ReservationResponseDTO> findAll() {
-        return reservationService.getAll();
+    public List<ReservationResponseDTO> findAll(Authentication auth) {
+        return reservationService.getAll(auth);
     }
 
 
@@ -70,16 +71,16 @@ public class ReservationController {
     @PatchMapping("/{id}/check-in")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Registra el check-in de una reserva")
-    public ReservationResponseDTO checkIn(@PathVariable UUID id) {
-        return reservationService.checkIn(id);
+    public ReservationResponseDTO checkIn(@PathVariable UUID id, Authentication auth) {
+        return reservationService.checkIn(id, auth);
     }
 
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PatchMapping("/{id}/check-out")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Registra el check-out de una reserva")
-    public ReservationResponseDTO checkOut(@PathVariable UUID id) {
-        return reservationService.checkOut(id);
+    public ReservationResponseDTO checkOut(@PathVariable UUID id, Authentication auth) {
+        return reservationService.checkOut(id, auth);
     }
 
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
