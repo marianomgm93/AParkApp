@@ -18,6 +18,7 @@ public class UserResponseMapper implements IMapper<UserEntity, UserResponse> {
                     .map(role -> role.getRole().name())
                     .toList());
         }
+        dto.setActive(userEntity.isActive());
         return dto;
     }
     public UserEntity toEntity(UserResponse userResponse){

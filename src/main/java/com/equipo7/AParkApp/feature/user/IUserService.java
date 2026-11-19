@@ -12,7 +12,8 @@ public interface IUserService {
     UserResponse save(NewAccountRequest newAccountRequest);
     UserResponse getUserById(UUID userId);
     UserResponse getUserByEmail(String userEmail);
-    UserResponse update(UUID id,UserRequest userRequest);
-
+    UserResponse update(UUID id, UserRequest userRequest);
     void delete(UUID userId);
+    UserResponse changeRole(UUID id, String roleName);
+    UserResponse toggleActive(UUID id);
 }

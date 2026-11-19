@@ -4,7 +4,9 @@ import com.equipo7.AParkApp.common.model.exceptions.EntityAlreadyExistsEx;
 import com.equipo7.AParkApp.feature.auth.credentials.CredentialsEntity;
 import com.equipo7.AParkApp.feature.auth.credentials.CredentialsRepository;
 import com.equipo7.AParkApp.feature.auth.dto.NewAccountRequest;
+import com.equipo7.AParkApp.feature.auth.permissions.RoleEntity;
 import com.equipo7.AParkApp.feature.auth.permissions.RoleRepository;
+import com.equipo7.AParkApp.feature.auth.permissions.Roles;
 import com.equipo7.AParkApp.feature.user.domain.dto.UserRequest;
 import com.equipo7.AParkApp.feature.user.domain.dto.UserResponse;
 import com.equipo7.AParkApp.feature.user.domain.mapper.UserRequestMapper;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -32,24 +35,20 @@ public class UserService implements IUserService {
     @Override
     @Transactional
     public UserResponse save(NewAccountRequest newAccountRequest) {
-
         if (ur.existsByEmail(newAccountRequest.email())) {
             throw new EntityAlreadyExistsEx("Email already Registered");
         }
-
         UserRequest newUser = new UserRequest(newAccountRequest.name(), newAccountRequest.email());
-
         UserEntity saved = ur.save(requestMapper.toEntity(newUser));
         saved.setActive(true);
-        CredentialsEntity newCredentials = CredentialsEntity.builder().roles(Set.of(roleRepository.findById(1L).orElseThrow()))
+        CredentialsEntity newCredentials = CredentialsEntity.builder()
+                .roles(Set.of(roleRepository.findById(1L).orElseThrow()))
                 .enabled(true)
                 .username(newAccountRequest.email())
                 .password(passwordEncoder.encode(newAccountRequest.password()))
                 .usuario(saved)
                 .build();
-
         credentialsRepository.save(newCredentials);
-
         return responseMapper.toDTO(saved);
     }
 
@@ -59,15 +58,18 @@ public class UserService implements IUserService {
                 .map(responseMapper::toDTO)
                 .toList();
     }
+
     public List<UserResponse> getAllActiveUsers() {
-        return ur.findAll().stream().filter(UserEntity::isActive)
+        return ur.findAll().stream()
                 .map(responseMapper::toDTO)
                 .toList();
     }
 
     @Override
     public UserResponse getUserById(UUID userId) throws EntityNotFoundException {
-        return ur.findById(userId).map(responseMapper::toDTO).orElseThrow(() -> new EntityNotFoundException("User not found"));
+        return ur.findById(userId)
+                .map(responseMapper::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     @Override
@@ -85,7 +87,6 @@ public class UserService implements IUserService {
         return responseMapper.toDTO(saved);
     }
 
-
     @Override
     @Transactional
     public void delete(UUID userId) {
@@ -94,9 +95,50 @@ public class UserService implements IUserService {
         ur.save(user);
     }
 
-    public UserEntity findUserById(UUID userId) {
-        return ur.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    @Override
+    @Transactional
+    public UserResponse changeRole(UUID id, String roleName) {
+        UserEntity user = findUserById(id);
+        CredentialsEntity credentials = credentialsRepository.findByUsuario(user)
+                .orElseThrow(() -> new EntityNotFoundException("Credentials not found for user"));
+        Roles targetRole;
+        try {
+            targetRole = Roles.valueOf(roleName);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Rol inválido: " + roleName);
+        }
+        RoleEntity roleEntity = roleRepository.findByRole(targetRole)
+                .orElseThrow(() -> new EntityNotFoundException("Role not found: " + roleName));
+        if (credentials.getRoles() == null) {
+            credentials.setRoles(new HashSet<>());
+        } else {
+            credentials.getRoles().clear();
+        }
+        credentials.getRoles().add(roleEntity);
+        credentialsRepository.save(credentials);
+        user.setCredentials(credentials);
+        return responseMapper.toDTO(user);
     }
+
+    @Override
+    @Transactional
+    public UserResponse toggleActive(UUID id) {
+        UserEntity user = findUserById(id);
+        CredentialsEntity credentials = credentialsRepository.findByUsuario(user)
+                .orElseThrow(() -> new EntityNotFoundException("Credentials not found for user"));
+        boolean newState = !user.isActive();
+        user.setActive(newState);
+        credentials.setEnabled(newState);
+        ur.save(user);
+        credentialsRepository.save(credentials);
+        return responseMapper.toDTO(user);
+    }
+
+    public UserEntity findUserById(UUID userId) {
+        return ur.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    }
+
     public UserResponse getUserByUsername(String username) {
         CredentialsEntity creds = credentialsRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
