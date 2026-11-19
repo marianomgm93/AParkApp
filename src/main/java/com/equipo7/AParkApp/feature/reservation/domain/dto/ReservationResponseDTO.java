@@ -11,6 +11,7 @@ public record ReservationResponseDTO(
         LocalDateTime startTime,
         LocalDateTime endTime,
         UUID parkingLotId,
+        String parkingLotName,
         UUID parkingSpotId,
         UUID vehicleId,
         String vehiclePlate,
@@ -19,6 +20,5 @@ public record ReservationResponseDTO(
         String userName,
         String stayType,
         String status
-) {
-}
+) {}
 

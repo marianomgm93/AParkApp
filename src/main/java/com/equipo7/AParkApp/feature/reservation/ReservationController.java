@@ -34,7 +34,7 @@ public class ReservationController {
     }
 
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE', 'CLIENT', 'ADMIN')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Obtiene una reserva por id")
@@ -83,12 +83,12 @@ public class ReservationController {
         return reservationService.checkOut(id, auth);
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE', 'CLIENT', 'ADMIN')")
     @PatchMapping("/{id}/cancel")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Cancela una reserva")
-    public ReservationResponseDTO cancel(@PathVariable UUID id) {
-        return reservationService.cancel(id);
+    public ReservationResponseDTO cancel(@PathVariable UUID id, Authentication auth) {
+        return reservationService.cancel(id, auth);
     }
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping("/acquire-offer/{offerId}")
@@ -97,5 +97,13 @@ public class ReservationController {
     public ReservationResponseDTO acquireOffer(@PathVariable UUID offerId, @Valid @RequestBody AcquireOfferRequest request) {
 
         return reservationService.acquireOffer(offerId, request);
+    }
+
+
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReservationResponseDTO> findMyReservations(Authentication auth) {
+        return reservationService.getMyReservations(auth);
     }
 }

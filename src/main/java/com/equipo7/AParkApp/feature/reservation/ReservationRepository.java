@@ -15,6 +15,12 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     List<ReservationEntity> findByParkingLotOwnerEmail(String email);
     @Query("""
     SELECT r FROM ReservationEntity r
+    WHERE r.user.credentials.username = :identifier
+       OR r.user.email = :identifier
+    """)
+    List<ReservationEntity> findByUserIdentifier(@Param("identifier") String identifier);
+    @Query("""
+    SELECT r FROM ReservationEntity r
     WHERE r.parkingLot.owner.credentials.username = :identifier
        OR r.parkingLot.owner.email = :identifier
     """)

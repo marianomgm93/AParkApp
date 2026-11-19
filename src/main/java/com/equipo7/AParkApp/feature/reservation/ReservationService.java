@@ -119,23 +119,32 @@ public class ReservationService implements IReservationService {
     }
 
     @Transactional
-    public ReservationResponseDTO cancel(UUID id) {
-
+    public ReservationResponseDTO cancel(UUID id, Authentication auth) {
         ReservationEntity reservation = findById(id);
+        boolean isClient = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CLIENT"));
 
-        if (reservation.getStatus() == ReservationStatus.COMPLETED) {
-            throw new IllegalStateException(
-                    "Completed reservation cannot be cancelled");
+        if (isClient) {
+            String username = auth.getName();
+            boolean isOwnerOfReservation = reservation.getUser() != null && (
+                    username.equalsIgnoreCase(reservation.getUser().getEmail()) ||
+                            (reservation.getUser().getCredentials() != null && username.equalsIgnoreCase(reservation.getUser().getCredentials().getUsername()))
+            );
+            if (!isOwnerOfReservation) {
+                throw new org.springframework.security.access.AccessDeniedException("No posee permisos para cancelar esta reserva");
+            }
+            if (reservation.getStatus() != ReservationStatus.RESERVED) {
+                throw new IllegalStateException("Solo puede cancelar reservas en estado RESERVED");
+            }
         }
 
-        if (reservation.getStatus() == ReservationStatus.CHECKED_IN
-                && reservation.getParkingSpot() != null) {
-
+        if (reservation.getStatus() == ReservationStatus.COMPLETED) {
+            throw new IllegalStateException("Completed reservation cannot be cancelled");
+        }
+        if (reservation.getStatus() == ReservationStatus.CHECKED_IN && reservation.getParkingSpot() != null) {
             reservation.getParkingSpot().setStatus(Status.FREE);
         }
 
         reservation.setStatus(ReservationStatus.CANCELLED);
-
         return responseMapper.toDTO(repository.save(reservation));
     }
 
@@ -144,7 +153,11 @@ public class ReservationService implements IReservationService {
                 .stream().map(responseMapper::toDTO)
                 .toList();
     }
-
+    public List<ReservationResponseDTO> getMyReservations(Authentication auth) {
+        return repository.findByUserIdentifier(auth.getName()).stream()
+                .map(responseMapper::toDTO)
+                .toList();
+    }
     private void validateOwnership(ReservationEntity reservation, Authentication auth) {
         boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
         if (isAdmin) return;
