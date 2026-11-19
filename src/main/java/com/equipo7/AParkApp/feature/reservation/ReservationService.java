@@ -24,6 +24,8 @@ import com.equipo7.AParkApp.feature.vehicle.VehicleEntity;
 import com.equipo7.AParkApp.feature.vehicle.VehicleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +50,13 @@ public class ReservationService implements IReservationService {
     private final PriceService priceService;
 
     @Override
-    public List<ReservationResponseDTO> getAll() {
-        return repository.findAll().stream()
+    public List<ReservationResponseDTO> getAll(Authentication auth) {
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        if (isAdmin) {
+            return repository.findAll().stream().map(responseMapper::toDTO).toList();
+        }
+        return repository.findByOwnerIdentifier(auth.getName()).stream()
                 .map(responseMapper::toDTO)
                 .toList();
     }
@@ -112,23 +119,32 @@ public class ReservationService implements IReservationService {
     }
 
     @Transactional
-    public ReservationResponseDTO cancel(UUID id) {
-
+    public ReservationResponseDTO cancel(UUID id, Authentication auth) {
         ReservationEntity reservation = findById(id);
+        boolean isClient = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CLIENT"));
 
-        if (reservation.getStatus() == ReservationStatus.COMPLETED) {
-            throw new IllegalStateException(
-                    "Completed reservation cannot be cancelled");
+        if (isClient) {
+            String username = auth.getName();
+            boolean isOwnerOfReservation = reservation.getUser() != null && (
+                    username.equalsIgnoreCase(reservation.getUser().getEmail()) ||
+                            (reservation.getUser().getCredentials() != null && username.equalsIgnoreCase(reservation.getUser().getCredentials().getUsername()))
+            );
+            if (!isOwnerOfReservation) {
+                throw new org.springframework.security.access.AccessDeniedException("No posee permisos para cancelar esta reserva");
+            }
+            if (reservation.getStatus() != ReservationStatus.RESERVED) {
+                throw new IllegalStateException("Solo puede cancelar reservas en estado RESERVED");
+            }
         }
 
-        if (reservation.getStatus() == ReservationStatus.CHECKED_IN
-                && reservation.getParkingSpot() != null) {
-
+        if (reservation.getStatus() == ReservationStatus.COMPLETED) {
+            throw new IllegalStateException("Completed reservation cannot be cancelled");
+        }
+        if (reservation.getStatus() == ReservationStatus.CHECKED_IN && reservation.getParkingSpot() != null) {
             reservation.getParkingSpot().setStatus(Status.FREE);
         }
 
         reservation.setStatus(ReservationStatus.CANCELLED);
-
         return responseMapper.toDTO(repository.save(reservation));
     }
 
@@ -137,11 +153,30 @@ public class ReservationService implements IReservationService {
                 .stream().map(responseMapper::toDTO)
                 .toList();
     }
+    public List<ReservationResponseDTO> getMyReservations(Authentication auth) {
+        return repository.findByUserIdentifier(auth.getName()).stream()
+                .map(responseMapper::toDTO)
+                .toList();
+    }
+    private void validateOwnership(ReservationEntity reservation, Authentication auth) {
+        boolean isAdmin = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        if (isAdmin) return;
+        UserEntity owner = reservation.getParkingLot() != null ? reservation.getParkingLot().getOwner() : null;
+        String identifier = auth.getName();
+        boolean matches = owner != null && (
+                (owner.getEmail() != null && owner.getEmail().equalsIgnoreCase(identifier)) ||
+                        (owner.getCredentials() != null && identifier.equalsIgnoreCase(owner.getCredentials().getUsername()))
+        );
+        if (!matches) {
+            throw new AccessDeniedException("No tiene permisos sobre este estacionamiento");
+        }
+    }
 
     @Transactional
-    public ReservationResponseDTO checkIn(UUID reservationId) {
+    public ReservationResponseDTO checkIn(UUID reservationId, Authentication auth) {
 
         ReservationEntity reservation = findById(reservationId);
+        validateOwnership(reservation, auth);
 
         if (reservation.getStatus() != ReservationStatus.RESERVED) {
             throw new IllegalStateException(
@@ -160,9 +195,10 @@ public class ReservationService implements IReservationService {
     }
 
     @Transactional
-    public ReservationResponseDTO checkOut(UUID reservationId) {
+    public ReservationResponseDTO checkOut(UUID reservationId, Authentication auth) {
 
         ReservationEntity reservation = findById(reservationId);
+        validateOwnership(reservation, auth);
 
         if (reservation.getStatus() != ReservationStatus.CHECKED_IN) {
             throw new IllegalStateException(

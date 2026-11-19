@@ -11,12 +11,14 @@ public record ReservationResponseDTO(
         LocalDateTime startTime,
         LocalDateTime endTime,
         UUID parkingLotId,
+        String parkingLotName,
         UUID parkingSpotId,
         UUID vehicleId,
+        String vehiclePlate,
         UUID offerId,
         UUID userId,
+        String userName,
         String stayType,
         String status
-) {
-}
+) {}
 

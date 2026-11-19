@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +27,9 @@ public class OfferController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Lista las ofertas activas")
-    public List<OfferResponseDTO> findAll() {
-        return service.findAllActive();
+    public List<OfferResponseDTO> findAll(Authentication auth) {
+        return service.findAllActive(auth);
     }
-
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)

@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,12 +29,12 @@ public class ReservationController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Lista todas las reservas")
-    public List<ReservationResponseDTO> findAll() {
-        return reservationService.getAll();
+    public List<ReservationResponseDTO> findAll(Authentication auth) {
+        return reservationService.getAll(auth);
     }
 
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE', 'CLIENT', 'ADMIN')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Obtiene una reserva por id")
@@ -70,24 +71,24 @@ public class ReservationController {
     @PatchMapping("/{id}/check-in")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Registra el check-in de una reserva")
-    public ReservationResponseDTO checkIn(@PathVariable UUID id) {
-        return reservationService.checkIn(id);
+    public ReservationResponseDTO checkIn(@PathVariable UUID id, Authentication auth) {
+        return reservationService.checkIn(id, auth);
     }
 
     @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
     @PatchMapping("/{id}/check-out")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Registra el check-out de una reserva")
-    public ReservationResponseDTO checkOut(@PathVariable UUID id) {
-        return reservationService.checkOut(id);
+    public ReservationResponseDTO checkOut(@PathVariable UUID id, Authentication auth) {
+        return reservationService.checkOut(id, auth);
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE', 'CLIENT', 'ADMIN')")
     @PatchMapping("/{id}/cancel")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Cancela una reserva")
-    public ReservationResponseDTO cancel(@PathVariable UUID id) {
-        return reservationService.cancel(id);
+    public ReservationResponseDTO cancel(@PathVariable UUID id, Authentication auth) {
+        return reservationService.cancel(id, auth);
     }
     @PreAuthorize("hasRole('CLIENT')")
     @PostMapping("/acquire-offer/{offerId}")
@@ -96,5 +97,13 @@ public class ReservationController {
     public ReservationResponseDTO acquireOffer(@PathVariable UUID offerId, @Valid @RequestBody AcquireOfferRequest request) {
 
         return reservationService.acquireOffer(offerId, request);
+    }
+
+
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReservationResponseDTO> findMyReservations(Authentication auth) {
+        return reservationService.getMyReservations(auth);
     }
 }

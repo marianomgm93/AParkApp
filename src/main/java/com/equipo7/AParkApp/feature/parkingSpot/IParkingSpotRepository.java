@@ -34,6 +34,14 @@ public interface IParkingSpotRepository extends JpaRepository<ParkingSpotEntity,
                 AND r.startTime < :endTime
                 AND r.endTime > :startTime
             )
+            AND NOT EXISTS (
+                SELECT o
+                FROM OfferEntity o
+                WHERE o.parkingSpot = ps
+                AND o.active = true
+                AND o.startTime < :endTime
+                AND o.endTime > :startTime
+            )
             """)
     List<ParkingSpotEntity> findAvailableSpots(
             @Param("parkingLotId") UUID parkingLotId,
