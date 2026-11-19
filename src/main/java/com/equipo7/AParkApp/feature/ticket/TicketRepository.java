@@ -14,4 +14,14 @@ public interface TicketRepository extends JpaRepository<TicketEntity, UUID> {
             LocalDateTime startDate,
             LocalDateTime endDate);
     Optional<TicketEntity> findByReservationId(UUID reservationId);
+    List<TicketEntity> findByReservationParkingLotOwnerId(UUID ownerId);
+    List<TicketEntity> findByReservationParkingLotOwnerIdAndTimeStampBetween(
+            UUID ownerId,
+            LocalDateTime startDate,
+            LocalDateTime endDate);
+    List<TicketEntity> findByReservationUserId(UUID userId);
+    List<TicketEntity> findByReservationUserIdAndTimeStampBetween(
+            UUID userId,
+            LocalDateTime startDate,
+            LocalDateTime endDate);
 }

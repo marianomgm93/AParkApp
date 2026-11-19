@@ -13,6 +13,8 @@ import java.util.UUID;
 public interface ReservationRepository extends JpaRepository<ReservationEntity, UUID> {
     List<ReservationEntity> findByVehiclePlateContainingIgnoreCase(String plate);
 
+    boolean existsByVehicleIdAndStatusIn(UUID vehicleId, List<ReservationStatus> statuses);
+
     /// verificar que no haya solapamiento de fechas
     @Query("""
 SELECT COUNT(r) > 0
