@@ -30,7 +30,7 @@ public class OfferController {
     public List<OfferResponseDTO> findAll(Authentication auth) {
         return service.findAllActive(auth);
     }
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE','CLIENT')")
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Obtiene una oferta por id")

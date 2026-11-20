@@ -1,5 +1,8 @@
 package com.equipo7.AParkApp.feature.parkingSpot;
 
+import com.equipo7.AParkApp.common.model.exceptions.EntityAlreadyExistsEx;
+import com.equipo7.AParkApp.feature.auth.credentials.CredentialsEntity;
+import com.equipo7.AParkApp.feature.auth.credentials.CredentialsRepository;
 import com.equipo7.AParkApp.feature.parkingLot.Domain.ParkingLotEntity;
 import com.equipo7.AParkApp.feature.parkingLot.IParkingLotRepository;
 import com.equipo7.AParkApp.feature.parkingSpot.Domain.Dto.ParkingSpotRequest;
@@ -28,6 +31,7 @@ public class ParkingSpotService implements IParkingSpotService {
     private final IParkingLotRepository parkingLotRepository;
     private final ParkingSpotRequestMapper requestMapper;
     private final ParkingSpotResponseMapper responseMapper;
+    private final CredentialsRepository credentialsRepository;
 
     @Override
     public ParkingSpotResponse createParkingSpot(ParkingSpotRequest request) {
@@ -37,6 +41,10 @@ public class ParkingSpotService implements IParkingSpotService {
                         findByIdAndActiveTrue(
                                 request.getParkingLotId()).orElseThrow
                                 (() -> new EntityNotFoundException("Parking Lot Not Found"));
+
+        if (repository.existsByParkingLotIdAndNumber(parkingLot.getId(), request.getNumber())) {
+            throw new EntityAlreadyExistsEx("Ya existe un lugar con el número " + request.getNumber() + " en este estacionamiento");
+        }
 
         ParkingSpotEntity entity = requestMapper.toEntity(request);
 
@@ -74,6 +82,10 @@ public class ParkingSpotService implements IParkingSpotService {
         ParkingLotEntity parkingLot = parkingLotRepository.
                 findByIdAndActiveTrue(request.getParkingLotId())
                         .orElseThrow(() -> new EntityNotFoundException("Parking LOT not found"));
+
+        if (repository.existsByParkingLotIdAndNumberAndIdNot(parkingLot.getId(), request.getNumber(), id)) {
+            throw new EntityAlreadyExistsEx("Ya existe un lugar con el número " + request.getNumber() + " en este estacionamiento");
+        }
 
         entity.setNumber(request.getNumber());
         entity.setParkingLot(parkingLot);
@@ -137,6 +149,20 @@ public class ParkingSpotService implements IParkingSpotService {
                 .stream()
                 .map(responseMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public List<ParkingSpotResponse> getParkingSpotsByOwnerUsername(String username) {
+        CredentialsEntity credentials = credentialsRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("User credentials not found for: " + username));
+
+        if (credentials.getUsuario() == null) {
+            throw new EntityNotFoundException("No user profile associated with credentials: " + username);
+        }
+
+        UUID ownerId = credentials.getUsuario().getId();
+        List<ParkingSpotEntity> spots = repository.findByOwnerId(ownerId);
+        return spots.stream().map(responseMapper::toDto).toList();
     }
 
 }

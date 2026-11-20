@@ -52,6 +52,16 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<ExceptionDto> handleDataIntegrityViolation(org.springframework.dao.DataIntegrityViolationException ex) {
+        return buildResponse(HttpStatus.BAD_REQUEST, "Ya existe un registro con esos datos (posible número duplicado)");
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionDto> handleGenericException(Exception ex) {
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage() != null ? ex.getMessage() : "Error interno del servidor");
+    }
+
 
     /// //////AUX
     private ResponseEntity<ExceptionDto> buildResponse(HttpStatus status, String msg) {

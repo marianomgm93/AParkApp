@@ -23,4 +23,8 @@ public class ParkingSpotResponse {
     private Status status;
 
     private int number;
+
+    private UUID parkingLotId;
+
+    private String parkingLotName;
 }

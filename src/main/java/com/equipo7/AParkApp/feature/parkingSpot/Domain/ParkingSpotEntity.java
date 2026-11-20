@@ -14,7 +14,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "parking_spots")
+@Table(
+        name = "parking_spots",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"parking_lot_id", "spot_number"})
+        }
+)
 @NoArgsConstructor
 public class ParkingSpotEntity {
     @Id
@@ -29,7 +34,7 @@ public class ParkingSpotEntity {
     @Column(name = "status")
     private Status status;
 
-    @Column(name = "spot_number", unique = true)
+    @Column(name = "spot_number")
     private int number;
 
     @ManyToOne

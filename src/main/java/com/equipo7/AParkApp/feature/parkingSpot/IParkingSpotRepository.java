@@ -18,6 +18,13 @@ public interface IParkingSpotRepository extends JpaRepository<ParkingSpotEntity,
 
     List<ParkingSpotEntity> findByParkingLotIdAndActiveTrue(UUID parkingLotId);
 
+    boolean existsByParkingLotIdAndNumber(UUID parkingLotId, int number);
+
+    boolean existsByParkingLotIdAndNumberAndIdNot(UUID parkingLotId, int number, UUID id);
+
+    @Query("SELECT ps FROM ParkingSpotEntity ps WHERE ps.parkingLot.owner.id = :ownerId")
+    List<ParkingSpotEntity> findByOwnerId(@Param("ownerId") UUID ownerId);
+
     @Query("""
             SELECT ps
             FROM ParkingSpotEntity ps

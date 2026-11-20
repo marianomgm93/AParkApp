@@ -23,42 +23,42 @@ import java.util.UUID;
 public class VehicleController {
     private final VehicleService vehicleService;
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @GetMapping
     @Operation(summary = "Lista todos los vehículos")
     ResponseEntity<List<VehicleDTO>> findAll() {
         return ResponseEntity.ok(vehicleService.findAll());
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE', 'CLIENT')")
     @GetMapping("/{vehicleId}")
     @Operation(summary = "Obtiene un vehículo por id")
     ResponseEntity<VehicleDTO> findById(@PathVariable UUID vehicleId) {
         return ResponseEntity.ok(vehicleService.findById(vehicleId));
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE', 'CLIENT')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE', 'CLIENT')")
     @GetMapping("/user/{userId}")
     @Operation(summary = "Lista los vehículos de un usuario")
     ResponseEntity<List<VehicleDTO>> findByUserId(@PathVariable UUID userId) {
         return ResponseEntity.ok(vehicleService.findByUserId(userId));
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE','CLIENT')")
+    @PreAuthorize("hasRole('CLIENT')")
     @PostMapping
     @Operation(summary = "Crea un vehículo")
     ResponseEntity<VehicleDTO> create(@Valid @RequestBody NewVehicleDTO newVehicleDTO) {
         return new ResponseEntity<>(vehicleService.save(newVehicleDTO), HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE', 'CLIENT')")
     @PutMapping("/{vehicleId}")
     @Operation(summary = "Actualiza un vehículo")
     ResponseEntity<VehicleDTO> update(@PathVariable UUID vehicleId, @Valid @RequestBody NewVehicleDTO newVehicleDTO) {
         return ResponseEntity.ok(vehicleService.update(vehicleId, newVehicleDTO));
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @DeleteMapping("/{vehicleId}")
     @Operation(summary = "Elimina un vehículo")
     ResponseEntity<VehicleDTO> delete(@PathVariable UUID vehicleId) {
