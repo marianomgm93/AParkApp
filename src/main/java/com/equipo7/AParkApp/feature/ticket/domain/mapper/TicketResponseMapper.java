@@ -16,18 +16,25 @@ public class TicketResponseMapper implements IMapper<TicketEntity, TicketRespons
                 .paid(ticketResponseDTO.paid())
                 .timeStamp(ticketResponseDTO.timeStamp())
                 .note(ticketResponseDTO.note())
+                .status(ticketResponseDTO.status())
                 .build();
     }
 
     @Override
     public TicketResponseDTO toDTO(TicketEntity ticketEntity) {
+        String parkingLotName = null;
+        if (ticketEntity.getReservation() != null && ticketEntity.getReservation().getParkingLot() != null) {
+            parkingLotName = ticketEntity.getReservation().getParkingLot().getName();
+        }
         return new TicketResponseDTO(
                 ticketEntity.getId(),
-                ticketEntity.getReservation().getId(),
+                ticketEntity.getReservation() != null ? ticketEntity.getReservation().getId() : null,
                 ticketEntity.getAmount(),
                 ticketEntity.getPaid(),
                 ticketEntity.getTimeStamp(),
-                ticketEntity.getNote()
+                ticketEntity.getNote(),
+                parkingLotName,
+                ticketEntity.getStatus()
         );
     }
 }

@@ -16,5 +16,6 @@ public interface IParkingSpotService {
     void restoreParkingSpot(UUID id);
     void occupy(UUID id);
     void release(UUID id);
+    List<ParkingSpotResponse> getParkingSpotsByOwnerUsername(String username);
 
 }

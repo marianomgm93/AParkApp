@@ -12,13 +12,17 @@ import java.util.UUID;
 @Repository
 public interface ReservationRepository extends JpaRepository<ReservationEntity, UUID> {
     List<ReservationEntity> findByVehiclePlateContainingIgnoreCase(String plate);
+    boolean existsByVehicleIdAndStatusIn(UUID vehicleId, List<ReservationStatus> statuses);
+
     List<ReservationEntity> findByParkingLotOwnerEmail(String email);
+
     @Query("""
     SELECT r FROM ReservationEntity r
     WHERE r.user.credentials.username = :identifier
        OR r.user.email = :identifier
     """)
     List<ReservationEntity> findByUserIdentifier(@Param("identifier") String identifier);
+
     @Query("""
     SELECT r FROM ReservationEntity r
     WHERE r.parkingLot.owner.credentials.username = :identifier

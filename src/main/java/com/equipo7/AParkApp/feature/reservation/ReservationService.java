@@ -449,6 +449,11 @@ public class ReservationService implements IReservationService {
                 ReservationStatus.CHECKED_IN
         );
 
+        if (repository.existsByVehicleIdAndStatusIn(vehicleId, activeStatuses)) {
+            throw new OverlappingReservationEx(
+                    "El vehículo ya cuenta con una reserva activa. No es posible reservar con el mismo auto.");
+        }
+
         if (repository.existsOverlappingReservation(
                 vehicleId,
                 activeStatuses,
@@ -456,7 +461,7 @@ public class ReservationService implements IReservationService {
                 endTime)) {
 
             throw new OverlappingReservationEx(
-                    "Vehicle already has a reservation for this period");
+                    "El vehículo ya cuenta con una reserva para este período.");
         }
     }
 

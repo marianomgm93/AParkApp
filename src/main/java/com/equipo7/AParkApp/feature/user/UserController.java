@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RequestMapping("/user")
@@ -29,9 +29,8 @@ public class UserController {
     @GetMapping
     @Operation(summary = "Lista todos los usuarios")
     ResponseEntity<List<UserResponse>> findAll() {
-        return ResponseEntity.ok(userService.getAllActiveUsers());
+        return ResponseEntity.ok(userService.getAllUsers());
     }
-
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
@@ -54,7 +53,6 @@ public class UserController {
         return new ResponseEntity<>(userService.save(user), HttpStatus.CREATED);
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Actualiza un usuario")
@@ -62,13 +60,27 @@ public class UserController {
         return ResponseEntity.ok(userService.update(id, user));
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Elimina un usuario")
     ResponseEntity<Void> delete(@PathVariable UUID id) {
         userService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/role")
+    @Operation(summary = "Cambia el rol de un usuario")
+    ResponseEntity<UserResponse> changeRole(@PathVariable UUID id, @RequestBody Map<String, String> body) {
+        String roleName = body.get("role");
+        return ResponseEntity.ok(userService.changeRole(id, roleName));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("/{id}/status")
+    @Operation(summary = "Alterna el estado activo/inactivo de un usuario")
+    ResponseEntity<UserResponse> toggleStatus(@PathVariable UUID id) {
+        return ResponseEntity.ok(userService.toggleActive(id));
     }
 
     @GetMapping("/me")

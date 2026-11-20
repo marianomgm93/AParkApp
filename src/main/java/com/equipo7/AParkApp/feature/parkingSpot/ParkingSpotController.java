@@ -29,7 +29,7 @@ public class ParkingSpotController {
 
     private final ParkingSpotService service;
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @PostMapping
     @Operation(summary = "Crea una celda de parqueo")
     public ResponseEntity<ParkingSpotResponse> create(@Valid @RequestBody ParkingSpotRequest request) {
@@ -39,7 +39,14 @@ public class ParkingSpotController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
+    @GetMapping("/owner")
+    @Operation(summary = "Lista las celdas de parqueo del propietario autenticado")
+    public ResponseEntity<List<ParkingSpotResponse>> getMyParkingSpots(org.springframework.security.core.Authentication auth) {
+        return ResponseEntity.ok(service.getParkingSpotsByOwnerUsername(auth.getName()));
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @GetMapping
     @Operation(summary = "Lista todas las celdas de parqueo")
     public ResponseEntity<List<ParkingSpotResponse>> findAll() {
@@ -47,14 +54,14 @@ public class ParkingSpotController {
         return ResponseEntity.ok(service.getAllParkingSpots());
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @GetMapping("/{id}")
     @Operation(summary = "Obtiene una celda de parqueo por id")
     public ResponseEntity<ParkingSpotResponse> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(service.getParkingSpotById(id));
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @PutMapping("/{id}")
     @Operation(summary = "Actualiza una celda de parqueo")
     public ResponseEntity<ParkingSpotResponse> update(@PathVariable UUID id, @Valid @RequestBody ParkingSpotRequest request) {
@@ -63,20 +70,20 @@ public class ParkingSpotController {
     }
     @Operation(summary = "Elimina una celda de parqueo")
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.deleteParkingSpotById(id);
         return ResponseEntity.noContent().build();
     }
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @PatchMapping("/{id}/restore")
     @Operation(summary = "Restaura una celda de parqueo")
     public ResponseEntity<Void> restore(@PathVariable UUID id) {
         service.restoreParkingSpot(id);
         return ResponseEntity.ok().build();
     }
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @PatchMapping("/{id}/occupy")
     @Operation(summary = "Marca una celda como ocupada")
     public ResponseEntity<Void> occupy(@PathVariable UUID id) {
@@ -84,7 +91,7 @@ public class ParkingSpotController {
 
         return ResponseEntity.ok().build();
     }
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @PatchMapping("/{id}/release")
     @Operation(summary = "Libera una celda ocupada")
     public ResponseEntity<Void> release(@PathVariable UUID id) {
@@ -92,7 +99,7 @@ public class ParkingSpotController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasAnyRole('OWNER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER', 'EMPLOYEE')")
     @GetMapping("/available")
         @Operation(summary = "Consulta celdas disponibles en un rango horario")
     public ResponseEntity<List<ParkingSpotResponse>> getAvailableSpots(

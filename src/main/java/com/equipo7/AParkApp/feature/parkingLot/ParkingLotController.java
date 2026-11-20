@@ -26,7 +26,7 @@ public class ParkingLotController {
     private final ParkingLotService parkingLotService;
 
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'OWNER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Crea un parqueadero")
     public ResponseEntity<ParkingLotResponse> create(@Valid @RequestBody ParkingLotRequest request) {

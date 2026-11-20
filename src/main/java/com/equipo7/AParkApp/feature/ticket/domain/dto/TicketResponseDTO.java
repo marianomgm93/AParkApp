@@ -1,7 +1,6 @@
 package com.equipo7.AParkApp.feature.ticket.domain.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import com.equipo7.AParkApp.feature.ticket.TicketStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,5 +12,7 @@ public record TicketResponseDTO(
         BigDecimal amount,
         BigDecimal paid,
         LocalDateTime timeStamp,
-        String note) {
+        String note,
+        String parkingLotName,
+        TicketStatus status) {
 }

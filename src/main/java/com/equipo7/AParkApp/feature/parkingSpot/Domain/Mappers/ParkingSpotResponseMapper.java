@@ -21,9 +21,12 @@ public class ParkingSpotResponseMapper {
     }
 
     public ParkingSpotResponse toDto(ParkingSpotEntity entity) {
-
-
-        return mapper.map(entity,ParkingSpotResponse.class);
+        ParkingSpotResponse dto = mapper.map(entity, ParkingSpotResponse.class);
+        if (entity != null && entity.getParkingLot() != null) {
+            dto.setParkingLotId(entity.getParkingLot().getId());
+            dto.setParkingLotName(entity.getParkingLot().getName());
+        }
+        return dto;
     }
 
 }
